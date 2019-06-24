@@ -29,13 +29,15 @@ public class Unit : MonoBehaviour {
         SetPos(GridPos.x, GridPos.y);
 
         Vector2Int DebugPos = new Vector2Int(3, 0);
-        List<MapTile> MyPath = new List<MapTile>();
+
+        /*List<MapTile> MyPath = new List<MapTile>();
         MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
+        */
         PlaceTarget(DebugPos.x, DebugPos.y);
         Debug.Log("Distance "+MapLocal.GetDistance(DebugPos, GridPos));
         
-        if (MyPath !=null)
-        Debug.Log(MyPath.Count);
+       // if (MyPath !=null)
+     //   Debug.Log(MyPath.Count);
 
     }
 
