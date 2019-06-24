@@ -41,3 +41,5 @@ ehthumbs.db
 Thumbs.db
 # Visual Studio 2015/2017 cache/options directory
 *.vs/
+Actual Files/TurnGeneratedBox/.vs/TurnGeneratedBox/v15/Server/sqlite3/storage.ide
+*.ide
