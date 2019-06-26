@@ -850,7 +850,6 @@ public class Map_Generator : MonoBehaviour {
       //  Debug.Log(prueba);
     }
     
-
     public MapTile DFindTile(int X, int Y) //I think this does not work for some reason
     {
         int Size = (int)Mathf.Sqrt(AllMapTiles.Count);

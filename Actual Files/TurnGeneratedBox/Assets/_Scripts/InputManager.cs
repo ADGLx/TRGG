@@ -23,6 +23,11 @@ public class InputManager : MonoBehaviour {
     [HideInInspector]
     public Vector3 MousePos;
 
+    [Header("Debug UI")]
+    [Tooltip("Made to check the nodes")]
+    public GameObject DebugText;
+    public GameObject DebugHolder;
+
     Vector3 Orig;
 
     GridLayout grid;
@@ -57,7 +62,19 @@ public class InputManager : MonoBehaviour {
             UIM.ChangeOfSelection();
 
             //This is the debug part
-          //  Debug.Log(MapGRef.CurrentTile.Walkable);
+            //  Debug.Log(MapGRef.CurrentTile.Walkable);
+
+           // foreach (MapTile N in MapGRef.CurrentTile.Neighbours)
+           // {
+                GameObject Temp2;
+                Vector3 cellDebugPos = grid.WorldToCell(pz) + new Vector3(0.5f, 0.5f, -1); 
+                Temp2 = Instantiate(DebugText, cellDebugPos, DebugText.transform.rotation, DebugHolder.transform);
+                Temp2.transform.GetChild(0).GetComponent<TextMesh>().text = "(" + MapGRef.CurrentTile.X + "," + MapGRef.CurrentTile.Y + ")";
+            Temp2.transform.GetChild(1).GetComponent<TextMesh>().text = "F: " + MapGRef.CurrentTile.FCost;
+            Temp2.transform.GetChild(2).GetComponent<TextMesh>().text = "G: " + MapGRef.CurrentTile.GCost;
+            Temp2.transform.GetChild(3).GetComponent<TextMesh>().text = "H: " + MapGRef.CurrentTile.HCost;
+            //  }
+
         }
 
         DragScreen();
@@ -95,4 +112,5 @@ public class InputManager : MonoBehaviour {
         LMBdown = Input.GetMouseButtonDown(0);
 
     }
+
 }
