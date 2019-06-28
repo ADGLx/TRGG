@@ -56,7 +56,7 @@ public class Map_Generator : MonoBehaviour {
     public Materials materials = new Materials();
 
  
-     List<MapTile> AllMapTiles = new List<MapTile>(); //Need to find a way to access easily the list via the X and Y value
+     public List<MapTile> AllMapTiles = new List<MapTile>(); //Need to find a way to access easily the list via the X and Y value
 
     [HideInInspector]
     public MapTile CurrentTile = null; //This is the current selected tile

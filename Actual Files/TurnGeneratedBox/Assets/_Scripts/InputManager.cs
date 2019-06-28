@@ -62,18 +62,11 @@ public class InputManager : MonoBehaviour {
             UIM.ChangeOfSelection();
 
             //This is the debug part
-            //  Debug.Log(MapGRef.CurrentTile.Walkable);
 
-           // foreach (MapTile N in MapGRef.CurrentTile.Neighbours)
-           // {
-                GameObject Temp2;
-                Vector3 cellDebugPos = grid.WorldToCell(pz) + new Vector3(0.5f, 0.5f, -1); 
-                Temp2 = Instantiate(DebugText, cellDebugPos, DebugText.transform.rotation, DebugHolder.transform);
-                Temp2.transform.GetChild(0).GetComponent<TextMesh>().text = "(" + MapGRef.CurrentTile.X + "," + MapGRef.CurrentTile.Y + ")";
-            Temp2.transform.GetChild(1).GetComponent<TextMesh>().text = "F: " + MapGRef.CurrentTile.FCost;
-            Temp2.transform.GetChild(2).GetComponent<TextMesh>().text = "G: " + MapGRef.CurrentTile.GCost;
-            Temp2.transform.GetChild(3).GetComponent<TextMesh>().text = "H: " + MapGRef.CurrentTile.HCost;
-            //  }
+             foreach (MapTile N in MapGRef.AllMapTiles)
+            {
+            SpawnDebugUIOnTile(pz, N);
+             }
 
         }
 
@@ -111,6 +104,17 @@ public class InputManager : MonoBehaviour {
         LMBup = Input.GetMouseButtonUp(0);
         LMBdown = Input.GetMouseButtonDown(0);
 
+    }
+
+    void SpawnDebugUIOnTile(Vector3 pz, MapTile tile)
+    {
+        GameObject Temp2;
+        Vector3 cellDebugPos = new Vector3(tile.X + 0.5f,tile.Y + 0.5f, -2);
+        Temp2 = Instantiate(DebugText, cellDebugPos, DebugText.transform.rotation, DebugHolder.transform);
+        Temp2.transform.GetChild(0).GetComponent<TextMesh>().text = "(" + tile.X + "," + tile.Y + ")";
+        Temp2.transform.GetChild(1).GetComponent<TextMesh>().text = "F: " + tile.FCost;
+        Temp2.transform.GetChild(2).GetComponent<TextMesh>().text = "G: " + tile.GCost;
+        Temp2.transform.GetChild(3).GetComponent<TextMesh>().text = "H: " + tile.HCost;
     }
 
 }
