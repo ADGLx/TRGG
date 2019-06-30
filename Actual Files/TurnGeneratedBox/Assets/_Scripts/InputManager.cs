@@ -61,13 +61,7 @@ public class InputManager : MonoBehaviour {
             MapGRef.CurrentTile = MapGRef.DFindTile(cellPos.x, cellPos.y);
             UIM.ChangeOfSelection();
 
-            //This is the debug part
-
-             foreach (MapTile N in MapGRef.AllMapTiles)
-            {
-            SpawnDebugUIOnTile(pz, N);
-             }
-
+            ShowAllDebugUI();
         }
 
         DragScreen();
@@ -106,7 +100,23 @@ public class InputManager : MonoBehaviour {
 
     }
 
-    void SpawnDebugUIOnTile(Vector3 pz, MapTile tile)
+    void ShowAllDebugUI()
+    {
+        //This is the debug part
+        //If it already exist we gotta delete it 
+
+        for (int x = 0; x < DebugHolder.transform.childCount; x++)
+        {
+            Destroy(DebugHolder.transform.GetChild(x).gameObject);
+        }
+
+        foreach (MapTile N in MapGRef.AllMapTiles)
+        {
+            SpawnDebugUIOnTile(N);
+        }
+    }
+
+    void SpawnDebugUIOnTile(MapTile tile)
     {
         GameObject Temp2;
         Vector3 cellDebugPos = new Vector3(tile.X + 0.5f,tile.Y + 0.5f, -2);
