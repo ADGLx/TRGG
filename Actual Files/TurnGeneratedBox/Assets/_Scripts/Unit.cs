@@ -28,7 +28,7 @@ public class Unit : MonoBehaviour {
          GetPos();
         SetPos(GridPos.x, GridPos.y);
 
-        MoveUnitTo(0, 3);
+        MoveUnitTo(-5, -3);
 
         /*List<MapTile> MyPath = new List<MapTile>();
         MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
@@ -73,7 +73,7 @@ public class Unit : MonoBehaviour {
     public void MoveUnitTo(int TargetX, int TargetY)
     {
         List<MapTile> MyPath = new List<MapTile>();
-        Vector2Int DebugPos = new Vector2Int(3, 0);
+        Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
         MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
 
         //This should be in another function to be more organized tho
