@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour {
             MapGRef.CurrentTile = MapGRef.DFindTile(cellPos.x, cellPos.y);
             UIM.ChangeOfSelection();
 
-            ShowAllDebugUI();
+         //   ShowAllDebugUI();
         }
 
         DragScreen();
@@ -125,6 +125,7 @@ public class InputManager : MonoBehaviour {
         Temp2.transform.GetChild(1).GetComponent<TextMesh>().text = "F: " + tile.FCost;
         Temp2.transform.GetChild(2).GetComponent<TextMesh>().text = "G: " + tile.GCost;
         Temp2.transform.GetChild(3).GetComponent<TextMesh>().text = "H: " + tile.HCost;
+        Temp2.transform.GetChild(4).GetComponent<TextMesh>().text = "W: " + tile.Walkable.ToString();
     }
 
 }

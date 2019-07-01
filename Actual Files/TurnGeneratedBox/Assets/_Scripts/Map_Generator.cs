@@ -894,6 +894,8 @@ public class Map_Generator : MonoBehaviour {
         MapTile OriginT = FindTile(Origin.x, Origin.y);
         MapTile TargetT = FindTile(Target.x, Target.y);
 
+        //Temporarily unocupy the start (Cheap way to fix it)
+        OriginT.OcupiedByUnit = UnitIn.None;
 
         List<MapTile> OpenTiles = new List<MapTile>();
         HashSet<MapTile> ClosedTiles= new HashSet<MapTile>();
@@ -928,13 +930,13 @@ public class Map_Generator : MonoBehaviour {
                     }
 
                     Path.Reverse();
-                    Debug.Log("Esto pasa");
                     return Path;
 
                 }
 
                 foreach (MapTile Neighbour in current.Neighbours)
                 {
+                    
                     if (Neighbour == null || !current.Walkable || ClosedTiles.Contains(Neighbour))
                     {
                         continue;
@@ -944,6 +946,7 @@ public class Map_Generator : MonoBehaviour {
 
                     if (MoveCostToN < Neighbour.GCost || !OpenTiles.Contains(Neighbour))
                     {
+                 
                         Neighbour.GCost = MoveCostToN;
                         Neighbour.HCost = GetDistance(Neighbour.GetPos, TargetT.GetPos); //Same thing with this
                         Neighbour.parent = current;

@@ -28,13 +28,13 @@ public class Unit : MonoBehaviour {
          GetPos();
         SetPos(GridPos.x, GridPos.y);
 
-        Vector2Int DebugPos = new Vector2Int(3, 0);
+        MoveUnitTo(0, 3);
 
         /*List<MapTile> MyPath = new List<MapTile>();
         MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
         */
-        PlaceTarget(DebugPos.x, DebugPos.y);
-        Debug.Log("Distance "+MapLocal.GetDistance(DebugPos, GridPos));
+
+      //  Debug.Log("Distance "+MapLocal.GetDistance(DebugPos, GridPos));
         
        // if (MyPath !=null)
      //   Debug.Log(MyPath.Count);
@@ -49,8 +49,6 @@ public class Unit : MonoBehaviour {
         PosY = this.transform.position.y;
 
         GridPos = new Vector2Int(Convert.ToInt32(PosX), Convert.ToInt32(PosY - 1));
-
-        MapLocal.OcupyTileUnit(this, GridPos.x, GridPos.y);
     }
 
     public void SetPos(int X, int Y)
@@ -70,5 +68,19 @@ public class Unit : MonoBehaviour {
         Vector3 cellPos = MapLocal.SetTilePosToWorld(X, Y);
 
         TempParticles = Instantiate(Target, cellPos, Target.transform.rotation, this.transform);
+    }
+
+    public void MoveUnitTo(int TargetX, int TargetY)
+    {
+        List<MapTile> MyPath = new List<MapTile>();
+        Vector2Int DebugPos = new Vector2Int(3, 0);
+        MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
+
+        //This should be in another function to be more organized tho
+        foreach(MapTile T in MyPath)
+        {
+            Debug.Log(T.X + " / " + T.Y);
+        }
+        PlaceTarget(DebugPos.x, DebugPos.y);
     }
 }
