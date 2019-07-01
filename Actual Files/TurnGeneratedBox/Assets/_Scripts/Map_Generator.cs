@@ -745,6 +745,7 @@ public class Map_Generator : MonoBehaviour {
         if (FindTile(X, Y) != null)
         {
             FindTile(X, Y).OcupiedByUnit = U.Type;
+            FindTile(X, Y).OcupyingUnit = U;
             U.gameObject.transform.position = SetTilePosToWorld(X,Y);
             //This seems to work tho
            // Debug.Log("Ay");

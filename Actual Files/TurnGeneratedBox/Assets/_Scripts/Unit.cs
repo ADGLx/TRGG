@@ -5,11 +5,30 @@ using UnityEngine.Tilemaps;
 
 public class Unit : MonoBehaviour {
 
+    [System.Serializable]
+    public class UnitStats
+    {
+        public string Name;
+        public int AttackPoints;
+        public int LifePoints;
+    }
+    public UnitStats unitStats;
+
     public Vector2Int GridPos = new Vector2Int();
     public UnitIn Type = UnitIn.Player;
-    public Tile A;
+   // public Tile A; no clue what this was for 
     public GameObject Target;
     private GameObject TempParticles;
+
+    [System.Serializable]
+    public class PossibleAction
+    {
+        public bool Move;
+        public bool AutoDestroy;
+        public bool Attack;
+    }
+
+    public PossibleAction Actions;
 
     Map_Generator MapLocal;
     private void Awake()
@@ -28,16 +47,7 @@ public class Unit : MonoBehaviour {
          GetPos();
         SetPos(GridPos.x, GridPos.y);
 
-        MoveUnitTo(-5, -3);
-
-        /*List<MapTile> MyPath = new List<MapTile>();
-        MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
-        */
-
-      //  Debug.Log("Distance "+MapLocal.GetDistance(DebugPos, GridPos));
-        
-       // if (MyPath !=null)
-     //   Debug.Log(MyPath.Count);
+      //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
 
     }
 

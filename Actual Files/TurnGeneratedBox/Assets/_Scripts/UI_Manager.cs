@@ -59,7 +59,20 @@ public class UI_Manager : MonoBehaviour {
     public Sprite[] TileIcon = new Sprite[Enum.GetValues(typeof(TileType)).Length];
     [Tooltip("Element 0 = None | Element 1 = Tree | Element 2 = Mountain")]
     public Sprite[] MaterialIcon = new Sprite[Enum.GetValues(typeof(MaterialTile)).Length];
-    
+
+
+
+    [System.Serializable]
+    public class AButtons
+    {
+        public GameObject HoldingBar;
+        public GameObject MoveButton;
+        public  GameObject AutoDestroyButton;
+        public GameObject AttackButton;
+    }
+    [Header("Unit UI Buttons")]
+    public AButtons UnitActionBarButtons;
+
     private void Start()
     {
         //Add the keys (I will have to automate this so it is easier to add stuff)
@@ -88,18 +101,34 @@ public class UI_Manager : MonoBehaviour {
         if (Map.CurrentTile == null)
         {
             Bot_Left.Holder.gameObject.SetActive(false);
+            UnitActionBarButtons.HoldingBar.SetActive(false);
+            //Clean the spawned buttons
+            for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
+            {
+                Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
+            }
         } else 
         {
             //Optimization real quick
             MapTile CurT = Map.CurrentTile;
-            
+
+            //set all to false sot it puts only whats needed
+            Bot_Left.Attack.gameObject.SetActive(false);
+            Bot_Left.Life.gameObject.SetActive(false);
+            Bot_Left.Roughness.gameObject.SetActive(false);
+            Bot_Left.Holder.gameObject.SetActive(false);
+
+            UnitActionBarButtons.HoldingBar.SetActive(false);
+            //Clean the spawned buttons
+            for (int temp=0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
+            {
+                Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
+            }
+                
             //Tipo de recurso
             if (CurT.OcupedByMat != MaterialTile.None)
             {
                Bot_Left.Title.text = CurT.OcupedByMat.ToString();
-                Bot_Left.Attack.gameObject.SetActive(false);
-                Bot_Left.Life.gameObject.SetActive(false);
-                Bot_Left.Roughness.gameObject.SetActive(false);
                 Bot_Left.Icon.sprite = MaterialDic[CurT.OcupedByMat];
                 Bot_Left.Holder.gameObject.SetActive(true);
 
@@ -107,21 +136,53 @@ public class UI_Manager : MonoBehaviour {
             //Tipo de Unidad
             else if (CurT.OcupiedByUnit != UnitIn.None)
             {
-                Bot_Left.Title.text = "Not Set";
+                Unit U = CurT.OcupyingUnit;
+
+                Bot_Left.Title.text = U.unitStats.Name;
                 Bot_Left.Attack.gameObject.SetActive(true);
-                Bot_Left.AttackP.text = "Not Set";
+                Bot_Left.AttackP.text = U.unitStats.AttackPoints.ToString();
                 Bot_Left.Life.gameObject.SetActive(true);
-                Bot_Left.LifeP.text = "Not Set";
-                Bot_Left.Roughness.gameObject.SetActive(false);
+                Bot_Left.LifeP.text = U.unitStats.LifePoints.ToString();
                 Bot_Left.Holder.gameObject.SetActive(true);
+
+                //mostrar la barra de accion
+                int TotalButtons = 0;
+                if (U.Actions.Move)
+                {
+                    TotalButtons++;
+                    Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
+
+                }
+                if (U.Actions.Attack)
+                {
+                    TotalButtons++;
+                    Instantiate(UnitActionBarButtons.AttackButton, UnitActionBarButtons.HoldingBar.transform);
+                }
+                if (U.Actions.AutoDestroy)
+                {
+                    TotalButtons++;
+                    Instantiate(UnitActionBarButtons.AutoDestroyButton, UnitActionBarButtons.HoldingBar.transform);
+                }
+
+                int Offset = (TotalButtons - 1) * (-25);
+
+
+
+                for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
+                {
+                    //place them where they are supposed to
+                    UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Offset, 0);
+                    Offset+=50;
+                }
+
+
+                UnitActionBarButtons.HoldingBar.GetComponent<RectTransform>().sizeDelta = new Vector2(TotalButtons * 50, 45);
+                UnitActionBarButtons.HoldingBar.SetActive(true);
             }
             // Tipo de tile
             else if (CurT.OcupedByMat == MaterialTile.None && CurT.OcupiedByUnit == UnitIn.None)
             {
                 Bot_Left.Title.text = CurT.Type.ToString();
-                Bot_Left.Attack.gameObject.SetActive(false);
-                Bot_Left.Life.gameObject.SetActive(false);
-                //   Bot_Left.Icon.gameObject.SetActive(false); //temporary
                 Bot_Left.Icon.sprite = TileTypeDic[CurT.Type];
                 Bot_Left.Roughness.gameObject.SetActive(true);
                 Bot_Left.RoughnessP.text = CurT.Roughness.ToString();

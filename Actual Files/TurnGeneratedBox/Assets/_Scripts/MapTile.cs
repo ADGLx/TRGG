@@ -16,7 +16,8 @@ public class MapTile : IHeapItem<MapTile>
     public MapTile[] FarNeighbours = new MapTile[4];
     public MaterialTile OcupedByMat = MaterialTile.None;
     public UnitIn OcupiedByUnit = UnitIn.None;
-
+    public Unit OcupyingUnit;
+    
     public bool Walkable
     {
         get

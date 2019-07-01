@@ -45,8 +45,9 @@ public class InputManager : MonoBehaviour {
     void Update () {
         GetInput();
 
-        if (LMBdown)
+        if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
+            //Gotta add something to prevent from finding it when ontop of UI
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
             Vector3Int cellPos = grid.WorldToCell(pz);
