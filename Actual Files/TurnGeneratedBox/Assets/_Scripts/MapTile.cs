@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class MapTile
+public class MapTile : IHeapItem<MapTile>
 {
     public TileType Type;
     public int X, Y, Roughness;
@@ -34,12 +34,37 @@ public class MapTile
     //Stuff for the pathfinding
         public int GCost, HCost;
         public MapTile parent; //Not totally sure how this one works
+        int heapIndex;
     public int FCost
     {
         get
         {
             return GCost + HCost;
         }
+    }
+
+    public int HeapIndex
+    {
+        get
+        {
+            return heapIndex;
+        }
+        set
+        {
+            heapIndex = value;
+        }
+    }   
+
+    public int CompareTo(MapTile nodeToCompare)
+    {
+        int compare = FCost.CompareTo(nodeToCompare.FCost);
+
+        if (compare == 0)
+        {
+            compare = HCost.CompareTo(nodeToCompare.HCost);
+        }
+
+        return -compare;
     }
 
     public MapTile(int newX, int newY, int newRoughness, TileType NewType) //Simple constructor to give it values quick

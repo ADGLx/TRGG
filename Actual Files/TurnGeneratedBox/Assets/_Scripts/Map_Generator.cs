@@ -897,7 +897,7 @@ public class Map_Generator : MonoBehaviour {
         //Temporarily unocupy the start (Cheap way to fix it)
         OriginT.OcupiedByUnit = UnitIn.None;
 
-        List<MapTile> OpenTiles = new List<MapTile>();
+        Heap<MapTile> OpenTiles = new Heap<MapTile>(AllMapTiles.Count); //not sure how it wooorks
         HashSet<MapTile> ClosedTiles= new HashSet<MapTile>();
         OpenTiles.Add(OriginT);
 
@@ -905,18 +905,8 @@ public class Map_Generator : MonoBehaviour {
         {
             while (OpenTiles.Count > 0)
             {
-                MapTile current = OpenTiles[0];
+                MapTile current = OpenTiles.RemoveFirst();
 
-                for (int i = 1; i < OpenTiles.Count; i++)
-                {
-                    if (OpenTiles[i].FCost < current.FCost || OpenTiles[i].FCost == current.FCost)
-                    {
-                        if (OpenTiles[i].HCost < current.HCost)
-                            current = OpenTiles[i];
-                    }
-                }
-
-                OpenTiles.Remove(current);
                 ClosedTiles.Add(current);
 
                 if (current == TargetT)
