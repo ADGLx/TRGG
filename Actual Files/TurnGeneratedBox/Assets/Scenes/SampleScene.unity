@@ -4346,6 +4346,7 @@ MonoBehaviour:
     LifePoints: 1
   GridPos: {x: 0, y: 0}
   Type: 1
+  AnimSpeed: 2
   Target: {fileID: 1815144582962572, guid: 8580a32bb14e6d14388f6f6d5de6da0f, type: 2}
   Actions:
     Move: 1
