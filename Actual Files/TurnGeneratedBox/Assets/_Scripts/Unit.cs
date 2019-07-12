@@ -12,6 +12,7 @@ public class Unit : MonoBehaviour {
         public string Name;
         public int AttackPoints;
         public int LifePoints;
+        public int ActionPoints;
     }
     public UnitStats unitStats;
 
@@ -49,7 +50,9 @@ public class Unit : MonoBehaviour {
         SetPos(GridPos.x, GridPos.y);
 
         //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
-        MoveUnitTo(4, -4);
+        //MoveUnitTo(4, -4);
+
+       // MapLocal.SpawnAreaParticle(GridPos, 2);
 
     }
 

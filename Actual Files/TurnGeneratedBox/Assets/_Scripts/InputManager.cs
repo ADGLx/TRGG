@@ -59,7 +59,7 @@ public class InputManager : MonoBehaviour {
             }
 
             Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
-            MapGRef.CurrentTile = MapGRef.DFindTile(cellPos.x, cellPos.y);
+            MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
             UIM.ChangeOfSelection();
 
          //   ShowAllDebugUI();

@@ -46,7 +46,7 @@ public class UI_Manager : MonoBehaviour {
 
     public TpRight Top_Right = new TpRight();
 
-    Map_Generator Map;
+    Map_Generator MapLocal;
 
     private Dictionary<TileType, Sprite> TileTypeDic = new Dictionary<TileType, Sprite>();
     private Dictionary<MaterialTile, Sprite> MaterialDic=  new Dictionary<MaterialTile, Sprite>();
@@ -82,9 +82,9 @@ public class UI_Manager : MonoBehaviour {
         MaterialDic.Add(MaterialTile.Tree, MaterialIcon[1]);
         MaterialDic.Add(MaterialTile.Mountain, MaterialIcon[2]);
 
-        Map = GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>();
+        MapLocal = GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>();
 
-        if (Map == null)
+        if (MapLocal == null)
         {
             Debug.Log("Map reference could not be found");
         }
@@ -98,7 +98,7 @@ public class UI_Manager : MonoBehaviour {
 
     public void ChangeOfSelection()
     {
-        if (Map.CurrentTile == null)
+        if (MapLocal.CurrentTile == null)
         {
             Bot_Left.Holder.gameObject.SetActive(false);
             UnitActionBarButtons.HoldingBar.SetActive(false);
@@ -107,10 +107,11 @@ public class UI_Manager : MonoBehaviour {
             {
                 Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
             }
+            MapLocal.ThirdLayer.ClearAllTiles();
         } else 
         {
             //Optimization real quick
-            MapTile CurT = Map.CurrentTile;
+            MapTile CurT = MapLocal.CurrentTile;
 
             //set all to false sot it puts only whats needed
             Bot_Left.Attack.gameObject.SetActive(false);
@@ -124,6 +125,8 @@ public class UI_Manager : MonoBehaviour {
             {
                 Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
             }
+            //Clean the UI particles 
+            MapLocal.ThirdLayer.ClearAllTiles();
                 
             //Tipo de recurso
             if (CurT.OcupedByMat != MaterialTile.None)
@@ -150,7 +153,8 @@ public class UI_Manager : MonoBehaviour {
                 if (U.Actions.Move)
                 {
                     TotalButtons++;
-                    Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
+                   GameObject ButtonTemp = Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
+                    ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); });
 
                 }
                 if (U.Actions.Attack)
@@ -194,6 +198,12 @@ public class UI_Manager : MonoBehaviour {
 
            // Bot_Left.Title.text = "X: " + CurT.X + " | Y: " + CurT.Y;
         }
+    }
+
+
+    public void ShowAreaAroundUnit(Unit U)
+    {
+        MapLocal.SpawnAreaParticle(U.GridPos, U.unitStats.ActionPoints);
     }
 
 }

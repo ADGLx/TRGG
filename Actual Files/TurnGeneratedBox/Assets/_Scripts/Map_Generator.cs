@@ -14,7 +14,7 @@ public class Map_Generator : MonoBehaviour {
 
     public bool MapAsPrefab = false;
 
-    public Tilemap Map, SecondLayer;
+    public Tilemap Map, SecondLayer, ThirdLayer;
     public TileType DefaultTile;
     [System.Serializable]
     public class Grass_Tiles
@@ -54,6 +54,24 @@ public class Map_Generator : MonoBehaviour {
         public Tile[] Mountains;
     }
     public Materials materials = new Materials();
+
+    [System.Serializable]
+    public class Particles_Tiles
+    {
+        public Tile[] Area;
+
+     /*
+     0 - Un Lado
+     1 - Dos Lados
+     2 - Tres Lados
+     3 - Todos los lados
+     4 - Una esquinita   
+     5 - Nungun lado
+      */
+
+
+    }
+    public Particles_Tiles particles_tiles = new Particles_Tiles();
 
  
      public List<MapTile> AllMapTiles = new List<MapTile>(); //Need to find a way to access easily the list via the X and Y value
@@ -851,7 +869,7 @@ public class Map_Generator : MonoBehaviour {
       //  Debug.Log(prueba);
     }
     
-    public MapTile DFindTile(int X, int Y) //I think this does not work for some reason
+    public MapTile DFindTile(int X, int Y) //This works but seems slower than the other one
     {
         int Size = (int)Mathf.Sqrt(AllMapTiles.Count);
         int Index = (X + Size/2)+ ((Y + Size/2) * Size); //Only works with squared maps
@@ -869,7 +887,7 @@ public class Map_Generator : MonoBehaviour {
     }
     
 
-    MapTile FindTile(int x, int y) //This is kinda slow tbh 
+    public MapTile FindTile(int x, int y) //This super good now
     {
         // Debug.Log("x");
         return AllMapTiles.Find(whatever => whatever.X == x &&  whatever.Y == y);
@@ -921,13 +939,14 @@ public class Map_Generator : MonoBehaviour {
                     }
 
                     Path.Reverse();
+                    OriginT.OcupiedByUnit = UnitIn.Player; //cheap way 
                     return Path;
 
                 }
 
                 foreach (MapTile Neighbour in current.Neighbours)
                 {
-                    
+
                     if (Neighbour == null || !current.Walkable || ClosedTiles.Contains(Neighbour))
                     {
                         continue;
@@ -952,7 +971,7 @@ public class Map_Generator : MonoBehaviour {
         }
 
 
-
+        OriginT.OcupiedByUnit = UnitIn.Player; //cheap way 
         return null;
  
     }
@@ -970,6 +989,41 @@ public class Map_Generator : MonoBehaviour {
 
         return (int)(Math.Sqrt(2) * diagonalSteps + straightSteps);
     }
+
+     List<MapTile> GetWalkableAreaAround(Vector2Int Origin, int size)
+    {
+        List<MapTile> list = new List<MapTile>();
+        for(int x = -size; x<= size; x++)
+        {
+            for(int y = -size; y <= size; y++)
+            {
+                MapTile T = FindTile(x, y);
+
+                if (T != null && T.Walkable == true)
+                {
+                    list.Add(T);
+                }
+            }
+        }
+
+
+        return list;
+    }
+
+    public void SpawnAreaParticle(Vector2Int Origin, int size)
+    {
+
+        List <MapTile> list = GetWalkableAreaAround(Origin, size);
+        //First clear all the third layer
+        ThirdLayer.ClearAllTiles();
+        foreach(MapTile N in list)
+        {
+            //This looks super slow
+            if (Pathfinding(Origin, new Vector2Int(N.X,N.Y)) != null)
+            ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), particles_tiles.Area[5]);
+        }
+    }
+
 
     public void SaveMap()
     {
