@@ -208,6 +208,7 @@ public class UI_Manager : MonoBehaviour {
     {
         InputM.AllCurrentPaths = MapLocal.SpawnAreaParticle(U.GridPos, U.unitStats.ActionPoints);
         InputM.InMoveMode = true;
+        InputM.CurUnit = U;
 
     }
 

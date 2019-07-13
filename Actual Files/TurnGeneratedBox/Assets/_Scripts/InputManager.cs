@@ -35,6 +35,8 @@ public class InputManager : MonoBehaviour {
     public bool InMoveMode = false;
     [HideInInspector]
     public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
+    [HideInInspector]
+    public Unit CurUnit;
 
     private MapTile CurHoveredTile = null;
     private List<MapTile> OldCurPath = null;
@@ -71,6 +73,14 @@ public class InputManager : MonoBehaviour {
             Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
             MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
             UIM.ChangeOfSelection();
+
+            if (InMoveMode)
+            {
+                if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
+                CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+
+                InMoveMode = false;
+            }
 
          //   ShowAllDebugUI();
         }

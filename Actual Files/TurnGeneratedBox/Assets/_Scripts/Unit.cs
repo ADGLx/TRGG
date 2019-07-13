@@ -96,11 +96,13 @@ public class Unit : MonoBehaviour {
 
         foreach (MapTile T in thPath)
         {
+            
             while (this.transform.position != MapLocal.SetTilePosToWorld(T.X, T.Y)) //this is dangerous
             {
                 this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(T.X, T.Y), step);
                 yield return null;
             }
+            MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);
             SetPos(T.X, T.Y);
         }
 

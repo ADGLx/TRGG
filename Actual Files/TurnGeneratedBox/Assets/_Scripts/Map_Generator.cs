@@ -772,6 +772,14 @@ public class Map_Generator : MonoBehaviour {
 
     }
 
+    public void UnocupyTileUnit (int X, int Y)
+    {
+        if (FindTile(X,Y) != null)
+        {
+            FindTile(X, Y).OcupiedByUnit = UnitIn.None;
+        }
+    }
+
     public Vector3 SetTilePosToWorld(int X, int Y)
     {
         return (Map.CellToWorld(new Vector3Int(X, Y, 0))) + new Vector3(.5f, .5f, 0);
@@ -998,7 +1006,7 @@ public class Map_Generator : MonoBehaviour {
         {
             for(int y = -size; y <= size; y++)
             {
-                MapTile T = FindTile(x, y);
+                MapTile T = FindTile(Origin.x+x, Origin.y+y);
 
                 if (T != null && T.Walkable == true)
                 {
