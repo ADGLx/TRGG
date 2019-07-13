@@ -47,6 +47,8 @@ public class UI_Manager : MonoBehaviour {
     public TpRight Top_Right = new TpRight();
 
     Map_Generator MapLocal;
+    InputManager InputM;
+
 
     private Dictionary<TileType, Sprite> TileTypeDic = new Dictionary<TileType, Sprite>();
     private Dictionary<MaterialTile, Sprite> MaterialDic=  new Dictionary<MaterialTile, Sprite>();
@@ -83,6 +85,7 @@ public class UI_Manager : MonoBehaviour {
         MaterialDic.Add(MaterialTile.Mountain, MaterialIcon[2]);
 
         MapLocal = GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>();
+        InputM = this.GetComponent<InputManager>();
 
         if (MapLocal == null)
         {
@@ -203,7 +206,9 @@ public class UI_Manager : MonoBehaviour {
 
     public void ShowAreaAroundUnit(Unit U)
     {
-        MapLocal.SpawnAreaParticle(U.GridPos, U.unitStats.ActionPoints);
+        InputM.AllCurrentPaths = MapLocal.SpawnAreaParticle(U.GridPos, U.unitStats.ActionPoints);
+        InputM.InMoveMode = true;
+
     }
 
 }

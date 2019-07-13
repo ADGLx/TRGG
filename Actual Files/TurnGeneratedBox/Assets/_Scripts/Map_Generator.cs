@@ -67,6 +67,7 @@ public class Map_Generator : MonoBehaviour {
      3 - Todos los lados
      4 - Una esquinita   
      5 - Nungun lado
+     6 - Path
       */
 
 
@@ -1010,18 +1011,27 @@ public class Map_Generator : MonoBehaviour {
         return list;
     }
 
-    public void SpawnAreaParticle(Vector2Int Origin, int size)
+    // I wanna save all the pathfindings so they dont have to be done again
+    public IDictionary<MapTile, List<MapTile>> SpawnAreaParticle(Vector2Int Origin, int size)
     {
-
-        List <MapTile> list = GetWalkableAreaAround(Origin, size);
+        IDictionary<MapTile, List<MapTile>> AllPaths = new Dictionary<MapTile, List<MapTile>>();
+        List <MapTile> WalkableTiles = GetWalkableAreaAround(Origin, size);
         //First clear all the third layer
         ThirdLayer.ClearAllTiles();
-        foreach(MapTile N in list)
+        foreach(MapTile N in WalkableTiles)
         {
+            List<MapTile> CurPath = Pathfinding(Origin, new Vector2Int(N.X, N.Y));
+            AllPaths.Add(N, CurPath);
+
             //This looks super slow
-            if (Pathfinding(Origin, new Vector2Int(N.X,N.Y)) != null)
-            ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), particles_tiles.Area[5]);
+            if (CurPath != null)
+            {
+                ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), particles_tiles.Area[5]);
+            }
+
         }
+
+        return AllPaths;
     }
 
 

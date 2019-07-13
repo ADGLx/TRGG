@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour {
@@ -30,6 +31,14 @@ public class InputManager : MonoBehaviour {
 
     Vector3 Orig;
 
+    [HideInInspector]
+    public bool InMoveMode = false;
+    [HideInInspector]
+    public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
+
+    private MapTile CurHoveredTile = null;
+    private List<MapTile> OldCurPath = null;
+
     GridLayout grid;
     Map_Generator MapGRef;
     UI_Manager UIM;
@@ -45,6 +54,7 @@ public class InputManager : MonoBehaviour {
     void Update () {
         GetInput();
 
+        //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
             //Gotta add something to prevent from finding it when ontop of UI
@@ -63,6 +73,61 @@ public class InputManager : MonoBehaviour {
             UIM.ChangeOfSelection();
 
          //   ShowAllDebugUI();
+        }
+        
+        if(InMoveMode)
+        {
+            Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pz.z = 0;
+            Vector3Int cellPos = grid.WorldToCell(pz);
+            //  Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
+
+            MapTile NewCurHoveredTile = MapGRef.FindTile(cellPos.x, cellPos.y);
+
+            //So once this happens it is the old one 
+            if (NewCurHoveredTile != CurHoveredTile && AllCurrentPaths.ContainsKey(NewCurHoveredTile))
+            {
+               // MapGRef.ThirdLayer.ClearAllTiles();
+                //This makes it so it everything is cleared 
+                List<MapTile> CurHovPath = AllCurrentPaths[NewCurHoveredTile];
+                if (CurHovPath != null && CurHovPath != OldCurPath)
+                {
+                    //This refreshes the old path to the orginal
+                    if (OldCurPath != null)
+                    foreach(MapTile M in OldCurPath)
+                    {
+                        if (M != null)
+                        MapGRef.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapGRef.particles_tiles.Area[5]);
+                    }
+
+                    for (int x = 0; x < CurHovPath.Count; x++)
+                    {
+                        if (CurHovPath[x] != null)
+                        {
+                            if (x != CurHovPath.Count -1)
+                            {
+                                
+                                MapGRef.ThirdLayer.SetTile(new Vector3Int(CurHovPath[x].X, CurHovPath[x].Y, 0), MapGRef.particles_tiles.Area[6]);
+                            } else
+                            {
+                                MapGRef.ThirdLayer.SetTile(new Vector3Int(CurHovPath[x].X, CurHovPath[x].Y, 0), MapGRef.particles_tiles.Area[7]);
+                            }
+
+                        }
+          
+                    }
+
+                    OldCurPath = CurHovPath;
+
+                } else 
+
+
+
+                //  MapGRef.ThirdLayer.SetTile(new Vector3Int(NewCurHoveredTile.X, NewCurHoveredTile.Y, 0), MapGRef.particles_tiles.Area[6]);
+                CurHoveredTile = NewCurHoveredTile;
+            }
+
+
         }
 
         DragScreen();
