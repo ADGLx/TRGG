@@ -68,6 +68,8 @@ public class UI_Manager : MonoBehaviour {
     public class AButtons
     {
         public GameObject HoldingBar;
+        public GameObject ActionPointLeftHolder;
+        public TMP_Text ActionPointsValue;
         public GameObject MoveButton;
         public  GameObject AutoDestroyButton;
         public GameObject AttackButton;
@@ -95,41 +97,38 @@ public class UI_Manager : MonoBehaviour {
         ChangeOfSelection();
     }
     void Update () {
-		
-	}
 
+
+
+    }
+
+    private void CleanAllGUI()
+    {
+        //set all to false sot it puts only whats needed
+        Bot_Left.Attack.gameObject.SetActive(false);
+        Bot_Left.Life.gameObject.SetActive(false);
+        Bot_Left.Roughness.gameObject.SetActive(false);
+        Bot_Left.Holder.gameObject.SetActive(false);
+        UnitActionBarButtons.ActionPointLeftHolder.SetActive(false);
+        UnitActionBarButtons.HoldingBar.SetActive(false);
+        //Clean the spawned buttons
+        for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
+        {
+            Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
+        }
+        //Clean the UI particles 
+        MapLocal.ThirdLayer.ClearAllTiles();
+    }
 
     public void ChangeOfSelection()
     {
-        if (MapLocal.CurrentTile == null)
+        CleanAllGUI();
+        if (MapLocal.CurrentTile != null)
         {
-            Bot_Left.Holder.gameObject.SetActive(false);
-            UnitActionBarButtons.HoldingBar.SetActive(false);
-            //Clean the spawned buttons
-            for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
-            {
-                Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
-            }
-            MapLocal.ThirdLayer.ClearAllTiles();
-        } else 
-        {
+
             //Optimization real quick
             MapTile CurT = MapLocal.CurrentTile;
 
-            //set all to false sot it puts only whats needed
-            Bot_Left.Attack.gameObject.SetActive(false);
-            Bot_Left.Life.gameObject.SetActive(false);
-            Bot_Left.Roughness.gameObject.SetActive(false);
-            Bot_Left.Holder.gameObject.SetActive(false);
-
-            UnitActionBarButtons.HoldingBar.SetActive(false);
-            //Clean the spawned buttons
-            for (int temp=0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
-            {
-                Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
-            }
-            //Clean the UI particles 
-            MapLocal.ThirdLayer.ClearAllTiles();
                 
             //Tipo de recurso
             if (CurT.OcupedByMat != MaterialTile.None)
@@ -184,6 +183,11 @@ public class UI_Manager : MonoBehaviour {
 
 
                 UnitActionBarButtons.HoldingBar.GetComponent<RectTransform>().sizeDelta = new Vector2(TotalButtons * 50, 45);
+
+                //set the Action Points left
+                UnitActionBarButtons.ActionPointsValue.text = U.unitStats.ActionPoints.ToString();
+
+                UnitActionBarButtons.ActionPointLeftHolder.SetActive(true);
                 UnitActionBarButtons.HoldingBar.SetActive(true);
             }
             // Tipo de tile

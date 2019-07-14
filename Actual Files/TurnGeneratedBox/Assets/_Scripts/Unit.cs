@@ -104,6 +104,7 @@ public class Unit : MonoBehaviour {
             }
             MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);
             SetPos(T.X, T.Y);
+            unitStats.ActionPoints--;
         }
 
 
