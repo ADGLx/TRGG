@@ -37,8 +37,7 @@ public class InputManager : MonoBehaviour {
     public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
    // [HideInInspector]
     public Unit CurUnit;
-   // [HideInInspector]
-    public bool TurnModeOn = false;
+   // 
 
     private MapTile CurHoveredTile = null;
     private List<MapTile> OldCurPath = null;
@@ -80,7 +79,7 @@ public class InputManager : MonoBehaviour {
             //set the cur unit or stuff
             if (MapGRef.CurrentTile.OcupiedByUnit == UnitIn.Player)
             {
-                CurUnit = MapGRef.FindUnit(MapGRef.CurrentTile.X, MapGRef.CurrentTile.Y);
+                CurUnit = MapGRef.CurrentTile.OcupyingUnit;
             } else
             {
                 CurUnit = null;
@@ -99,7 +98,7 @@ public class InputManager : MonoBehaviour {
          //   ShowAllDebugUI();
         }
 
-        if (!TurnModeOn && CurUnit != null && RMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (!MapGRef.TurnModeOn && CurUnit != null && RMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
@@ -111,6 +110,7 @@ public class InputManager : MonoBehaviour {
             }
         }
         
+        //This is just for the area thing 
         if(InMoveMode)
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);

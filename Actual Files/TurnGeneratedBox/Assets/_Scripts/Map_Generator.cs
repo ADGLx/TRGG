@@ -14,7 +14,7 @@ public class Map_Generator : MonoBehaviour {
 
     public bool MapAsPrefab = false;
 
-    public Tilemap Map, SecondLayer, ThirdLayer;
+    public Tilemap Map,FirstLayer, SecondLayer, ThirdLayer;
     public TileType DefaultTile;
     [System.Serializable]
     public class Grass_Tiles
@@ -74,11 +74,16 @@ public class Map_Generator : MonoBehaviour {
     }
     public Particles_Tiles particles_tiles = new Particles_Tiles();
 
+    public Tile GridTileShowThing;
+
  
      public List<MapTile> AllMapTiles = new List<MapTile>(); //Need to find a way to access easily the list via the X and Y value
 
     [HideInInspector]
     public MapTile CurrentTile = null; //This is the current selected tile
+
+    [HideInInspector]
+    public bool TurnModeOn = false;
 
     //Map settings
     //public int Size = 10;
@@ -94,6 +99,8 @@ public class Map_Generator : MonoBehaviour {
     public int minM = 5, maxM = 10;
 
     private GameObject PlayerUnitsHolder;
+
+
     // This will insitalize a map with a certain type of tile
     private void Awake()
     {
@@ -584,10 +591,15 @@ public class Map_Generator : MonoBehaviour {
                 MapData.RemoveAt(x);
             }
 
+            //create the Grid show thing
+            FirstLayer.SetTile(new Vector3Int(MapData[x].X, MapData[x].Y,0), GridTileShowThing);
+
+
           //  Debug.Log("X:" + MapData[0].X + " |Y:" + MapData[0].Y + " / Type:" + MapData[0].Type);
 
         }
     }
+
 
     void SetTileRotation (int X, int Y,int AmountN, int AmountFN, bool N, bool E, bool S, bool W, bool NW, bool NE, bool SE, bool SW)
     {
@@ -917,7 +929,9 @@ public class Map_Generator : MonoBehaviour {
         //return null;
     }
 
-    public Unit FindUnit (int x, int y)
+
+    //this is not needed (Might delete later)
+    private Unit FindUnit (int x, int y)
     {
         Unit u = null;
         foreach (Unit child in PlayerUnitsHolder.transform.GetComponentsInChildren<Unit>())

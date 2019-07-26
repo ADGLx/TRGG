@@ -150,45 +150,49 @@ public class UI_Manager : MonoBehaviour {
                 Bot_Left.LifeP.text = U.unitStats.LifePoints.ToString();
                 Bot_Left.Holder.gameObject.SetActive(true);
 
-                //mostrar la barra de accion
-                int TotalButtons = 0;
-                if (U.Actions.Move)
+                //mostrar la barra de accion solo si esta en modo de turnos
+                if(MapLocal.TurnModeOn)
                 {
-                    TotalButtons++;
-                   GameObject ButtonTemp = Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
-                    ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); });
+                    int TotalButtons = 0;
+                    if (U.Actions.Move)
+                    {
+                        TotalButtons++;
+                        GameObject ButtonTemp = Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
+                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); });
 
+                    }
+                    if (U.Actions.Attack)
+                    {
+                        TotalButtons++;
+                        Instantiate(UnitActionBarButtons.AttackButton, UnitActionBarButtons.HoldingBar.transform);
+                    }
+                    if (U.Actions.AutoDestroy)
+                    {
+                        TotalButtons++;
+                        Instantiate(UnitActionBarButtons.AutoDestroyButton, UnitActionBarButtons.HoldingBar.transform);
+                    }
+
+                    int Offset = (TotalButtons - 1) * (-25);
+
+
+
+                    for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
+                    {
+                        //place them where they are supposed to
+                        UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Offset, 0);
+                        Offset += 50;
+                    }
+
+
+                    UnitActionBarButtons.HoldingBar.GetComponent<RectTransform>().sizeDelta = new Vector2(TotalButtons * 50, 45);
+
+                    //set the Action Points left
+                    UnitActionBarButtons.ActionPointsValue.text = U.unitStats.ActionPoints.ToString();
+
+                    UnitActionBarButtons.ActionPointLeftHolder.SetActive(true);
+                    UnitActionBarButtons.HoldingBar.SetActive(true);
                 }
-                if (U.Actions.Attack)
-                {
-                    TotalButtons++;
-                    Instantiate(UnitActionBarButtons.AttackButton, UnitActionBarButtons.HoldingBar.transform);
-                }
-                if (U.Actions.AutoDestroy)
-                {
-                    TotalButtons++;
-                    Instantiate(UnitActionBarButtons.AutoDestroyButton, UnitActionBarButtons.HoldingBar.transform);
-                }
-
-                int Offset = (TotalButtons - 1) * (-25);
-
-
-
-                for (int temp = 0; temp < UnitActionBarButtons.HoldingBar.transform.childCount; temp++)
-                {
-                    //place them where they are supposed to
-                    UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(Offset, 0);
-                    Offset+=50;
-                }
-
-
-                UnitActionBarButtons.HoldingBar.GetComponent<RectTransform>().sizeDelta = new Vector2(TotalButtons * 50, 45);
-
-                //set the Action Points left
-                UnitActionBarButtons.ActionPointsValue.text = U.unitStats.ActionPoints.ToString();
-
-                UnitActionBarButtons.ActionPointLeftHolder.SetActive(true);
-                UnitActionBarButtons.HoldingBar.SetActive(true);
+                
             }
             // Tipo de tile
             else if (CurT.OcupedByMat == MaterialTile.None && CurT.OcupiedByUnit == UnitIn.None)

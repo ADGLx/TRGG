@@ -22,6 +22,7 @@ public class Unit : MonoBehaviour {
     public float AnimSpeed = 1f;
     public GameObject Target;
     private GameObject TempParticles;
+    private bool IsUnitMoving = false;
 
     [System.Serializable]
     public class PossibleAction
@@ -80,9 +81,21 @@ public class Unit : MonoBehaviour {
     {
         List<MapTile> MyPath = new List<MapTile>();
         Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
-        MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
-      //  StartCoroutine(PathMoveAnim(MyPath));
-        StartCoroutine(MoveToTileAnim(MyPath));
+        if (!IsUnitMoving)
+        {
+            MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
+            //  StartCoroutine(PathMoveAnim(MyPath));
+            if (MyPath != null)
+            {
+                StartCoroutine(MoveToTileAnim(MyPath));
+            }
+            else
+            {
+                Debug.Log("Path couldnt be found");
+            }
+        }
+
+
 
         //This should be in another function to be more organized tho
 
@@ -94,6 +107,7 @@ public class Unit : MonoBehaviour {
     {
         float step = AnimSpeed * Time.deltaTime;
 
+        IsUnitMoving = true;
         foreach (MapTile T in thPath)
         {
             
@@ -104,10 +118,11 @@ public class Unit : MonoBehaviour {
             }
             MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);
             SetPos(T.X, T.Y);
+            if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
         }
 
-
+        IsUnitMoving = false;
 
     }
 }
