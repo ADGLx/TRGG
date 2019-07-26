@@ -93,6 +93,7 @@ public class Map_Generator : MonoBehaviour {
     public int minT = 0, maxT = 0;
     public int minM = 5, maxM = 10;
 
+    private GameObject PlayerUnitsHolder;
     // This will insitalize a map with a certain type of tile
     private void Awake()
     {
@@ -141,8 +142,8 @@ public class Map_Generator : MonoBehaviour {
 
         //  MyPath = Pathfinding() 
 
-        PhysicalMap(AllMapTiles); 
-
+        PhysicalMap(AllMapTiles);
+        PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
        
     }
 
@@ -914,6 +915,26 @@ public class Map_Generator : MonoBehaviour {
         */
        // Debug.Log("Tile ("+x+"/"+y+") could not be found");
         //return null;
+    }
+
+    public Unit FindUnit (int x, int y)
+    {
+        Unit u = null;
+        foreach (Unit child in PlayerUnitsHolder.transform.GetComponentsInChildren<Unit>())
+        {
+            if (child.GridPos.x == x && child.GridPos.y == y)
+            {
+                u = child;
+                break;
+            }
+
+        }
+
+        if (u == null)
+            Debug.Log("Unit couldnt be found");
+
+        return u;
+
     }
 
     //Does not work will revamp on another branch

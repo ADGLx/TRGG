@@ -35,8 +35,10 @@ public class InputManager : MonoBehaviour {
     public bool InMoveMode = false;
     [HideInInspector]
     public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
-    [HideInInspector]
+   // [HideInInspector]
     public Unit CurUnit;
+   // [HideInInspector]
+    public bool TurnModeOn = false;
 
     private MapTile CurHoveredTile = null;
     private List<MapTile> OldCurPath = null;
@@ -56,33 +58,57 @@ public class InputManager : MonoBehaviour {
     void Update () {
         GetInput();
 
+        //Depende del tipo de movimiento 
         //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
-            //Gotta add something to prevent from finding it when ontop of UI
+                //Gotta add something to prevent from finding it when ontop of UI
+                Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                pz.z = 0;
+                Vector3Int cellPos = grid.WorldToCell(pz);
+                Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
+
+                if (Temp != null)
+                {
+                    Destroy(Temp);
+                }
+
+                Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
+                MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
+                UIM.ChangeOfSelection();
+                    
+            //set the cur unit or stuff
+            if (MapGRef.CurrentTile.OcupiedByUnit == UnitIn.Player)
+            {
+                CurUnit = MapGRef.FindUnit(MapGRef.CurrentTile.X, MapGRef.CurrentTile.Y);
+            } else
+            {
+                CurUnit = null;
+            }
+
+                if (InMoveMode)
+                {
+                    if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
+                        CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+
+                    InMoveMode = false;
+                }
+ 
+           
+
+         //   ShowAllDebugUI();
+        }
+
+        if (!TurnModeOn && CurUnit != null && RMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
             Vector3Int cellPos = grid.WorldToCell(pz);
-            Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
 
-            if (Temp != null)
+            if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null)
             {
-                Destroy(Temp);
-            }
-
-            Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
-            MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
-            UIM.ChangeOfSelection();
-
-            if (InMoveMode)
-            {
-                if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
                 CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
-
-                InMoveMode = false;
             }
-
-         //   ShowAllDebugUI();
         }
         
         if(InMoveMode)
@@ -140,7 +166,7 @@ public class InputManager : MonoBehaviour {
 
         }
 
-        DragScreen();
+        //DragScreen();
    
 	}
 
