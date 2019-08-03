@@ -42,6 +42,7 @@ public class UI_Manager : MonoBehaviour {
     public class TpRight
     {
         public GameObject Holder;
+        public TMP_Text Indicator;
     }
 
     public TpRight Top_Right = new TpRight();
@@ -116,6 +117,7 @@ public class UI_Manager : MonoBehaviour {
         {
             Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
         }
+        Top_Right.Indicator.text = "Free Mode";
         //Clean the UI particles 
         MapLocal.ThirdLayer.ClearAllTiles();
     }
@@ -153,6 +155,7 @@ public class UI_Manager : MonoBehaviour {
                 //mostrar la barra de accion solo si esta en modo de turnos
                 if(MapLocal.TurnModeOn)
                 {
+                    Top_Right.Indicator.text = "Turn Mode";
                     int TotalButtons = 0;
                     if (U.Actions.Move)
                     {
