@@ -27,6 +27,7 @@ public class InputManager : MonoBehaviour {
     [Header("Camera Movement")]
     public float CameraSpeed;
     public float EdgeTolerance;
+    private int CamX, CamY;
 
 
     [Header("Debug UI")]
@@ -59,9 +60,9 @@ public class InputManager : MonoBehaviour {
 
     //GameObject Temp;
     // Update is called once per frame
-    void Update () {
+    void FixedUpdate () {
         GetInput();
-     //   CameraMovement();
+        CameraMovement();
         //Depende del tipo de movimiento 
         //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
@@ -189,10 +190,32 @@ public class InputManager : MonoBehaviour {
     {
         //Also lets create a tolerance 
         //Check if the mouse is on the edge
-        if (MousePos.x >= Screen.width - EdgeTolerance || MousePos.y >= Screen.height - EdgeTolerance)
-            Debug.Log("Movee");
-       
-        //if it is, move on that direction
+        //Debug.Log(MousePos.x + ";" + MousePos.y);
+        
+         if (MousePos.x >= Screen.width - EdgeTolerance)
+        {
+            CamX = 1;
+        } else if(MousePos.x <= EdgeTolerance)
+        {
+            CamX = -1;
+        } else
+        {
+            CamX = 0;
+        }
+        
+        if(MousePos.y >= Screen.height - EdgeTolerance)
+        {
+            CamY = 1;
+        } else if (MousePos.y <=  EdgeTolerance)
+        {
+            CamY = -1;
+        } else
+        {
+            CamY = 0;
+        }
+
+        //I might wanna smooth the movement later
+        this.transform.position = Vector3.MoveTowards(this.transform.position, this.transform.position + new Vector3(CamX, CamY, 0), CameraSpeed);
 
     }
 
