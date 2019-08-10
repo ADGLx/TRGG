@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using System.Collections;
+
 public class UI_Manager : MonoBehaviour {
 
     //BotRight
@@ -54,6 +56,9 @@ public class UI_Manager : MonoBehaviour {
     private Dictionary<TileType, Sprite> TileTypeDic = new Dictionary<TileType, Sprite>();
     private Dictionary<MaterialTile, Sprite> MaterialDic=  new Dictionary<MaterialTile, Sprite>();
 
+    [Header("Start Settings")]
+    public Unit StartSelectingUnit= null;
+
     //This is just for the tooltip
     private string yikes;
 
@@ -62,6 +67,11 @@ public class UI_Manager : MonoBehaviour {
     public Sprite[] TileIcon = new Sprite[Enum.GetValues(typeof(TileType)).Length];
     [Tooltip("Element 0 = None | Element 1 = Tree | Element 2 = Mountain")]
     public Sprite[] MaterialIcon = new Sprite[Enum.GetValues(typeof(MaterialTile)).Length];
+
+    [Header("Select Particles")]
+    public GameObject SelectParticle;
+    public GameObject ParticlesHolder;
+    private GameObject TempSelctParticle = null;
 
 
 
@@ -95,6 +105,9 @@ public class UI_Manager : MonoBehaviour {
             Debug.Log("Map reference could not be found");
         }
 
+        if (StartSelectingUnit != null)
+            StartCoroutine(SelectWithDelay());
+
         ChangeOfSelection();
     }
     void Update () {
@@ -120,18 +133,27 @@ public class UI_Manager : MonoBehaviour {
         Top_Right.Indicator.text = "Free Mode";
         //Clean the UI particles 
         MapLocal.ThirdLayer.ClearAllTiles();
+        //Clear the TempSelectParticle
+        if (TempSelctParticle != null)
+            Destroy(TempSelctParticle);
     }
 
     public void ChangeOfSelection()
     {
         CleanAllGUI();
+
+
+
+
         if (MapLocal.CurrentTile != null)
         {
-
             //Optimization real quick
             MapTile CurT = MapLocal.CurrentTile;
 
-                
+            //in here the select thing should be spawned
+            Vector3 cellPosFloat = CurT.GetPos + new Vector2(0.5f, 0.5f);
+            TempSelctParticle = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
+
             //Tipo de recurso
             if (CurT.OcupedByMat != MaterialTile.None)
             {
@@ -214,6 +236,13 @@ public class UI_Manager : MonoBehaviour {
         }
     }
 
+    //this should change later on, to optimize the selection
+    IEnumerator SelectWithDelay()
+    {
+        yield return new WaitForSeconds(.1f);
+        MapLocal.CurrentTile = MapLocal.FindTile(StartSelectingUnit.GridPos.x, StartSelectingUnit.GridPos.y);
+        ChangeOfSelection();
+    }
 
     public void ShowAreaAroundUnit(Unit U)
     {

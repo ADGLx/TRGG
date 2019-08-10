@@ -6,7 +6,7 @@ public class InputManager : MonoBehaviour {
 
     public Camera Cam;
 
-    public GameObject SelectParticle, ParticlesHolder;
+    //public GameObject SelectParticle, ParticlesHolder; the particles should not be handled by the input manager script 
 	
     public class InputKeys
     {
@@ -52,7 +52,7 @@ public class InputManager : MonoBehaviour {
         UIM = this.GetComponent<UI_Manager>();
     }
 
-    GameObject Temp;
+    //GameObject Temp;
     // Update is called once per frame
     void Update () {
         GetInput();
@@ -65,14 +65,14 @@ public class InputManager : MonoBehaviour {
                 Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 pz.z = 0;
                 Vector3Int cellPos = grid.WorldToCell(pz);
-                Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
+         /*       Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
 
                 if (Temp != null)
                 {
                     Destroy(Temp);
-                }
+                } */
 
-                Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
+               // Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
                 MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
                 UIM.ChangeOfSelection();
                     
