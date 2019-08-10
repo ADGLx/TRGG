@@ -110,13 +110,8 @@ public class UI_Manager : MonoBehaviour {
 
         ChangeOfSelection();
     }
-    void Update () {
 
-
-
-    }
-
-    private void CleanAllGUI()
+     public void CleanAllGUI()
     {
         //set all to false sot it puts only whats needed
         Bot_Left.Attack.gameObject.SetActive(false);
@@ -136,12 +131,14 @@ public class UI_Manager : MonoBehaviour {
         //Clear the TempSelectParticle
         if (TempSelctParticle != null)
             Destroy(TempSelctParticle);
+
+        //Clear the CurUnit
+      //  InputM.CurUnit = null;
     }
 
     public void ChangeOfSelection()
     {
         CleanAllGUI();
-
 
 
 
@@ -166,6 +163,16 @@ public class UI_Manager : MonoBehaviour {
             else if (CurT.OcupiedByUnit != UnitIn.None)
             {
                 Unit U = CurT.OcupyingUnit;
+
+                //Select the unit on top of it 
+                if (CurT.OcupiedByUnit == UnitIn.Player)
+                {
+                   InputM.CurUnit = CurT.OcupyingUnit;
+                }
+                else
+                {
+                    InputM.CurUnit = null;
+                }
 
                 Bot_Left.Title.text = U.unitStats.Name;
                 Bot_Left.Attack.gameObject.SetActive(true);

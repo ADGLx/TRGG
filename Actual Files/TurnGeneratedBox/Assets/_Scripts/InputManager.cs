@@ -24,6 +24,11 @@ public class InputManager : MonoBehaviour {
     [HideInInspector]
     public Vector3 MousePos;
 
+    [Header("Camera Movement")]
+    public float CameraSpeed;
+    public float EdgeTolerance;
+
+
     [Header("Debug UI")]
     [Tooltip("Made to check the nodes")]
     public GameObject DebugText;
@@ -56,7 +61,7 @@ public class InputManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         GetInput();
-
+     //   CameraMovement();
         //Depende del tipo de movimiento 
         //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
@@ -75,15 +80,8 @@ public class InputManager : MonoBehaviour {
                // Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
                 MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
                 UIM.ChangeOfSelection();
-                    
-            //set the cur unit or stuff
-            if (MapGRef.CurrentTile.OcupiedByUnit == UnitIn.Player)
-            {
-                CurUnit = MapGRef.CurrentTile.OcupyingUnit;
-            } else
-            {
-                CurUnit = null;
-            }
+
+
 
                 if (InMoveMode)
                 {
@@ -187,6 +185,16 @@ public class InputManager : MonoBehaviour {
 
     }
 
+    private void CameraMovement()
+    {
+        //Also lets create a tolerance 
+        //Check if the mouse is on the edge
+        if (MousePos.x >= Screen.width - EdgeTolerance || MousePos.y >= Screen.height - EdgeTolerance)
+            Debug.Log("Movee");
+       
+        //if it is, move on that direction
+
+    }
 
     void GetInput()
     {

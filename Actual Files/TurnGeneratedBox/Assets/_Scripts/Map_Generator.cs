@@ -12,6 +12,9 @@ public class Map_Generator : MonoBehaviour {
     // public static Map_Generator MapStatic;
     string DataPath;
 
+
+    public MapTile CurrentTile = null; //This is the current selected tile
+
     public bool MapAsPrefab = false;
 
     public Tilemap Map,FirstLayer, SecondLayer, ThirdLayer;
@@ -79,8 +82,7 @@ public class Map_Generator : MonoBehaviour {
  
      public List<MapTile> AllMapTiles = new List<MapTile>(); //Need to find a way to access easily the list via the X and Y value
 
-    [HideInInspector]
-    public MapTile CurrentTile = null; //This is the current selected tile
+
 
     [HideInInspector]
     public bool TurnModeOn = false;

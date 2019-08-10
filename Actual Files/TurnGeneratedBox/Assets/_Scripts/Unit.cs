@@ -34,7 +34,8 @@ public class Unit : MonoBehaviour {
 
     public PossibleAction Actions;
 
-    Map_Generator MapLocal;
+    private Map_Generator MapLocal;
+    private UI_Manager UI_MLocal;
     private void Awake()
     {
         if (GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>() != null)
@@ -43,6 +44,14 @@ public class Unit : MonoBehaviour {
         } else
         {
             Debug.Log("Map_Generator could not be found");
+        }
+        //Gotta call the UI when it is moving 
+        if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UI_Manager>() != null)
+        {
+            UI_MLocal = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UI_Manager>();
+        } else
+        {
+            Debug.Log("UI_Manager could not be found");
         }
 
     }
@@ -106,7 +115,7 @@ public class Unit : MonoBehaviour {
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
         float step = AnimSpeed * Time.deltaTime;
-
+        UI_MLocal.CleanAllGUI();
         IsUnitMoving = true;
         foreach (MapTile T in thPath)
         {
@@ -121,7 +130,9 @@ public class Unit : MonoBehaviour {
             if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
         }
+        MapLocal.CurrentTile = MapLocal.FindTile(GridPos.x, GridPos.y);
 
+       UI_MLocal.ChangeOfSelection();
         IsUnitMoving = false;
 
     }
