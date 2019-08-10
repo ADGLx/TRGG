@@ -103,7 +103,7 @@ public class InputManager : MonoBehaviour {
             pz.z = 0;
             Vector3Int cellPos = grid.WorldToCell(pz);
 
-            if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null)
+            if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
             {
                 CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
             }
@@ -215,7 +215,7 @@ public class InputManager : MonoBehaviour {
         }
 
         //I might wanna smooth the movement later
-        this.transform.position = Vector3.MoveTowards(this.transform.position, this.transform.position + new Vector3(CamX, CamY, 0), CameraSpeed);
+        this.transform.position = Vector3.MoveTowards(this.transform.position, this.transform.position + new Vector3(CamX, CamY, 0), CameraSpeed * Time.deltaTime);
 
     }
 

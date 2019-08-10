@@ -1580,7 +1580,7 @@ MonoBehaviour:
   LMBup: 0
   LMBdown: 0
   MousePos: {x: 0, y: 0, z: 0}
-  CameraSpeed: 1
+  CameraSpeed: 0.125
   EdgeTolerance: 10
   DebugText: {fileID: 1111562807046616, guid: 725334a6ec9571946be5dba037de5d51, type: 2}
   DebugHolder: {fileID: 1546616755}
