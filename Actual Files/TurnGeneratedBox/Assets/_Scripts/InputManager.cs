@@ -15,7 +15,7 @@ public class InputManager : MonoBehaviour {
         public string ENTER = "return";
         public string ESCAPE = "escape";
     }
-    InputKeys Key = new InputKeys();
+    public InputKeys Key = new InputKeys();
 
     [HideInInspector]
     public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown;
@@ -24,9 +24,13 @@ public class InputManager : MonoBehaviour {
     [HideInInspector]
     public Vector3 MousePos;
 
+    private float Scroll, LastScroll;
+
     [Header("Camera Movement")]
     public float CameraSpeed;
     public float EdgeTolerance;
+    public float MinZoom;
+    public float MaxZoom;
     private int CamX, CamY;
 
 
@@ -56,13 +60,15 @@ public class InputManager : MonoBehaviour {
         grid = GameObject.FindGameObjectWithTag("Map").GetComponent<GridLayout>();
         MapGRef = grid.gameObject.GetComponent<Map_Generator>();
         UIM = this.GetComponent<UI_Manager>();
+        Scroll = LastScroll;
     }
 
     //GameObject Temp;
-    // Update is called once per frame
+    // I should clean this fixed update later
     void FixedUpdate () {
         GetInput();
         CameraMovement();
+        CameraZoom();
         //Depende del tipo de movimiento 
         //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
@@ -219,6 +225,15 @@ public class InputManager : MonoBehaviour {
 
     }
 
+    private void CameraZoom()
+    {
+        if (Scroll != LastScroll)
+        {
+            Cam.orthographicSize = Mathf.Clamp(-Scroll + Cam.orthographicSize, MinZoom, MaxZoom);
+            LastScroll = Scroll;
+        }
+    }
+
     void GetInput()
     {
         MousePos = Input.mousePosition;
@@ -230,6 +245,8 @@ public class InputManager : MonoBehaviour {
         LMB = Input.GetMouseButton(0);
         LMBup = Input.GetMouseButtonUp(0);
         LMBdown = Input.GetMouseButtonDown(0);
+
+        Scroll = Input.mouseScrollDelta.y; //for some reason the value x is ignored
 
     }
 
