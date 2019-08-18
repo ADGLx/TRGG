@@ -22,7 +22,9 @@ public class Unit : MonoBehaviour {
     public float AnimSpeed = 1f;
     public GameObject Target;
     private GameObject TempParticles;
-    private bool IsUnitMoving = false;
+    [HideInInspector]
+    public bool IsUnitMoving = false;
+    private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
 
     [System.Serializable]
     public class PossibleAction
@@ -34,7 +36,8 @@ public class Unit : MonoBehaviour {
 
     public PossibleAction Actions;
 
-    private Map_Generator MapLocal;
+    [HideInInspector]
+    public Map_Generator MapLocal;
     private UI_Manager UI_MLocal;
     private void Awake()
     {
@@ -54,6 +57,14 @@ public class Unit : MonoBehaviour {
             Debug.Log("UI_Manager could not be found");
         }
 
+
+        if(this.gameObject.tag == "Main_Pl")
+        {
+            IsThisMainP = true;
+        } else
+        {
+            IsThisMainP = false;
+        }
     }
     void Start()
     {
@@ -65,7 +76,6 @@ public class Unit : MonoBehaviour {
        // MapLocal.SpawnAreaParticle(GridPos, 2);
 
     }
-
 
     public void SetPos(int X, int Y)
     {
@@ -90,19 +100,26 @@ public class Unit : MonoBehaviour {
     {
         List<MapTile> MyPath = new List<MapTile>();
         Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
-        if (!IsUnitMoving)
+        if (MapLocal.FindTile(TargetX,TargetY).Walkable == true)
         {
-            MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
-            //  StartCoroutine(PathMoveAnim(MyPath));
-            if (MyPath != null)
+            if (!IsUnitMoving)
             {
-                StartCoroutine(MoveToTileAnim(MyPath));
+                MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
+                //  StartCoroutine(PathMoveAnim(MyPath));
+                if (MyPath != null)
+                {
+                    StartCoroutine(MoveToTileAnim(MyPath));
+                }
+                else
+                {
+                    Debug.Log("Path couldnt be found");
+                }
             }
-            else
-            {
-                Debug.Log("Path couldnt be found");
-            }
+        } else
+        {
+            Debug.Log("Target Tile isnt walkable");
         }
+
 
 
 
@@ -111,11 +128,38 @@ public class Unit : MonoBehaviour {
         //  PlaceTarget(DebugPos.x, DebugPos.y); Add this somewhere else
     }
 
+    public void MoveUnitToPremadePath(List<MapTile> Path)
+    {
+        if (Path != null)
+        {
+            if (Path[0].GetPos != GridPos)
+            {
+              //  Debug.Log("Starting point doesnt match");
+                MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
+            }
+            StartCoroutine(MoveToTileAnim(Path));
+        } else
+        {
+            Debug.Log("Loaded Path is null");
+        }
 
+    }
+
+    //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
+        //Just to make sure it isnt moving still
+        while (IsUnitMoving) //This might be dangerous too
+            yield return null;
+
+
+
+
         float step = AnimSpeed * Time.deltaTime;
-        UI_MLocal.CleanAllGUI();
+
+        if (IsThisMainP)
+            UI_MLocal.CleanAllGUI();
+
         IsUnitMoving = true;
         foreach (MapTile T in thPath)
         {
@@ -127,12 +171,15 @@ public class Unit : MonoBehaviour {
             }
             MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);
             SetPos(T.X, T.Y);
+
             if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
         }
         MapLocal.CurrentTile = MapLocal.FindTile(GridPos.x, GridPos.y);
 
-       UI_MLocal.ChangeOfSelection();
+        if (IsThisMainP)
+            UI_MLocal.ChangeOfSelection();
+
         IsUnitMoving = false;
 
     }

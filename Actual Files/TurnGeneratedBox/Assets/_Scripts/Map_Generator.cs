@@ -952,8 +952,7 @@ public class Map_Generator : MonoBehaviour {
         return u;
 
     }
-
-    //Does not work will revamp on another branch
+    
     public List <MapTile> Pathfinding(Vector2Int Origin, Vector2Int Target)
     {
         MapTile OriginT = FindTile(Origin.x, Origin.y);

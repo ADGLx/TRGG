@@ -1,0 +1,148 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enemey_AI : MonoBehaviour {
+
+    private Unit LocalUnit;
+    public bool MovementActive;
+
+    [Header("Explore Settings")]
+    public int ExploreMaxMovementRange;
+    public float WaitForNextMoveTime;
+
+    [Header("Patrol Settings")]
+    public int HexRadius;
+    // Use this for initialization
+    void Start () {
+
+        if(this.GetComponent<Unit>())
+        {
+            LocalUnit = this.GetComponent<Unit>();
+        } else
+        {
+            Debug.Log("NullReference");
+        }
+
+        Mode_Patrol();
+	}
+
+    //The AI will be a set of instructions or states 
+    private enum EnemyStates {Explore,Patrol, Chase, Flee };
+
+    private EnemyStates CurrentState = EnemyStates.Explore;
+
+
+    void Mode_Explore()
+    {
+        //Just walk around a set amount of points 
+        //Select the points as soon as this state is called
+        StartCoroutine(IndefRandomMovement());
+        
+    }
+
+    IEnumerator IndefRandomMovement()
+    {
+        while (MovementActive) //The entire loop
+        {
+        while (LocalUnit.IsUnitMoving)
+        {
+            yield return null;
+        }
+            yield return new WaitForSeconds(WaitForNextMoveTime);
+            int RX = (int)Random.Range(LocalUnit.GridPos.x - ExploreMaxMovementRange, LocalUnit.GridPos.x + ExploreMaxMovementRange);
+            int RY = (int)Random.Range(LocalUnit.GridPos.y - ExploreMaxMovementRange, LocalUnit.GridPos.y + ExploreMaxMovementRange);
+
+            if (LocalUnit.MapLocal.FindTile(RX,RY).Walkable)
+            LocalUnit.MoveUnitTo(RX, RY);
+        }
+    }
+
+    void Mode_Patrol()
+    {
+      //  List<MapTile> Path;
+
+        //first find 6 points in the map to do the rounds 
+        List<Vector2Int> Points = new List<Vector2Int>();
+        int XPos = LocalUnit.GridPos.x;
+        int YPos = LocalUnit.GridPos.y;
+        // unnesesary this is too complex
+        Points.Add(new Vector2Int( XPos + HexRadius, YPos));
+
+        //This one is the hard one 
+        Points.Add( new Vector2Int(XPos + (int) (HexRadius / 2), (int)(((Mathf.Sqrt(3) / 2) * HexRadius - 1) + YPos ))); //This is so cheap omg 
+        Points.Add(new Vector2Int(XPos - (int)(HexRadius / 2), (int)(((Mathf.Sqrt(3) / 2) * HexRadius - 1) + YPos)));
+
+        Points.Add(new Vector2Int(XPos - HexRadius, YPos));
+
+        Points.Add(new Vector2Int(XPos - (int)(HexRadius / 2), YPos - (int)(((Mathf.Sqrt(3) / 2) * HexRadius))));
+        Points.Add(new Vector2Int(XPos + (int)(HexRadius / 2), YPos - (int)(((Mathf.Sqrt(3) / 2) * HexRadius ))));
+        
+
+        /*Points[0] = new Vector2Int(XPos + HexRadius, YPos);
+        Points[1] = new Vector2Int(XPos + HexRadius, YPos + HexRadius);
+        Points[2] = new Vector2Int(XPos - HexRadius, YPos + HexRadius);
+        Points[3] = new Vector2Int(XPos - HexRadius, YPos + HexRadius);*/
+
+
+        for (int x = 0; x < Points.Count; x++) //check if they are walkable 
+          {
+            if(!LocalUnit.MapLocal.FindTile(Points[x].x, Points[x].y).Walkable)
+            {
+               Points.RemoveAt(x);
+            }
+
+          }
+        List<MapTile>[] Paths = new List<MapTile>[6];
+
+        List<MapTile> FullPath = new List<MapTile>();
+        
+        for (int x = 0; x < Points.Count; x++)
+        {
+            if (x != Points.Count - 1)
+            {
+                Paths[x] = LocalUnit.MapLocal.Pathfinding(Points[x], Points[x + 1]);
+            } else
+            {
+                Paths[x] = LocalUnit.MapLocal.Pathfinding(Points[x], Points[0]);
+            }
+            if(Paths[x] != null)
+            {
+                FullPath.AddRange(Paths[x]);
+            } else
+            {
+               // Paths[x].RemoveAll();
+            }
+
+        }
+
+        StartCoroutine(PatrolZone(FullPath));
+
+    }
+    
+    IEnumerator PatrolZone(List<MapTile> FullPath)
+    {
+        while(MovementActive)
+        {
+            while(LocalUnit.IsUnitMoving)
+            {
+                yield return null;
+            }
+            LocalUnit.MoveUnitToPremadePath(FullPath);
+
+        }
+   }
+    void Mode_Chase()
+    {
+
+    }
+
+    void Mode_Flee()
+    {
+
+    }
+    
+
+    //The Unit moves in its own 
+
+}
