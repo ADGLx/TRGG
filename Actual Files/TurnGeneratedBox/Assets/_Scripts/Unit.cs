@@ -161,24 +161,33 @@ public class Unit : MonoBehaviour {
             UI_MLocal.CleanAllGUI();
 
         IsUnitMoving = true;
-        foreach (MapTile T in thPath)
+        for (int m = 0; m < thPath.Count; m++) //change the foreach with a for 
         {
-            
-            while (this.transform.position != MapLocal.SetTilePosToWorld(T.X, T.Y)) //this is dangerous
+            MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);//This helped prevent a bit of stuff 
+
+            while (this.transform.position != MapLocal.SetTilePosToWorld(thPath[m].X, thPath[m].Y)) //this is dangerous
             {
-                this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(T.X, T.Y), step);
+                this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(thPath[m].X, thPath[m].Y), step);
                 yield return null;
             }
-            MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);
-            SetPos(T.X, T.Y);
+
+
+            SetPos(thPath[m].X, thPath[m].Y);
 
             if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
+
+            if (m + 1 < thPath.Count && !thPath[m + 1].Walkable)
+                break;//this will stop the loop from happening one more time if the next thing is occupied 
         }
-        MapLocal.CurrentTile = MapLocal.FindTile(GridPos.x, GridPos.y);
+        
 
         if (IsThisMainP)
+        {
+            MapLocal.CurrentTile = MapLocal.FindTile(GridPos.x, GridPos.y);
             UI_MLocal.ChangeOfSelection();
+        }
+
 
         IsUnitMoving = false;
 

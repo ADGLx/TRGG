@@ -792,6 +792,7 @@ public class Map_Generator : MonoBehaviour {
         if (FindTile(X,Y) != null)
         {
             FindTile(X, Y).OcupiedByUnit = UnitIn.None;
+            FindTile(X, Y).OcupyingUnit = null;
         }
     }
 
@@ -958,7 +959,8 @@ public class Map_Generator : MonoBehaviour {
         MapTile OriginT = FindTile(Origin.x, Origin.y);
         MapTile TargetT = FindTile(Target.x, Target.y);
 
-        //Temporarily unocupy the start (Cheap way to fix it)
+        //Temporarily unocupy the start (Cheap way to fix it) Might not even be necessary but I cant be bothered to change it
+        UnitIn TempU = OriginT.OcupiedByUnit;
         OriginT.OcupiedByUnit = UnitIn.None;
 
         Heap<MapTile> OpenTiles = new Heap<MapTile>(AllMapTiles.Count); //not sure how it wooorks
@@ -984,7 +986,7 @@ public class Map_Generator : MonoBehaviour {
                     }
 
                     Path.Reverse();
-                    OriginT.OcupiedByUnit = UnitIn.Player; //cheap way 
+                   OriginT.OcupiedByUnit = TempU; //cheap way 
                     return Path;
 
                 }
@@ -1016,7 +1018,7 @@ public class Map_Generator : MonoBehaviour {
         }
 
 
-        OriginT.OcupiedByUnit = UnitIn.Player; //cheap way 
+        OriginT.OcupiedByUnit = TempU; 
         return null;
  
     }

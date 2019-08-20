@@ -77,6 +77,9 @@ public class MapTile : IHeapItem<MapTile>
         Roughness = newRoughness;
         Type = NewType;
         OcupedByMat = MaterialTile.None;
+        OcupiedByUnit = UnitIn.None;
+        OcupyingUnit = null;
+
       //  Debug.Log("me llaman");
     }
 
