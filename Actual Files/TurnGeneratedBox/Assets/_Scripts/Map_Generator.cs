@@ -1057,6 +1057,21 @@ public class Map_Generator : MonoBehaviour {
         return list;
     }
 
+    public List<MapTile> GetAreaAround(Vector2Int Origin, int size)
+    {
+        List<MapTile> Area = new List<MapTile>();
+        for(int x = Origin.x - size; x < Origin.x + size; x++)
+        {
+            for(int y = Origin.y - size; y < Origin.y + size; y++)
+            {
+                if (FindTile(x,y) != null)
+                Area.Add(FindTile(x, y));
+            }
+        }
+
+        return Area;
+    }
+
     // I wanna save all the pathfindings so they dont have to be done again
     public IDictionary<MapTile, List<MapTile>> SpawnAreaParticle(Vector2Int Origin, int size)
     {

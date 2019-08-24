@@ -13,6 +13,10 @@ public class Enemey_AI : MonoBehaviour {
 
     [Header("Patrol Settings")]
     public int HexRadius;
+
+    [Header("Flee Settings")]
+    public float AlertTime;
+    public int FleeRadius;
     // Use this for initialization
     void Start () {
 
@@ -24,7 +28,7 @@ public class Enemey_AI : MonoBehaviour {
             Debug.Log("NullReference");
         }
 
-        Mode_Chase(GameObject.FindGameObjectWithTag("Main_Pl").GetComponent<Unit>());
+        Mode_Flee(GameObject.FindGameObjectWithTag("Main_Pl").GetComponent<Unit>());
 	}
 
     //The AI will be a set of instructions or states 
@@ -137,8 +141,6 @@ public class Enemey_AI : MonoBehaviour {
     {
         //basically just follow to the last direction target was seen
         //but the tile closest to it on your direction
-        
-
         StartCoroutine(KeepChasing(Target));
 
     }
@@ -207,9 +209,74 @@ public class Enemey_AI : MonoBehaviour {
 
         }
     }
-    void Mode_Flee()
+    void Mode_Flee(Unit Target)
     {
+        //it needs to just like run away?
+        StartCoroutine(KeepFleeing());
 
+    }
+
+    IEnumerator KeepFleeing()
+    {
+        Unit Target = null;
+        Vector2Int TargetEscapeTile = new Vector2Int();
+        while(MovementActive)
+        {
+            yield return new WaitForSeconds(AlertTime); //refresh rate again (I should check if this actually helps with performance)
+            Target = GetPlayerAroundHere(FleeRadius); //detect 
+
+            if (Target == null)
+            {
+                yield return null;
+            } else
+            {
+                //do the math so I can go to the opposite point and scape
+                int HowFarToGo = (FleeRadius - LocalUnit.MapLocal.GetDistance(LocalUnit.GridPos, Target.GridPos)); //while its closer it should move further away (The minimum being 2)
+
+                if (HowFarToGo <= 0)
+                    HowFarToGo = 1;
+
+                TargetEscapeTile =  ((LocalUnit.GridPos - Target.GridPos) * HowFarToGo) + Target.GridPos;
+
+                MapTile Tile = LocalUnit.MapLocal.FindTile(TargetEscapeTile.x, TargetEscapeTile.y);
+
+                if (Tile != null && Tile.Walkable)
+                {
+                    LocalUnit.MoveUnitTo(Tile.X, Tile.Y);
+                } else if (Tile != null && !Tile.Walkable)
+                {
+                    //when this occurs I wanna try a full area of tiles near that one to get one route
+                    List<MapTile> OtherOptions = LocalUnit.MapLocal.GetAreaAround(TargetEscapeTile, FleeRadius);
+
+                    for (int x = 0; x < OtherOptions.Count; x++)
+                    {
+                        if (OtherOptions[x].Walkable)
+                        {
+                            LocalUnit.MoveUnitTo(OtherOptions[x].X, OtherOptions[x].Y);
+                            break;
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+    }
+
+    Unit GetPlayerAroundHere(int ZoneSize)
+    {
+        List<MapTile> Area = LocalUnit.MapLocal.GetAreaAround(LocalUnit.GridPos, ZoneSize);
+
+        for(int x= 0; x< Area.Count; x++)
+        {
+            if(Area[x].OcupiedByUnit == UnitIn.Player)
+            {
+                return Area[x].OcupyingUnit;
+                
+            }
+        }
+        return null;
     }
     
 
