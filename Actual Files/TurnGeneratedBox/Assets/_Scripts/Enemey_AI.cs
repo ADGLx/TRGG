@@ -24,14 +24,13 @@ public class Enemey_AI : MonoBehaviour {
             Debug.Log("NullReference");
         }
 
-        Mode_Patrol();
+        Mode_Chase(GameObject.FindGameObjectWithTag("Main_Pl").GetComponent<Unit>());
 	}
 
     //The AI will be a set of instructions or states 
     private enum EnemyStates {Explore,Patrol, Chase, Flee };
 
     private EnemyStates CurrentState = EnemyStates.Explore;
-
 
     void Mode_Explore()
     {
@@ -132,11 +131,82 @@ public class Enemey_AI : MonoBehaviour {
 
         }
    }
-    void Mode_Chase()
+
+
+    void Mode_Chase(Unit Target)
     {
+        //basically just follow to the last direction target was seen
+        //but the tile closest to it on your direction
+        
+
+        StartCoroutine(KeepChasing(Target));
 
     }
 
+    IEnumerator KeepChasing(Unit Target) //this shit doesnt work, it should update every time the player moves 
+    {
+       // yield return new WaitForSeconds(0.1f);
+
+        List<MapTile> PathToTileClose = new List<MapTile>();
+        Vector2 OldTPos = new Vector2();
+
+        PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
+        if (PathToTileClose.Count>1)
+        PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
+
+        LocalUnit.MoveUnitToPremadePath(PathToTileClose);
+
+        
+        while (MovementActive)
+        {
+
+            yield return new WaitForSeconds(0.25f); //this is the refresh rate 
+
+            if (LocalUnit.IsUnitMoving)
+                yield return null;
+
+            if (Target.GridPos != OldTPos)
+            {
+                if (Target.IsUnitMoving)
+                    yield return null;
+
+                //move to the new place
+                OldTPos = Target.GridPos;
+                PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
+                if (PathToTileClose.Count > 1)
+                    PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
+            }
+
+
+            if (LocalUnit.GridPos == PathToTileClose[PathToTileClose.Count - 1].GetPos)
+            {
+                //Debug.Log("Got to target");
+                yield return null;
+            } else
+            {
+                LocalUnit.MoveUnitToPremadePath(PathToTileClose);
+            }
+                
+
+
+            // if (OldTPos != Target.GridPos)
+            //      PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
+            /*
+   
+
+                        if (LocalUnit.GridPos == PathToTileClose[PathToTileClose.Count - 1].GetPos)
+                            break;
+
+                        if (OldTPos != Target.GridPos)
+                        {
+                            PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
+                            PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
+                            LocalUnit.MoveUnitToPremadePath(PathToTileClose);
+                            OldTPos = Target.GridPos;
+                        }*/
+
+        }
+    }
     void Mode_Flee()
     {
 

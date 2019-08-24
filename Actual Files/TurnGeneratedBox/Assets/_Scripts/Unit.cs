@@ -132,18 +132,23 @@ public class Unit : MonoBehaviour {
     {
         if (Path != null)
         {
-            if (Path[0].GetPos != GridPos)
+            if(!IsUnitMoving)
             {
-              //  Debug.Log("Starting point doesnt match");
-                MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
+                if (Path[0].GetPos != GridPos)
+                {
+                    //  Debug.Log("Starting point doesnt match");
+                    MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
+                }
+                StartCoroutine(MoveToTileAnim(Path));
             }
-            StartCoroutine(MoveToTileAnim(Path));
+
         } else
         {
             Debug.Log("Loaded Path is null");
         }
 
     }
+
 
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
