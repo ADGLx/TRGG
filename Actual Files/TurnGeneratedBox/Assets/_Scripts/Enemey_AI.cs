@@ -5,7 +5,12 @@ using UnityEngine;
 public class Enemey_AI : MonoBehaviour {
 
     private Unit LocalUnit;
-    public bool MovementActive;
+    public AI_State ActiveState;
+    private bool StopAllStates = false;
+
+    [Header("General Settings")]
+    public int DetectRadius;
+    public float AI_UpdateRefreshTime;
 
     [Header("Explore Settings")]
     public int ExploreMaxMovementRange;
@@ -16,7 +21,7 @@ public class Enemey_AI : MonoBehaviour {
 
     [Header("Flee Settings")]
     public float AlertTime;
-    public int FleeRadius;
+    public float PercentToFlee;
     // Use this for initialization
     void Start () {
 
@@ -28,13 +33,11 @@ public class Enemey_AI : MonoBehaviour {
             Debug.Log("NullReference");
         }
 
-        Mode_Flee(GameObject.FindGameObjectWithTag("Main_Pl").GetComponent<Unit>());
+        StartCoroutine(AI_Update());
 	}
 
     //The AI will be a set of instructions or states 
-    private enum EnemyStates {Explore,Patrol, Chase, Flee };
-
-    private EnemyStates CurrentState = EnemyStates.Explore;
+    public enum AI_State { Flee, Patrol, Explore, Chase };
 
     void Mode_Explore()
     {
@@ -46,8 +49,13 @@ public class Enemey_AI : MonoBehaviour {
 
     IEnumerator IndefRandomMovement()
     {
-        while (MovementActive) //The entire loop
+        while (true) //The entire loop
         {
+            if (StopAllStates)
+            {
+                break;
+            }
+
         while (LocalUnit.IsUnitMoving)
         {
             yield return null;
@@ -125,10 +133,20 @@ public class Enemey_AI : MonoBehaviour {
     
     IEnumerator PatrolZone(List<MapTile> FullPath)
     {
-        while(MovementActive)
+        while(true)
         {
-            while(LocalUnit.IsUnitMoving)
+            if (StopAllStates)
             {
+                break;
+            }
+            while (LocalUnit.IsUnitMoving)
+            {
+                if (StopAllStates)
+                {
+                   // LocalUnit.StopAllCoroutines(); //this might break thingsss
+                    break;
+                }
+
                 yield return null;
             }
             LocalUnit.MoveUnitToPremadePath(FullPath);
@@ -159,8 +177,12 @@ public class Enemey_AI : MonoBehaviour {
         LocalUnit.MoveUnitToPremadePath(PathToTileClose);
 
         
-        while (MovementActive)
+        while (true)
         {
+            if (StopAllStates)
+            {
+                break;
+            }
 
             yield return new WaitForSeconds(0.25f); //this is the refresh rate 
 
@@ -220,10 +242,15 @@ public class Enemey_AI : MonoBehaviour {
     {
         Unit Target = null;
         Vector2Int TargetEscapeTile = new Vector2Int();
-        while(MovementActive)
+        while(true)
         {
+            if (StopAllStates)
+            {
+                break;
+            }
+
             yield return new WaitForSeconds(AlertTime); //refresh rate again (I should check if this actually helps with performance)
-            Target = GetPlayerAroundHere(FleeRadius); //detect 
+            Target = GetPlayerAroundHere(DetectRadius); //detect 
 
             if (Target == null)
             {
@@ -231,7 +258,7 @@ public class Enemey_AI : MonoBehaviour {
             } else
             {
                 //do the math so I can go to the opposite point and scape
-                int HowFarToGo = (FleeRadius - LocalUnit.MapLocal.GetDistance(LocalUnit.GridPos, Target.GridPos)); //while its closer it should move further away (The minimum being 2)
+                int HowFarToGo = (DetectRadius - LocalUnit.MapLocal.GetDistance(LocalUnit.GridPos, Target.GridPos)); //while its closer it should move further away (The minimum being 2)
 
                 if (HowFarToGo <= 0)
                     HowFarToGo = 1;
@@ -246,7 +273,7 @@ public class Enemey_AI : MonoBehaviour {
                 } else if (Tile != null && !Tile.Walkable)
                 {
                     //when this occurs I wanna try a full area of tiles near that one to get one route
-                    List<MapTile> OtherOptions = LocalUnit.MapLocal.GetAreaAround(TargetEscapeTile, FleeRadius);
+                    List<MapTile> OtherOptions = LocalUnit.MapLocal.GetAreaAround(TargetEscapeTile, DetectRadius);
 
                     for (int x = 0; x < OtherOptions.Count; x++)
                     {
@@ -278,8 +305,94 @@ public class Enemey_AI : MonoBehaviour {
         }
         return null;
     }
-    
 
-    //The Unit moves in its own 
+    IEnumerator AI_Update()
+    {
+        List<MapTile> TilesAround = new List<MapTile>();
+        //this checks for different events and it case there is no event is goes to the without event tree
+        AI_State PrevState = new AI_State();
+        while (true)
+        {
+            yield return new WaitForSeconds(AI_UpdateRefreshTime); //I have to check if this actually optimizes things
+
+            TilesAround = LocalUnit.MapLocal.GetAreaAround(LocalUnit.GridPos, DetectRadius);
+
+            ActiveState = CheckAround(TilesAround);
+
+            if (ActiveState != PrevState) //This might cause problems but idk yet
+            {
+                PrevState = ActiveState;
+
+                StopAllMovement();
+
+                //I have to find a way to forcefully stop all movements
+
+
+                switch (ActiveState)
+                {
+                    case AI_State.Chase:
+                        Unit p = GetPlayerAroundHere(DetectRadius);
+                        if (p != null)
+                            Mode_Chase(p);
+                        break;
+                    case AI_State.Explore:
+                        Mode_Explore();
+                        break;
+                    case AI_State.Flee:
+                        Unit p2 = GetPlayerAroundHere(DetectRadius);
+                        if (p2 != null)
+                            Mode_Flee(p2);
+                        break;
+                    case AI_State.Patrol:
+                        Mode_Patrol();
+                        break;
+                }
+
+            }
+
+
+        }
+
+
+    }
+    
+    AI_State CheckAround(List<MapTile> Tiles)
+    {
+        bool PlayerClose = false;
+        foreach (MapTile M in Tiles)
+        {
+            if (M.OcupiedByUnit == UnitIn.Player)
+                PlayerClose = true; ;
+        }
+
+        //With event
+        if (PlayerClose && LocalUnit.unitStats.LifePoints <= (LocalUnit.unitStats.MaxLifePoints * PercentToFlee) / 100)
+        {
+            return AI_State.Flee;
+        } else if (PlayerClose)
+        {
+            return AI_State.Chase;
+        } else if (LocalUnit.unitStats.LifePoints <= (LocalUnit.unitStats.MaxLifePoints * PercentToFlee) / 100)
+        {
+            return AI_State.Patrol;
+        }
+
+        //Without event
+        return AI_State.Explore;
+
+
+    }
+
+    void StopAllMovement()
+    {
+        StopAllStates = true;
+        StopAllStates = false;
+        LocalUnit.StopMoving = true;
+        LocalUnit.StopMoving = false;
+      //  LocalUnit.StopAllCoroutines();
+        //This might be too fast to work??
+    }
 
 }
+
+

@@ -2449,8 +2449,10 @@ MonoBehaviour:
   unitStats:
     Name: Placehl_Alien
     AttackPoints: 1
-    LifePoints: 1
-    ActionPoints: 2
+    LifePoints: 10
+    MaxLifePoints: 10
+    ActionPoints: 3
+    MaxActionPoints: 3
   GridPos: {x: 3, y: -5}
   Type: 2
   AnimSpeed: 2
@@ -2518,11 +2520,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc54e28d91108d4dbd5d53f615b6ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementActive: 1
+  ActiveState: 0
+  DetectRadius: 4
+  AI_UpdateRefreshTime: 0
   ExploreMaxMovementRange: 5
   WaitForNextMoveTime: 1
   HexRadius: 4
-  FleeRadius: 4
+  AlertTime: 0.25
+  PercentToFlee: 25
 --- !u!1 &840584958
 GameObject:
   m_ObjectHideFlags: 0
@@ -5289,8 +5294,10 @@ MonoBehaviour:
   unitStats:
     Name: Placehl_Astronaut
     AttackPoints: 1
-    LifePoints: 1
+    LifePoints: 5
+    MaxLifePoints: 5
     ActionPoints: 2
+    MaxActionPoints: 2
   GridPos: {x: 0, y: 0}
   Type: 1
   AnimSpeed: 2

@@ -12,7 +12,9 @@ public class Unit : MonoBehaviour {
         public string Name;
         public int AttackPoints;
         public int LifePoints;
+        public int MaxLifePoints;
         public int ActionPoints;
+        public int MaxActionPoints;
     }
     public UnitStats unitStats;
 
@@ -25,6 +27,7 @@ public class Unit : MonoBehaviour {
     [HideInInspector]
     public bool IsUnitMoving = false;
     private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
+    public bool StopMoving = false;
 
     [System.Serializable]
     public class PossibleAction
@@ -149,14 +152,15 @@ public class Unit : MonoBehaviour {
 
     }
 
-
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
         //Just to make sure it isnt moving still
-        while (IsUnitMoving) //This might be dangerous too
-            yield return null;
+        while (IsUnitMoving)
+        {
 
+            yield return null;
+        }//This might be dangerous too
 
 
 
@@ -197,4 +201,5 @@ public class Unit : MonoBehaviour {
         IsUnitMoving = false;
 
     }
+
 }
