@@ -2458,6 +2458,7 @@ MonoBehaviour:
   AnimSpeed: 2
   Target: {fileID: 1815144582962572, guid: 8580a32bb14e6d14388f6f6d5de6da0f, type: 2}
   IsUnitMoving: 0
+  StopMoving: 0
   Actions:
     Move: 1
     AutoDestroy: 1
@@ -2524,7 +2525,7 @@ MonoBehaviour:
   DetectRadius: 4
   AI_UpdateRefreshTime: 0
   ExploreMaxMovementRange: 5
-  WaitForNextMoveTime: 1
+  WaitForNextMoveTime: 0.25
   HexRadius: 4
   AlertTime: 0.25
   PercentToFlee: 25
@@ -4246,7 +4247,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1493690859
 Transform:
   m_ObjectHideFlags: 0
@@ -5303,6 +5304,7 @@ MonoBehaviour:
   AnimSpeed: 2
   Target: {fileID: 1815144582962572, guid: 8580a32bb14e6d14388f6f6d5de6da0f, type: 2}
   IsUnitMoving: 0
+  StopMoving: 0
   Actions:
     Move: 1
     AutoDestroy: 1

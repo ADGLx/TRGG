@@ -26,6 +26,7 @@ public class Unit : MonoBehaviour {
     private GameObject TempParticles;
     [HideInInspector]
     public bool IsUnitMoving = false;
+    private bool IsUnitMovingBTiles = false;
     private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
     public bool StopMoving = false;
 
@@ -105,9 +106,9 @@ public class Unit : MonoBehaviour {
         Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
         if (MapLocal.FindTile(TargetX,TargetY).Walkable == true)
         {
-            if (!IsUnitMoving)
-            {
-                MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
+            // if (!IsUnitMoving)
+            // {
+            MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
                 //  StartCoroutine(PathMoveAnim(MyPath));
                 if (MyPath != null)
                 {
@@ -117,7 +118,8 @@ public class Unit : MonoBehaviour {
                 {
                     Debug.Log("Path couldnt be found");
                 }
-            }
+           // } 
+
         } else
         {
             Debug.Log("Target Tile isnt walkable");
@@ -155,13 +157,11 @@ public class Unit : MonoBehaviour {
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
-        //Just to make sure it isnt moving still
-        while (IsUnitMoving)
+        if (IsUnitMoving) //the command is ignored if the thing is moving
         {
-
-            yield return null;
-        }//This might be dangerous too
-
+            StopMoving = true;
+            yield break;
+        }
 
 
         float step = AnimSpeed * Time.deltaTime;
@@ -172,16 +172,24 @@ public class Unit : MonoBehaviour {
         IsUnitMoving = true;
         for (int m = 0; m < thPath.Count; m++) //change the foreach with a for 
         {
+            if (StopMoving)//this stops it from moving now we gotta find a way to make it move to the next one 
+            {
+                IsUnitMoving = false;
+                StopMoving = false;
+                yield break;
+            }
+
             MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);//This helped prevent a bit of stuff 
 
             while (this.transform.position != MapLocal.SetTilePosToWorld(thPath[m].X, thPath[m].Y)) //this is dangerous
             {
+                IsUnitMovingBTiles = true;
                 this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(thPath[m].X, thPath[m].Y), step);
                 yield return null;
             }
-
-
             SetPos(thPath[m].X, thPath[m].Y);
+            IsUnitMovingBTiles = false;
+
 
             if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;

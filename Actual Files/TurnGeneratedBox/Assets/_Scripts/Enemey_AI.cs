@@ -53,6 +53,7 @@ public class Enemey_AI : MonoBehaviour {
         {
             if (StopAllStates)
             {
+                StopAllStates = false;
                 break;
             }
 
@@ -137,13 +138,15 @@ public class Enemey_AI : MonoBehaviour {
         {
             if (StopAllStates)
             {
+                StopAllStates = false;
                 break;
             }
             while (LocalUnit.IsUnitMoving)
             {
                 if (StopAllStates)
                 {
-                   // LocalUnit.StopAllCoroutines(); //this might break thingsss
+                    StopAllStates = false;
+                    // LocalUnit.StopAllCoroutines(); //this might break thingsss
                     break;
                 }
 
@@ -152,7 +155,7 @@ public class Enemey_AI : MonoBehaviour {
             LocalUnit.MoveUnitToPremadePath(FullPath);
 
         }
-   }
+   } //I broke the patrol mode
 
 
     void Mode_Chase(Unit Target)
@@ -181,6 +184,7 @@ public class Enemey_AI : MonoBehaviour {
         {
             if (StopAllStates)
             {
+                StopAllStates = false;
                 break;
             }
 
@@ -246,6 +250,7 @@ public class Enemey_AI : MonoBehaviour {
         {
             if (StopAllStates)
             {
+                StopAllStates = false;
                 break;
             }
 
@@ -322,11 +327,8 @@ public class Enemey_AI : MonoBehaviour {
             if (ActiveState != PrevState) //This might cause problems but idk yet
             {
                 PrevState = ActiveState;
-
                 StopAllMovement();
-
                 //I have to find a way to forcefully stop all movements
-
 
                 switch (ActiveState)
                 {
@@ -385,10 +387,8 @@ public class Enemey_AI : MonoBehaviour {
 
     void StopAllMovement()
     {
-        StopAllStates = true;
-        StopAllStates = false;
+       // StopAllStates = true;
         LocalUnit.StopMoving = true;
-        LocalUnit.StopMoving = false;
       //  LocalUnit.StopAllCoroutines();
         //This might be too fast to work??
     }
