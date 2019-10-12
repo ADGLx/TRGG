@@ -750,7 +750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &302936723
 Transform:
   m_ObjectHideFlags: 0
@@ -1666,11 +1666,11 @@ MonoBehaviour:
     Indicator: {fileID: 2068185508}
   StartSelectingUnit: {fileID: 1913443078}
   TileIcon:
-  - {fileID: 21300000, guid: 18068b7f144ea2d499174bd162869b24, type: 3}
-  - {fileID: 21300000, guid: ac04695ca2f3fb743a1ea622bef6493f, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   MaterialIcon:
   - {fileID: 0}
-  - {fileID: 21300000, guid: 9ff77d17ca9ebca41a7b767ee404e199, type: 3}
+  - {fileID: 0}
   - {fileID: 21300000, guid: 412feaa7a353b6a429f2034a44ab0ebe, type: 3}
   SelectParticle: {fileID: 1833374934950748, guid: 22557b998b4d70c47b8a29cf412ad073,
     type: 2}

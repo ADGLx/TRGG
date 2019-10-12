@@ -93,7 +93,7 @@ public class InputManager : MonoBehaviour {
                 if (InMoveMode)
                 {
                     if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
-                        CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+                    StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
 
                     InMoveMode = false;
                 }
@@ -111,7 +111,7 @@ public class InputManager : MonoBehaviour {
 
             if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
             {
-                CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+                StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
             }
         }
         
