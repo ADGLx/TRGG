@@ -2521,9 +2521,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc54e28d91108d4dbd5d53f615b6ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActiveState: 2
+  ActiveState: 0
   DetectRadius: 4
-  AI_UpdateRefreshTime: 0.25
+  AI_UpdateRefreshTime: 0
   ExploreMaxMovementRange: 5
   WaitForNextMoveTime: 0.25
   HexRadius: 4

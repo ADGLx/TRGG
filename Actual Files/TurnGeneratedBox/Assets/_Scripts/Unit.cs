@@ -102,15 +102,12 @@ public class Unit : MonoBehaviour {
 
     public void MoveUnitTo(int TargetX, int TargetY)
     {
-        //Try to stop everything if unit is moving 
-
-
-
         List<MapTile> MyPath = new List<MapTile>();
         Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
         if (MapLocal.FindTile(TargetX,TargetY).Walkable == true)
         {
-            
+            // if (!IsUnitMoving)
+            // {
             MyPath = MapLocal.Pathfinding(GridPos, new Vector2Int(DebugPos.x, DebugPos.y));
                 //  StartCoroutine(PathMoveAnim(MyPath));
                 if (MyPath != null)
@@ -121,11 +118,15 @@ public class Unit : MonoBehaviour {
                 {
                     Debug.Log("Path couldnt be found");
                 }
+           // } 
 
         } else
         {
             Debug.Log("Target Tile isnt walkable");
         }
+
+
+
 
         //This should be in another function to be more organized tho
 
@@ -136,15 +137,15 @@ public class Unit : MonoBehaviour {
     {
         if (Path != null)
         {
-         //   if(!IsUnitMoving)
-           // {
+            if(!IsUnitMoving)
+            {
                 if (Path[0].GetPos != GridPos)
                 {
                     //  Debug.Log("Starting point doesnt match");
                     MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
                 }
                 StartCoroutine(MoveToTileAnim(Path));
-          //  }
+            }
 
         } else
         {
@@ -156,21 +157,10 @@ public class Unit : MonoBehaviour {
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
-        //I will generate the path only once in ther
-
-
-
-        if (IsUnitMoving) 
+        if (IsUnitMoving) //the command is ignored if the thing is moving
         {
             StopMoving = true;
-            //thPath.Clear();
-          //  Debug.Log("Unit is moving");
-            while (IsUnitMoving || IsUnitMovingBTiles)//this makes the program wait until all the movements are resolved so whe need to make it happen only once
-            {
-                Debug.Log("Bryg");
-                yield return null;
-            }
-
+            yield break;
         }
 
 
@@ -182,6 +172,12 @@ public class Unit : MonoBehaviour {
         IsUnitMoving = true;
         for (int m = 0; m < thPath.Count; m++) //change the foreach with a for 
         {
+            if (StopMoving)//this stops it from moving now we gotta find a way to make it move to the next one 
+            {
+                IsUnitMoving = false;
+                StopMoving = false;
+                yield break;
+            }
 
             MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);//This helped prevent a bit of stuff 
 
@@ -194,13 +190,6 @@ public class Unit : MonoBehaviour {
             SetPos(thPath[m].X, thPath[m].Y);
             IsUnitMovingBTiles = false;
 
-            if (StopMoving)//this stops it from moving now we gotta find a way to make it move to the next one 
-            {
-                IsUnitMoving = false;
-                StopMoving = false;
-                thPath.Clear();
-                yield break;
-            }
 
             if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;

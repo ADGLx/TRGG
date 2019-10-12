@@ -33,9 +33,7 @@ public class Enemey_AI : MonoBehaviour {
             Debug.Log("NullReference");
         }
 
-         StartCoroutine(AI_Update());
-        //  Mode_Chase(GameObject.FindGameObjectWithTag("Main_Pl").GetComponent<Unit>());
-        //Mode_Explore();
+        StartCoroutine(AI_Update());
 	}
 
     //The AI will be a set of instructions or states 
@@ -168,7 +166,7 @@ public class Enemey_AI : MonoBehaviour {
 
     }
 
-    IEnumerator KeepChasing(Unit Target) //I broke it
+    IEnumerator KeepChasing(Unit Target) //this shit doesnt work, it should update every time the player moves 
     {
        // yield return new WaitForSeconds(0.1f);
 
@@ -180,9 +178,8 @@ public class Enemey_AI : MonoBehaviour {
         PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
 
         LocalUnit.MoveUnitToPremadePath(PathToTileClose);
-        OldTPos = Target.GridPos;
 
-     //   int t = 2;
+        
         while (true)
         {
             if (StopAllStates)
@@ -190,27 +187,33 @@ public class Enemey_AI : MonoBehaviour {
                 StopAllStates = false;
                 break;
             }
-            yield return new WaitForSeconds(1f); //this is the refresh rate (this fixes the isse that calls the moveto really often, buts its a cheap way)
 
+            yield return new WaitForSeconds(0.25f); //this is the refresh rate 
 
-            if (LocalUnit.MapLocal.GetDistance(LocalUnit.GridPos,Target.GridPos) <= 1)
-            {
-            //    Debug.Log("Got to target");
+            if (LocalUnit.IsUnitMoving)
                 yield return null;
-            } else if(OldTPos != Target.GridPos)
-                {
 
-                    //I gotta make this update less often, ill do it by having a tolerance for the place
-                    //   if((OldTPos.x > Target.GridPos.x + t || OldTPos.x < Target.GridPos.x - t) || (OldTPos.y > Target.GridPos.y + t || OldTPos.y < Target.GridPos.y - t))
+            if (Target.GridPos != OldTPos)
+            {
+                if (Target.IsUnitMoving)
+                    yield return null;
 
-                    PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
-                    OldTPos = Target.GridPos;
-                    if (PathToTileClose.Count > 1)
-                        PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
+                //move to the new place
+                OldTPos = Target.GridPos;
+                PathToTileClose = LocalUnit.MapLocal.Pathfinding(LocalUnit.GridPos, Target.GridPos);
+                if (PathToTileClose.Count > 1)
+                    PathToTileClose.RemoveAt(PathToTileClose.Count - 1); //this should work
+            }
 
-                    LocalUnit.MoveUnitToPremadePath(PathToTileClose);
-                } 
 
+            if (LocalUnit.GridPos == PathToTileClose[PathToTileClose.Count - 1].GetPos)
+            {
+                //Debug.Log("Got to target");
+                yield return null;
+            } else
+            {
+                LocalUnit.MoveUnitToPremadePath(PathToTileClose);
+            }
                 
 
 
@@ -325,7 +328,6 @@ public class Enemey_AI : MonoBehaviour {
             {
                 PrevState = ActiveState;
                 StopAllMovement();
-               // Debug.Log("btuh");
                 //I have to find a way to forcefully stop all movements
 
                 switch (ActiveState)
@@ -333,16 +335,9 @@ public class Enemey_AI : MonoBehaviour {
                     case AI_State.Chase:
                         Unit p = GetPlayerAroundHere(DetectRadius);
                         if (p != null)
-                        {
                             Mode_Chase(p);
-                        } else
-                        {
-                            Debug.Log("Null");
-                        }
-
                         break;
                     case AI_State.Explore:
-                        StopAllStates = false;
                         Mode_Explore();
                         break;
                     case AI_State.Flee:
@@ -351,8 +346,7 @@ public class Enemey_AI : MonoBehaviour {
                             Mode_Flee(p2);
                         break;
                     case AI_State.Patrol:
-                     //   Mode_Patrol();
-
+                        Mode_Patrol();
                         break;
                 }
 
@@ -393,7 +387,7 @@ public class Enemey_AI : MonoBehaviour {
 
     void StopAllMovement()
     {
-        StopAllStates = true;
+       // StopAllStates = true;
         LocalUnit.StopMoving = true;
       //  LocalUnit.StopAllCoroutines();
         //This might be too fast to work??
