@@ -750,7 +750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &302936723
 Transform:
   m_ObjectHideFlags: 0
@@ -1673,6 +1673,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 21300000, guid: 412feaa7a353b6a429f2034a44ab0ebe, type: 3}
   SelectParticle: {fileID: 1833374934950748, guid: 22557b998b4d70c47b8a29cf412ad073,
+    type: 2}
+  PathParticle: {fileID: 1487888147718754, guid: 31a90ab0a5c22414f9ea317240ddd3b0,
     type: 2}
   ParticlesHolder: {fileID: 1523024568}
   UnitActionBarButtons:

@@ -123,8 +123,12 @@ public class Unit : MonoBehaviour {
             if (Path != null)
             {
                 IsUnitMoving = true;
+                
+                if (IsThisMainP)
+                    UI_MLocal.ShowPath(Path); //Show the UI
+
                 //Start the walk thing
-                for(int x = 0;x< Path.Count; x++)
+                for (int x = 0;x< Path.Count; x++)
                 {
                     //In here I start the movement for the next tile
                     //Yielding until its completed 
@@ -136,10 +140,12 @@ public class Unit : MonoBehaviour {
                         break;
                     }
 
+                    if (IsThisMainP)
+                        UI_MLocal.ClearSpecPath(x);
+
                 }
 
                 IsUnitMoving = false;
-
 
             } else
             {
@@ -191,13 +197,9 @@ public class Unit : MonoBehaviour {
             this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(X, Y), AnimSpeed * Time.deltaTime);
             yield return null;
         }
-        SetPos(X, Y);
 
-        if (IsThisMainP)
-        {
-            MapLocal.CurrentTile = MapLocal.FindTile(GridPos.x, GridPos.y);
-            UI_MLocal.ChangeOfSelection();
-        }
+
+        SetPos(X, Y);
 
         if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
