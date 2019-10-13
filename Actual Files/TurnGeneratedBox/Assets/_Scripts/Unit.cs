@@ -105,7 +105,7 @@ public class Unit : MonoBehaviour {
         {
             StopMoving = true;
 
-            while(StopMoving) //this can cause an infinite loops but whatever
+            while(IsUnitMoving) //this can cause an infinite loops but whatever
             {
                // Debug.Log("Waiting");
                 yield return null;
