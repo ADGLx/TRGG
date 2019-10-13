@@ -66,7 +66,7 @@ public class Enemey_AI : MonoBehaviour {
             int RY = (int)Random.Range(LocalUnit.GridPos.y - ExploreMaxMovementRange, LocalUnit.GridPos.y + ExploreMaxMovementRange);
 
             if (LocalUnit.MapLocal.FindTile(RX,RY).Walkable)
-            LocalUnit.MoveUnitTo(RX, RY);
+           StartCoroutine( LocalUnit.MoveUnitTo(RX, RY));
         }
     }
 
@@ -274,7 +274,7 @@ public class Enemey_AI : MonoBehaviour {
 
                 if (Tile != null && Tile.Walkable)
                 {
-                    LocalUnit.MoveUnitTo(Tile.X, Tile.Y);
+                    StartCoroutine(LocalUnit.MoveUnitTo(Tile.X, Tile.Y));
                 } else if (Tile != null && !Tile.Walkable)
                 {
                     //when this occurs I wanna try a full area of tiles near that one to get one route
@@ -284,7 +284,7 @@ public class Enemey_AI : MonoBehaviour {
                     {
                         if (OtherOptions[x].Walkable)
                         {
-                            LocalUnit.MoveUnitTo(OtherOptions[x].X, OtherOptions[x].Y);
+                            StartCoroutine(LocalUnit.MoveUnitTo(OtherOptions[x].X, OtherOptions[x].Y));
                             break;
                         }
                     }

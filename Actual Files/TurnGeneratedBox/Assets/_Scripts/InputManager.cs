@@ -93,7 +93,7 @@ public class InputManager : MonoBehaviour {
                 if (InMoveMode)
                 {
                     if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
-                        CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+                    StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
 
                     InMoveMode = false;
                 }
@@ -111,11 +111,15 @@ public class InputManager : MonoBehaviour {
 
             if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
             {
-                CurUnit.MoveUnitTo(cellPos.x, cellPos.y);
+                StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
+              
+                MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
+                UIM.ChangeOfSelection();
+              //  UIM.ClearPath();
             }
         }
         
-        //This is just for the area thing 
+        //This is just for the area thing (I gotta migrate all this to the UI_Manager)
         if(InMoveMode)
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
