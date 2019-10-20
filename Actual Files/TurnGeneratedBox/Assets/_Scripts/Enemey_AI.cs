@@ -324,6 +324,8 @@ public class Enemey_AI : MonoBehaviour {
 
             ActiveState = CheckAround(TilesAround);
 
+            Debug.Log(ActiveState);
+
             if (ActiveState != PrevState) //This might cause problems but idk yet
             {
                 PrevState = ActiveState;
@@ -388,7 +390,7 @@ public class Enemey_AI : MonoBehaviour {
     void StopAllMovement()
     {
        // StopAllStates = true;
-        LocalUnit.StopMoving = true;
+        //LocalUnit.StopMoving = true;
       //  LocalUnit.StopAllCoroutines();
         //This might be too fast to work??
     }

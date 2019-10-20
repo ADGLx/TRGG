@@ -22,7 +22,7 @@ public class Unit : MonoBehaviour {
     public UnitIn Type = UnitIn.Player;
     // public Tile A; no clue what this was for 
     public float AnimSpeed = 1f;
-    public GameObject Target;
+   // public GameObject Target;
     private GameObject TempParticles;
     [HideInInspector]
     public bool IsUnitMoving = false;
@@ -84,19 +84,6 @@ public class Unit : MonoBehaviour {
     {
         GridPos = new Vector2Int(X,Y);
         MapLocal.OcupyTileUnit(this, GridPos.x, GridPos.y);
-    }
-
-    void PlaceTarget(int X, int Y)
-    {
-        if (TempParticles != null)
-        {
-            Destroy(TempParticles);
-            
-        }
-
-        Vector3 cellPos = MapLocal.SetTilePosToWorld(X, Y);
-
-        TempParticles = Instantiate(Target, cellPos, Target.transform.rotation, this.transform);
     }
 
    public IEnumerator MoveUnitTo(int TargetX, int TargetY) //this one will be the one thats called in general and will allow to stop

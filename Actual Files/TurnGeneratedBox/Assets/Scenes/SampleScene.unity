@@ -750,7 +750,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &302936723
 Transform:
   m_ObjectHideFlags: 0
@@ -2458,7 +2458,6 @@ MonoBehaviour:
   GridPos: {x: 3, y: -5}
   Type: 2
   AnimSpeed: 2
-  Target: {fileID: 1815144582962572, guid: 8580a32bb14e6d14388f6f6d5de6da0f, type: 2}
   IsUnitMoving: 0
   StopMoving: 0
   Actions:
@@ -5304,7 +5303,6 @@ MonoBehaviour:
   GridPos: {x: 0, y: 0}
   Type: 1
   AnimSpeed: 2
-  Target: {fileID: 1815144582962572, guid: 8580a32bb14e6d14388f6f6d5de6da0f, type: 2}
   IsUnitMoving: 0
   StopMoving: 0
   Actions:
