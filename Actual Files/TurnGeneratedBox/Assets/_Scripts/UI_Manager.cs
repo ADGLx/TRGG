@@ -70,8 +70,10 @@ public class UI_Manager : MonoBehaviour {
 
     [Header("Select Particles")]
     public GameObject SelectParticle;
+    public GameObject PathParticle;
     public GameObject ParticlesHolder;
     private GameObject TempSelctParticle = null;
+    private GameObject[] TempPathparticle = null;
 
 
 
@@ -132,8 +134,9 @@ public class UI_Manager : MonoBehaviour {
         if (TempSelctParticle != null)
             Destroy(TempSelctParticle);
 
+
         //Clear the CurUnit
-      //  InputM.CurUnit = null;
+        //  InputM.CurUnit = null;
     }
 
     public void ChangeOfSelection()
@@ -259,4 +262,34 @@ public class UI_Manager : MonoBehaviour {
 
     }
 
+    public void ShowPath(List<MapTile> P)
+    {
+        ClearPath();
+
+        TempPathparticle = new GameObject[P.Count];
+        for(int x = 0; x< P.Count; x++)
+        {
+            Vector3 cellPosFloat = P[x].GetPos + new Vector2(0.5f, 0.5f);
+            TempPathparticle[x] = Instantiate(PathParticle, cellPosFloat, PathParticle.transform.rotation, ParticlesHolder.transform);
+        }
+    }
+
+    private void ClearPath()
+    {
+        if (TempPathparticle != null)
+        {
+            foreach (GameObject a in TempPathparticle)
+            {
+                Destroy(a);
+            }
+        }
+    }
+
+    public void ClearSpecPath (int X)
+    {
+        if (TempPathparticle[X] != null)
+        {
+            Destroy(TempPathparticle[X]);
+        }
+    }
 }

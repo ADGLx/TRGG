@@ -22,13 +22,12 @@ public class Unit : MonoBehaviour {
     public UnitIn Type = UnitIn.Player;
     // public Tile A; no clue what this was for 
     public float AnimSpeed = 1f;
-    public GameObject Target;
+   // public GameObject Target;
     private GameObject TempParticles;
     [HideInInspector]
     public bool IsUnitMoving = false;
-    private bool IsUnitMovingBTiles = false;
-    private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
     public bool StopMoving = false;
+    private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
 
     [System.Serializable]
     public class PossibleAction
@@ -87,21 +86,64 @@ public class Unit : MonoBehaviour {
         MapLocal.OcupyTileUnit(this, GridPos.x, GridPos.y);
     }
 
-    void PlaceTarget(int X, int Y)
+   public IEnumerator MoveUnitTo(int TargetX, int TargetY) //this one will be the one thats called in general and will allow to stop
     {
-        if (TempParticles != null)
+        if(IsUnitMoving)
         {
-            Destroy(TempParticles);
-            
+            StopMoving = true;
+
+            while(IsUnitMoving) //this can cause an infinite loops but whatever
+            {
+               // Debug.Log("Waiting");
+                yield return null;
+            }
         }
 
-        Vector3 cellPos = MapLocal.SetTilePosToWorld(X, Y);
+        
+        List<MapTile> Path = new List<MapTile>();
 
-        TempParticles = Instantiate(Target, cellPos, Target.transform.rotation, this.transform);
-    }
 
-    public void MoveUnitTo(int TargetX, int TargetY)
-    {
+        if (MapLocal.FindTile(TargetX,TargetY).Walkable)
+        {
+            Path = MapLocal.Pathfinding(GridPos, new Vector2Int(TargetX, TargetY));
+
+            if (Path != null)
+            {
+                IsUnitMoving = true;
+                
+                if (IsThisMainP)
+                    UI_MLocal.ShowPath(Path); //Show the UI
+
+                //Start the walk thing
+                for (int x = 0;x< Path.Count; x++)
+                {
+                    //In here I start the movement for the next tile
+                    //Yielding until its completed 
+                    yield return StartCoroutine(MoveNextTile(Path[x].X, Path[x].Y));
+
+                    if (StopMoving)
+                    {
+                        StopMoving = false;
+                        break;
+                    }
+
+                    if (IsThisMainP)
+                        UI_MLocal.ClearSpecPath(x);
+
+                }
+
+                IsUnitMoving = false;
+
+            } else
+            {
+                Debug.Log("Path is null");
+            }
+        }
+        
+        
+        
+        
+        /*
         List<MapTile> MyPath = new List<MapTile>();
         Vector2Int DebugPos = new Vector2Int(TargetX, TargetY);
         if (MapLocal.FindTile(TargetX,TargetY).Walkable == true)
@@ -131,8 +173,26 @@ public class Unit : MonoBehaviour {
         //This should be in another function to be more organized tho
 
         //  PlaceTarget(DebugPos.x, DebugPos.y); Add this somewhere else
+        */
     }
 
+    IEnumerator MoveNextTile(int X, int Y)
+    {
+        MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);//This helped prevent a bit of stuff 
+        while (this.transform.position != MapLocal.SetTilePosToWorld(X, Y))
+        {
+            this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(X, Y), AnimSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+
+        SetPos(X, Y);
+
+        if (MapLocal.TurnModeOn)
+            unitStats.ActionPoints--;
+    }
+
+    //I might wanna change this one later
     public void MoveUnitToPremadePath(List<MapTile> Path)
     {
         if (Path != null)
@@ -144,7 +204,7 @@ public class Unit : MonoBehaviour {
                     //  Debug.Log("Starting point doesnt match");
                     MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
                 }
-                StartCoroutine(MoveToTileAnim(Path));
+          //      StartCoroutine(MoveToTileAnim(Path));
             }
 
         } else
@@ -154,6 +214,7 @@ public class Unit : MonoBehaviour {
 
     }
 
+    /*
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)
     {
@@ -209,5 +270,5 @@ public class Unit : MonoBehaviour {
         IsUnitMoving = false;
 
     }
-
+    */
 }
