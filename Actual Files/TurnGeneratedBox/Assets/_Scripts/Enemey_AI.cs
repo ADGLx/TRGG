@@ -329,7 +329,7 @@ public class Enemey_AI : MonoBehaviour {
             if (ActiveState != PrevState) //This might cause problems but idk yet
             {
                 PrevState = ActiveState;
-                StopAllMovement();
+                //StopAllMovement();
                 //I have to find a way to forcefully stop all movements
 
                 switch (ActiveState)
@@ -387,13 +387,6 @@ public class Enemey_AI : MonoBehaviour {
 
     }
 
-    void StopAllMovement()
-    {
-       // StopAllStates = true;
-        //LocalUnit.StopMoving = true;
-      //  LocalUnit.StopAllCoroutines();
-        //This might be too fast to work??
-    }
 
 }
 
