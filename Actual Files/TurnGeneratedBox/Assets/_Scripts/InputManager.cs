@@ -90,13 +90,13 @@ public class InputManager : MonoBehaviour {
 
 
 
-                if (InMoveMode)
-                {
+              //  if (InMoveMode) this might be causing the delay
+              //  {
                     if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
                     StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
 
-                    InMoveMode = false;
-                }
+                 //   InMoveMode = false;
+              //  }
  
            
 
