@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour {
 
     //GameObject Temp;
     // I should clean this fixed update later
-    void FixedUpdate () {
+    void Update () { //it has to be update in order to register
         GetInput();
         CameraMovement();
         CameraZoom();
@@ -90,24 +90,24 @@ public class InputManager : MonoBehaviour {
 
 
 
-              //  if (InMoveMode) this might be causing the delay
-              //  {
+                if (InMoveMode)// this is for the ON turn thing only
+                {
                     if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
                     StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
+            
+               InMoveMode = false;
+              }
 
-                 //   InMoveMode = false;
-              //  }
- 
-           
 
          //   ShowAllDebugUI();
         }
 
-        if (!MapGRef.TurnModeOn && CurUnit != null && RMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (!(MapGRef.TurnModeOn || CurUnit == null || !RMBdown || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()))
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
             Vector3Int cellPos = grid.WorldToCell(pz);
+
 
             if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
             {
@@ -176,7 +176,6 @@ public class InputManager : MonoBehaviour {
         }
 
         //DragScreen();
-   
 	}
 
     void DragScreen()
