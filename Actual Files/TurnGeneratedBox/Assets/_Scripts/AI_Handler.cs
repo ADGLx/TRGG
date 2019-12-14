@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum AI_State { Explore, Patrol, Flee, Chase };
-public class AI_Handler : MonoBehaviour {
+public class AI_Handler : MonoBehaviour
+{
 
+    //This should eventually replace the Enemy_AI one
 
     [Header("General Settings")]
     public float RefreshRate = 0.5f;
@@ -16,18 +18,21 @@ public class AI_Handler : MonoBehaviour {
     public int LowHPDefine = 2;
     public int CloseToPlayerArea = 4;
     // Use this for initialization
-    
-    void Start () {
+
+    void Start()
+    {
         if (this.GetComponent<Unit>())
         {
             LocalUnitScript = this.GetComponent<Unit>();
-        } else
+        }
+        else
         {
             Debug.Log("Unit Script could not be found");
         }
 
-	}
-	/*
+    }
+
+    /*
     List<MapTile> ExploreMode()
     {
 
@@ -80,6 +85,7 @@ public class AI_Handler : MonoBehaviour {
             return AI_State.Flee; //Might wanna pass the player's position right away
         }
     }
+    
 
     IEnumerator AI_Update()
     {
@@ -119,17 +125,19 @@ public class AI_Handler : MonoBehaviour {
         }
     }
 }
+*/
 
-public class AI_StateClass
-{
-    public AI_State State;
-    public bool Update = false;
-    public List<MapTile> NextPath = new List<MapTile>();
-
-    public AI_StateClass(AI_State state)
+    public class AI_StateClass
     {
-        State = state;
-    }
-    */
-    
-} //I went with a class that can hold several variables so we can know when to update and stuff
+        public AI_State State;
+        public bool Update = false;
+        public List<MapTile> NextPath = new List<MapTile>();
+
+        public AI_StateClass(AI_State state)
+        {
+            State = state;
+        }
+
+
+    } //I went with a class that can hold several variables so we can know when to update and stuff
+}
