@@ -33,12 +33,14 @@ public class AI_Handler : MonoBehaviour
 
     //Specific values used to evaluate the AI state
     private Vector2Int PlayerLastSeen = new Vector2Int();
+    private Vector2Int LasPosLocal = new Vector2Int();
 
     void Start()
     {
         if (this.GetComponent<Unit>())
         {
             LocalUnitScript = this.GetComponent<Unit>();
+            LasPosLocal = LocalUnitScript.GridPos;
         }
         else
         {
@@ -62,7 +64,7 @@ public class AI_Handler : MonoBehaviour
 
         List<MapTile> Area = LocalUnitScript.MapLocal.GetAreaAround(LocalUnitScript.GridPos, DetectRadius); //I might wanna optimize this
 
-        PlayerInfo = GetPlayerClose(Area); //this access only the bool
+        PlayerInfo = GetPlayerClose(Area);
 
         if(!PlayerInfo.Item1 && !LowHP)
         {
@@ -73,6 +75,7 @@ public class AI_Handler : MonoBehaviour
         } else if(PlayerInfo.Item1 && !LowHP)
         {
             PlayerLastSeen = PlayerInfo.Item2;
+        //    Debug.Log
             return AI_State.Chase; //Might wanna pass the player's position right away (done)
         } else
         {
@@ -90,26 +93,21 @@ public class AI_Handler : MonoBehaviour
         //Have it update everytime the unit moves to a new tile 
         while (true)
         {
-            yield return new WaitForSeconds(RefreshRate); //prevents it from updating toooooo much (might not need it)
+            yield return new WaitForSeconds(RefreshRate); //prevents it from updating too much
 
-            Debug.Log("Its updating");
+       //   Debug.Log("Its updating");
             if (ShouldChangePath(UnitState))
             {
-                UnitState = DetectState();
+                //   UnitState = DetectState();
+                UnitState = AI_State.Chase;
                 UpdateMovementNow = true;
+               // Debug.Log("Changing state to ");
             } else
             {
                 //just let it continue their path to wherever
             }
             //So first it is gonna check if it needs to change paths or not
             // The shoudl chage path should update everytime the AI changes tiles
-
-            while (LocalUnitScript.LastPos == LocalUnitScript.GridPos) //prevents it from updating too often
-            {
-                Debug.Log("Waiting to move");
-                yield return null; //this should wait until its true
-            }
-
 
         }
     }
@@ -118,8 +116,7 @@ public class AI_Handler : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(RefreshRate); //Might need this just in case
-
+           // yield return new WaitForSeconds(RefreshRate); //Might need this just in case
 
             UpdateMovementNow = false; //It is updating so we dont need it to update once this happens
             switch (UnitState)
@@ -278,29 +275,46 @@ public class AI_Handler : MonoBehaviour
     bool ShouldChangePath(AI_State CurrentState) 
     {
         //The last seen should update before this?????
+        //I will update the player last seen in here, just to make sure it is always updated
+        Tuple<bool, Vector2Int> PlInfo = GetPlayerClose(LocalUnitScript.MapLocal.GetAreaAround(LocalUnitScript.GridPos, DetectRadius));
+
+        if (PlInfo.Item1)
+            PlayerLastSeen = PlInfo.Item2; Debug.Log("Player close");
 
 
-        switch(CurrentState)
+        switch (CurrentState)
         {
             case AI_State.Explore:
-                //It changes if the player is close???? Or it never changes idk
+                //it should change if the player is close
+                if (PlInfo.Item1)
+                {
+                    return true;
+                } else
                 return false;
 
             case AI_State.Patrol:
                 //It also never changes?????????
+                //it should change if the player is close
+                if (PlInfo.Item1)
+                {
+                    return true;
+                } else
                 return false;
 
             case AI_State.Chase:
                 //This will change state if the unit that im chasing is not currently close by
                 //If the unit that im chasing is not in the last seen spot, channge directions
-                if (InRange(LocalUnitScript.GridPos, PlayerLastSeen) && LocalUnitScript.MapLocal.FindTile(PlayerLastSeen.x, PlayerLastSeen.y).OcupiedByUnit == UnitIn.Player) //if the player has not moved
+                if(PlInfo.Item1) 
+                {
                     return false;
-               else
+                } else
+                {
                     return true;
-                
-            case AI_State.Flee:
-                //It should stop fleeing it the player is no longer close
+                }
 
+
+            case AI_State.Flee:
+                //It should stop fleeing it the player is no longer closeS
                 if (!InRange(LocalUnitScript.GridPos, PlayerLastSeen)) //Might need a revision
                     return true;
                 else

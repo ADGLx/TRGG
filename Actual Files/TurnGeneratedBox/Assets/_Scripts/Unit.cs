@@ -29,9 +29,7 @@ public class Unit : MonoBehaviour {
     public bool StopMoving = false;
     private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
 
-    [HideInInspector]
-    public Vector2Int LastPos = new Vector2Int(); //this is used to know the last pos the unit was in
-
+  
     [System.Serializable]
     public class PossibleAction
     {
@@ -75,7 +73,7 @@ public class Unit : MonoBehaviour {
     void Start()
     {
         SetPos(GridPos.x, GridPos.y);
-        LastPos = GridPos;
+        //LastPos = GridPos;
         //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
         //MoveUnitTo(4, -4);
 
@@ -87,6 +85,7 @@ public class Unit : MonoBehaviour {
     {
         GridPos = new Vector2Int(X,Y);
         MapLocal.OcupyTileUnit(this, GridPos.x, GridPos.y);
+
     }
 
    public IEnumerator MoveUnitTo(int TargetX, int TargetY) //this one will be the one thats called in general and will allow to stop
@@ -191,7 +190,7 @@ public class Unit : MonoBehaviour {
             yield return null;
         }
 
-        LastPos = GridPos;
+     //   LastPos = GridPos;
         SetPos(X, Y);
 
         if (MapLocal.TurnModeOn)

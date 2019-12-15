@@ -2613,8 +2613,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateMovementNow: 1
-  RefreshRate: 0.2
-  UnitState: 0
+  RefreshRate: 0.5
+  UnitState: 3
   LowHPDefine: 2
   DetectRadius: 4
   ExploreMaxMovementRange: 4
