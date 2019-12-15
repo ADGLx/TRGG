@@ -2612,12 +2612,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac81750e7fc95484a9cdee7347a2c34f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RefreshRate: 0.5
-  UnitState: 1
+  UpdateMovementNow: 1
+  RefreshRate: 0.2
+  UnitState: 0
   LowHPDefine: 2
-  VisionRange: 4
-  ExploreMaxMovementRange: 8
+  DetectRadius: 4
+  ExploreMaxMovementRange: 4
   HexRadius: 4
+  AlertTime: 1
 --- !u!1 &840584958
 GameObject:
   m_ObjectHideFlags: 0
