@@ -779,7 +779,7 @@ public class Map_Generator : MonoBehaviour {
         if (FindTile(X, Y) != null)
         {
             FindTile(X, Y).OcupiedByUnit = U.Type;
-            FindTile(X, Y).OcupyingUnit = U;
+            FindTile(X, Y).OcupingUnitScript = U;
             U.gameObject.transform.position = SetTilePosToWorld(X,Y);
             //This seems to work tho
            // Debug.Log("Ay");
@@ -792,7 +792,7 @@ public class Map_Generator : MonoBehaviour {
         if (FindTile(X,Y) != null)
         {
             FindTile(X, Y).OcupiedByUnit = UnitIn.None;
-            FindTile(X, Y).OcupyingUnit = null;
+            FindTile(X, Y).OcupingUnitScript = null;
         }
     }
 
@@ -894,22 +894,22 @@ public class Map_Generator : MonoBehaviour {
       //  Debug.Log(prueba);
     }
     
-    public MapTile DFindTile(int X, int Y) //This works but seems slower than the other one
-    {
-        int Size = (int)Mathf.Sqrt(AllMapTiles.Count);
-        int Index = (X + Size/2)+ ((Y + Size/2) * Size); //Only works with squared maps
-                                                         //  Debug.Log(Size/2);
-        if (AllMapTiles[Index] != null)
-        {
-            return AllMapTiles[Index];
-        }
-        else
-        {
-            Debug.Log("Tile does not exist for the index :" + Index);
-            return null;
-        }
+    //public MapTile DFindTile(int X, int Y) //This works but seems slower than the other one
+    //{
+    //    int Size = (int)Mathf.Sqrt(AllMapTiles.Count);
+    //    int Index = (X + Size/2)+ ((Y + Size/2) * Size); //Only works with squared maps
+    //                                                     //  Debug.Log(Size/2);
+    //    if (AllMapTiles[Index] != null)
+    //    {
+    //        return AllMapTiles[Index];
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Tile does not exist for the index :" + Index);
+    //        return null;
+    //    }
 
-    }
+    //}
     
 
     public MapTile FindTile(int x, int y) //This super good now

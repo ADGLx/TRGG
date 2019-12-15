@@ -304,7 +304,7 @@ public class Enemy_AI : MonoBehaviour {
         {
             if(Area[x].OcupiedByUnit == UnitIn.Player)
             {
-                return Area[x].OcupyingUnit;
+                return Area[x].OcupingUnitScript;
                 
             }
         }

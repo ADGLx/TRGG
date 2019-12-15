@@ -165,12 +165,12 @@ public class UI_Manager : MonoBehaviour {
             //Tipo de Unidad
             else if (CurT.OcupiedByUnit != UnitIn.None)
             {
-                Unit U = CurT.OcupyingUnit;
+                Unit U = CurT.OcupingUnitScript;
 
                 //Select the unit on top of it 
                 if (CurT.OcupiedByUnit == UnitIn.Player)
                 {
-                   InputM.CurUnit = CurT.OcupyingUnit;
+                   InputM.CurUnit = CurT.OcupingUnitScript;
                 }
                 else
                 {

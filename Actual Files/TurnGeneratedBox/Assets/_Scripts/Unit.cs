@@ -192,20 +192,22 @@ public class Unit : MonoBehaviour {
             unitStats.ActionPoints--;
     }
 
-    //I might wanna change this one later
-    public void MoveUnitToPremadePath(List<MapTile> Path)
+    //Obsoleting this one for now
+    public IEnumerator MoveUnitToPremadePath(List<MapTile> Path) 
     {
         if (Path != null)
         {
-            if(!IsUnitMoving)
+           while (IsUnitMoving)
             {
+                yield return null;
+            }
                 if (Path[0].GetPos != GridPos)
                 {
                     //  Debug.Log("Starting point doesnt match");
-                    MoveUnitTo(Path[0].GetPos.x, Path[0].GetPos.y); //there is a little bug in here
+                    StartCoroutine(MoveNextTile(Path[0].GetPos.x, Path[0].GetPos.y)); 
                 }
           //      StartCoroutine(MoveToTileAnim(Path));
-            }
+            
 
         } else
         {

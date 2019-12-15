@@ -16,7 +16,7 @@ public class MapTile : IHeapItem<MapTile>
     public MapTile[] FarNeighbours = new MapTile[4];
     public MaterialTile OcupedByMat = MaterialTile.None;
     public UnitIn OcupiedByUnit = UnitIn.None;
-    public Unit OcupyingUnit;
+    public Unit OcupingUnitScript; //The unit Scropt
     
     public bool Walkable
     {
@@ -78,7 +78,7 @@ public class MapTile : IHeapItem<MapTile>
         Type = NewType;
         OcupedByMat = MaterialTile.None;
         OcupiedByUnit = UnitIn.None;
-        OcupyingUnit = null;
+        OcupingUnitScript = null;
 
       //  Debug.Log("me llaman");
     }

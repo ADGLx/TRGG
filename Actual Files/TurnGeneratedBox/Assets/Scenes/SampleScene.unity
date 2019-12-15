@@ -773,7 +773,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &302936723
 Transform:
   m_ObjectHideFlags: 0
@@ -2480,6 +2480,7 @@ GameObject:
   - component: {fileID: 798460145}
   - component: {fileID: 798460144}
   - component: {fileID: 798460146}
+  - component: {fileID: 798460147}
   m_Layer: 0
   m_Name: Alien_V1
   m_TagString: Untagged
@@ -2586,7 +2587,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798460142}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bc54e28d91108d4dbd5d53f615b6ed4, type: 3}
   m_Name: 
@@ -2599,6 +2600,24 @@ MonoBehaviour:
   HexRadius: 4
   AlertTime: 0.25
   PercentToFlee: 25
+--- !u!114 &798460147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798460142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac81750e7fc95484a9cdee7347a2c34f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RefreshRate: 0.5
+  UnitState: 1
+  LowHPDefine: 2
+  VisionRange: 4
+  ExploreMaxMovementRange: 8
+  HexRadius: 4
 --- !u!1 &840584958
 GameObject:
   m_ObjectHideFlags: 0
