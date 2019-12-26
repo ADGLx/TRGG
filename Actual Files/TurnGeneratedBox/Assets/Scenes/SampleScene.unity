@@ -632,7 +632,11 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 0
@@ -656,29 +660,101 @@ Tilemap:
   m_TileMatrixArray:
   - m_RefCount: 0
     m_Data:
-      e00: 0.03345834
-      e01: 8.790379e-39
-      e02: NaN
-      e03: 8.790379e-39
-      e10: 0
-      e11: 0
-      e12: NaN
+      e00: NaN
+      e01: NaN
+      e02: 3.134943e-16
+      e03: 0
+      e10: NaN
+      e11: NaN
+      e12: 1.65e-43
       e13: 0
-      e20: 0.020590186
-      e21: -6.1443592e+10
-      e22: 0.020590186
-      e23: 0.020590186
+      e20: 0
+      e21: 3.1349388e-16
+      e22: 0
+      e23: 0
       e30: 0
-      e31: 4.591e-41
+      e31: 1.65e-43
       e32: 0
+      e33: 0
+  - m_RefCount: 0
+    m_Data:
+      e00: NaN
+      e01: NaN
+      e02: 3.134943e-16
+      e03: 0
+      e10: NaN
+      e11: NaN
+      e12: 1.65e-43
+      e13: 0
+      e20: 0
+      e21: 3.1349388e-16
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 1.65e-43
+      e32: 0
+      e33: 0
+  - m_RefCount: 0
+    m_Data:
+      e00: NaN
+      e01: NaN
+      e02: 3.134943e-16
+      e03: 0
+      e10: NaN
+      e11: NaN
+      e12: 1.65e-43
+      e13: 0
+      e20: 0
+      e21: 3.1349388e-16
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 1.65e-43
+      e32: 0
+      e33: 0
+  - m_RefCount: 0
+    m_Data:
+      e00: NaN
+      e01: NaN
+      e02: 3.134943e-16
+      e03: 0
+      e10: NaN
+      e11: NaN
+      e12: 1.65e-43
+      e13: 0
+      e20: 0
+      e21: 3.1349388e-16
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 1.65e-43
+      e32: 0
+      e33: 0
+  - m_RefCount: 0
+    m_Data:
+      e00: 3.1364508e-16
+      e01: NaN
+      e02: 0
+      e03: 3.1364465e-16
+      e10: 1.65e-43
+      e11: NaN
+      e12: 7.34684e-40
+      e13: 1.65e-43
+      e20: 0
+      e21: 1.5e-44
+      e22: 3.2444076e+14
+      e23: 0
+      e30: 0
+      e31: NaN
+      e32: 4.5904e-41
       e33: 0
   m_TileColorArray:
   - m_RefCount: 0
-    m_Data: {r: 2e-44, g: 2e-44, b: 2e-44, a: 2e-44}
+    m_Data: {r: -6.7232717e+30, g: -6.7232717e+30, b: -6.7232717e+30, a: -6.7232717e+30}
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -6, y: -7, z: 0}
-  m_Size: {x: 21, y: 10, z: 1}
+  m_Origin: {x: -6, y: -9, z: 0}
+  m_Size: {x: 21, y: 12, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -2153,7 +2229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &671292219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2233,7 +2309,7 @@ RectTransform:
   - {fileID: 2009796844}
   - {fileID: 912285572}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3705,7 +3781,7 @@ Transform:
   - {fileID: 1060266824}
   - {fileID: 1026872688}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1072327697
 MonoBehaviour:
