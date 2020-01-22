@@ -63,9 +63,9 @@ public class UI_Manager : MonoBehaviour {
     private string yikes;
 
     [Header("UI Icons")]
-    [Tooltip("Element 0 = Grass | Element 1 = Water")]
+    [Tooltip("Element 0 = Ground | Element 1 = Water")]
     public Sprite[] TileIcon = new Sprite[Enum.GetValues(typeof(TileType)).Length];
-    [Tooltip("Element 0 = None | Element 1 = Tree | Element 2 = Mountain")]
+    [Tooltip("Element 0 = None | Element 1 = Tree | Element 2 = Wall")]
     public Sprite[] MaterialIcon = new Sprite[Enum.GetValues(typeof(MaterialTile)).Length];
 
     [Header("Select Particles")]
@@ -93,11 +93,11 @@ public class UI_Manager : MonoBehaviour {
     private void Start()
     {
         //Add the keys (I will have to automate this so it is easier to add stuff)
-        TileTypeDic.Add(TileType.Grass, TileIcon[0]);
+        TileTypeDic.Add(TileType.Ground, TileIcon[0]);
         TileTypeDic.Add(TileType.Water, TileIcon[1]);
         MaterialDic.Add(MaterialTile.None, MaterialIcon[0]);
         MaterialDic.Add(MaterialTile.Tree, MaterialIcon[1]);
-        MaterialDic.Add(MaterialTile.Mountain, MaterialIcon[2]);
+        MaterialDic.Add(MaterialTile.Wall, MaterialIcon[2]);
 
         MapLocal = GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>();
         InputM = this.GetComponent<InputManager>();

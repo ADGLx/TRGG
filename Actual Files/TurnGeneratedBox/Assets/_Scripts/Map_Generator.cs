@@ -261,7 +261,7 @@ public class Map_Generator : MonoBehaviour {
 
             if (RTile != null && RTile.Type != TileType.Water && RTile.OcupedByMat  == MaterialTile.None)
             {
-                OcupyTileMat(MaterialTile.Mountain, RTile.X, RTile.Y, SaveSeed);
+                OcupyTileMat(MaterialTile.Wall, RTile.X, RTile.Y, SaveSeed);
 
                 int RLengh = UnityEngine.Random.Range(minM, maxM);
                 int RDir = UnityEngine.Random.Range(0, 3);
@@ -286,7 +286,7 @@ public class Map_Generator : MonoBehaviour {
 
                     if (T != null && T.Type != TileType.Water && T.OcupedByMat == MaterialTile.None)
                     {
-                        OcupyTileMat(MaterialTile.Mountain, T.X, T.Y, SaveSeed);
+                        OcupyTileMat(MaterialTile.Wall, T.X, T.Y, SaveSeed);
                     }  else if (T != null && T.Type == TileType.Water) 
                     {
                         if (TilesInM[TilesInM.Count - 2] != null)
@@ -302,7 +302,7 @@ public class Map_Generator : MonoBehaviour {
                                     // RX = N.X;
                                     // RY = N.Y;
                                     RTile = N;
-                                    OcupyTileMat(MaterialTile.Mountain, N.Neighbours[E].X, N.Neighbours[E].Y, SaveSeed);
+                                    OcupyTileMat(MaterialTile.Wall, N.Neighbours[E].X, N.Neighbours[E].Y, SaveSeed);
                                  //   Debug.Log(E);
                                     break;
                                 }
@@ -428,7 +428,7 @@ public class Map_Generator : MonoBehaviour {
                 //The floor
                 switch (MapData[x].Type)
                 {
-                    case TileType.Grass:
+                    case TileType.Ground:
                         ActualTile = grass_Tiles.Basic[0];
                         break;
                     case TileType.Water:
@@ -440,7 +440,7 @@ public class Map_Generator : MonoBehaviour {
                         for (int nn=0; nn< MapData[x].Neighbours.Length; nn++)
                         //foreach (MapTile N in AllMapTiles[x].Neighbours)
                         {
-                            if (MapData[x].Neighbours[nn]!= null && MapData[x].Neighbours[nn].Type == TileType.Grass)
+                            if (MapData[x].Neighbours[nn]!= null && MapData[x].Neighbours[nn].Type == TileType.Ground)
                             {
                                 GrassCloseN++;
 
@@ -496,7 +496,7 @@ public class Map_Generator : MonoBehaviour {
                                 for (int fn=0; fn < MapData[x].FarNeighbours.Length; fn++)
                                 //foreach (MapTile FN in AllMapTiles[x].FarNeighbours)
                                 {
-                                    if (MapData[x].FarNeighbours[fn] != null && MapData[x].FarNeighbours[fn].Type == TileType.Grass)
+                                    if (MapData[x].FarNeighbours[fn] != null && MapData[x].FarNeighbours[fn].Type == TileType.Ground)
                                     {
                                         GrassFarN++;
 
@@ -569,7 +569,7 @@ public class Map_Generator : MonoBehaviour {
                         OcupyTile = materials.Trees[R];
                         break;
 
-                    case MaterialTile.Mountain:
+                    case MaterialTile.Wall:
                         OcupyTile = materials.Mountains[0];
                         break;
 
@@ -761,7 +761,7 @@ public class Map_Generator : MonoBehaviour {
             {
                 switch (M)
                 {
-                    case MaterialTile.Mountain:
+                    case MaterialTile.Wall:
                         Seed[1] += AllMapTiles.IndexOf(Tile) + "|";
                         break;
 
@@ -1170,7 +1170,7 @@ public class Map_Generator : MonoBehaviour {
 
             if (Int32.TryParse(ListIndexMountain[i], out Index))
             {
-                OcupyTileMat(MaterialTile.Mountain, AllMapTiles[Index].X, AllMapTiles[Index].Y, false);
+                OcupyTileMat(MaterialTile.Wall, AllMapTiles[Index].X, AllMapTiles[Index].Y, false);
             }
             else
             {

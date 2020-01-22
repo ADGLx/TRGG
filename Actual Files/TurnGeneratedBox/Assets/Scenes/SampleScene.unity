@@ -1786,8 +1786,8 @@ MonoBehaviour:
   - {fileID: 0}
   MaterialIcon:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 21300000, guid: 412feaa7a353b6a429f2034a44ab0ebe, type: 3}
+  - {fileID: 21300000, guid: b567114c02263034a9ecc01a8456472f, type: 3}
+  - {fileID: 21300000, guid: e7c6756ee26da074a8b8543eb6b7ee9e, type: 3}
   SelectParticle: {fileID: 1833374934950748, guid: 22557b998b4d70c47b8a29cf412ad073,
     type: 3}
   PathParticle: {fileID: 1487888147718754, guid: 31a90ab0a5c22414f9ea317240ddd3b0,
@@ -2352,8 +2352,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -60.630005, y: -10.199997}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -67.7, y: -10.2}
+  m_SizeDelta: {x: 71.04, y: 71.039}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &689528788
 MonoBehaviour:
@@ -2369,7 +2369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2486,7 +2486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &760989072
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3070,6 +3070,21 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 114410985447847246, guid: 8e5b354289ec1744eb41516cb05a26e1,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114410985447847246, guid: 8e5b354289ec1744eb41516cb05a26e1,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114410985447847246, guid: 8e5b354289ec1744eb41516cb05a26e1,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
       propertyPath: m_LocalPosition.x
@@ -3113,22 +3128,22 @@ PrefabInstance:
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -60.630005
+      value: -67.7
       objectReference: {fileID: 0}
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -10.199997
+      value: -10.2
       objectReference: {fileID: 0}
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 71.04
       objectReference: {fileID: 0}
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 71.039
       objectReference: {fileID: 0}
     - target: {fileID: 224569973101335584, guid: 8e5b354289ec1744eb41516cb05a26e1,
         type: 2}
@@ -3747,7 +3762,6 @@ MonoBehaviour:
   materials:
     Trees:
     - {fileID: 11400000, guid: d39946874668a72479809f6bd98be46b, type: 2}
-    - {fileID: 11400000, guid: 54e971c2a71277b489a2d833624d5c99, type: 2}
     Mountains:
     - {fileID: 11400000, guid: 62978e57a3746e7418474647e715444d, type: 2}
   particles_tiles:
