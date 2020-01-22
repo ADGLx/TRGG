@@ -318,6 +318,7 @@ public class Enemy_AI : MonoBehaviour {
         AI_State PrevState = new AI_State();
         while (true)
         {
+
             yield return new WaitForSeconds(AI_UpdateRefreshTime); //I have to check if this actually optimizes things
 
             TilesAround = LocalUnit.MapLocal.GetAreaAround(LocalUnit.GridPos, DetectRadius);

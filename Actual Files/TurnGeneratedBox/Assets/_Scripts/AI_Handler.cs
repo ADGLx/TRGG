@@ -15,6 +15,7 @@ public class AI_Handler : MonoBehaviour
     public float RefreshRate = 0.5f;
     public AI_State UnitState = AI_State.Explore;
     private Unit LocalUnitScript;
+    private Vector2Int CurTargetTile = Vector2Int.zero;
    // private Vector2Int LastPos = new Vector2Int();
 
     [Header("State Defining")]
@@ -34,6 +35,7 @@ public class AI_Handler : MonoBehaviour
     //Specific values used to evaluate the AI state
     private Vector2Int PlayerLastSeen = new Vector2Int();
     private Vector2Int LasPosLocal = new Vector2Int();
+    private bool PlayerClose = false;
 
     void Start()
     {
@@ -47,10 +49,42 @@ public class AI_Handler : MonoBehaviour
             Debug.Log("Unit Script could not be found");
         }
 
+        StartCoroutine(DetectPlayer());
         StartCoroutine(AI_Update()); //cant have both of them running it probably breaks something 
-        StartCoroutine(MoveGenerator());
+        StartCoroutine(MoveGenerator()); //I dont remember what this is for
     }
 
+    private void FixedUpdate()
+    {
+        DebugColorChange();
+
+     //    Debug.Log(PlayerClose);
+
+
+    }
+
+    private void DebugColorChange()
+    {
+        switch(UnitState)
+        {
+            case AI_State.Explore:
+
+                this.GetComponent<SpriteRenderer>().color = Color.green;
+                break;
+
+            case AI_State.Chase:
+                this.GetComponent<SpriteRenderer>().color = Color.red;
+                break;
+           
+            case AI_State.Flee:
+                this.GetComponent<SpriteRenderer>().color = Color.yellow;
+                break;
+            
+            case AI_State.Patrol:
+                this.GetComponent<SpriteRenderer>().color = Color.blue;
+                break;
+        }
+    }
 
     AI_State DetectState() //Might wanna change the way im returning the value of the player's location
     {
@@ -93,14 +127,17 @@ public class AI_Handler : MonoBehaviour
         //Have it update everytime the unit moves to a new tile 
         while (true)
         {
+
+            
             yield return new WaitForSeconds(RefreshRate); //prevents it from updating too much
 
        //   Debug.Log("Its updating");
+            
             if (ShouldChangePath(UnitState))
             {
-                //   UnitState = DetectState();
-                UnitState = AI_State.Chase;
-                UpdateMovementNow = true;
+               UnitState = DetectState();
+                //UnitState = AI_State.Chase;
+               UpdateMovementNow = true;
                // Debug.Log("Changing state to ");
             } else
             {
@@ -108,7 +145,6 @@ public class AI_Handler : MonoBehaviour
             }
             //So first it is gonna check if it needs to change paths or not
             // The shoudl chage path should update everytime the AI changes tiles
-
         }
     }
 
@@ -119,6 +155,7 @@ public class AI_Handler : MonoBehaviour
            // yield return new WaitForSeconds(RefreshRate); //Might need this just in case
 
             UpdateMovementNow = false; //It is updating so we dont need it to update once this happens
+          //  Debug.Log("Updating movement");
             switch (UnitState)
             {
                 
@@ -132,6 +169,7 @@ public class AI_Handler : MonoBehaviour
                     if (LocalUnitScript.MapLocal.FindTile(RX, RY).Walkable)
                     {
                         StartCoroutine(LocalUnitScript.MoveUnitTo(RX, RY));
+                        CurTargetTile = new Vector2Int(RX,RY);
 
                         while (LocalUnitScript.GridPos != new Vector2Int(RX, RY) && !UpdateMovementNow) //this helps this constant
                             yield return null;
@@ -176,6 +214,7 @@ public class AI_Handler : MonoBehaviour
                         {
                            
                             StartCoroutine(LocalUnitScript.MoveUnitTo(Points[x].x, Points[x].y));
+                            CurTargetTile = Points[x];
 
                             while (LocalUnitScript.GridPos != Points[x] && !UpdateMovementNow) //this stops the infinte loops from going bananas
                                 yield return null;
@@ -211,6 +250,7 @@ public class AI_Handler : MonoBehaviour
                     {
                        // Debug.Log(PlayerLastSeen);
                         StartCoroutine(LocalUnitScript.MoveUnitTo(Tile.X, Tile.Y));
+                        CurTargetTile = Tile.GetPos;
                     }
                     else if (Tile != null && !Tile.Walkable)
                     {
@@ -223,6 +263,7 @@ public class AI_Handler : MonoBehaviour
                             {
                               //  Debug.Log(PlayerLastSeen);
                                 StartCoroutine(LocalUnitScript.MoveUnitTo(OtherOptions[x].X, OtherOptions[x].Y));
+                                CurTargetTile = OtherOptions[x].GetPos;
                                 break;
                             }
 
@@ -241,6 +282,7 @@ public class AI_Handler : MonoBehaviour
                     if (TargetTile.Walkable)
                     {
                         StartCoroutine(LocalUnitScript.MoveUnitTo(TargetTile.X, TargetTile.Y));
+                        CurTargetTile = TargetTile.GetPos;
                     }
                     else
                     {
@@ -251,6 +293,7 @@ public class AI_Handler : MonoBehaviour
                             if (PathToUnit[x].Walkable)
                             {
                                 StartCoroutine(LocalUnitScript.MoveUnitTo(PathToUnit[x].X, PathToUnit[x].Y));
+                                CurTargetTile = TargetTile.GetPos;
                                 break;
                             }
 
@@ -272,21 +315,36 @@ public class AI_Handler : MonoBehaviour
         }
     }
 
+    IEnumerator DetectPlayer()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(RefreshRate);
+
+            //might wanna make this an actual coroutine
+            Tuple<bool, Vector2Int> PlInfo = GetPlayerClose(LocalUnitScript.MapLocal.GetAreaAround(LocalUnitScript.GridPos, DetectRadius));
+            PlayerClose = PlInfo.Item1;
+
+            if (PlInfo.Item1)
+                PlayerLastSeen = PlInfo.Item2; //Debug.Log("Player close");
+        }
+    }
+
     bool ShouldChangePath(AI_State CurrentState) 
     {
         //The last seen should update before this?????
         //I will update the player last seen in here, just to make sure it is always updated
-        Tuple<bool, Vector2Int> PlInfo = GetPlayerClose(LocalUnitScript.MapLocal.GetAreaAround(LocalUnitScript.GridPos, DetectRadius));
+        /*  Tuple<bool, Vector2Int> PlInfo = GetPlayerClose(LocalUnitScript.MapLocal.GetAreaAround(LocalUnitScript.GridPos, DetectRadius));
 
-        if (PlInfo.Item1)
-            PlayerLastSeen = PlInfo.Item2; Debug.Log("Player close");
-
+          if (PlInfo.Item1)
+              PlayerLastSeen = PlInfo.Item2; //Debug.Log("Player close");
+          */
 
         switch (CurrentState)
         {
             case AI_State.Explore:
                 //it should change if the player is close
-                if (PlInfo.Item1)
+                if (PlayerClose)
                 {
                     return true;
                 } else
@@ -295,22 +353,15 @@ public class AI_Handler : MonoBehaviour
             case AI_State.Patrol:
                 //It also never changes?????????
                 //it should change if the player is close
-                if (PlInfo.Item1)
+                if (PlayerClose)
                 {
                     return true;
                 } else
                 return false;
 
             case AI_State.Chase:
-                //This will change state if the unit that im chasing is not currently close by
-                //If the unit that im chasing is not in the last seen spot, channge directions
-                if(PlInfo.Item1) 
-                {
-                    return false;
-                } else
-                {
-                    return true;
-                }
+                //it will always change because the player moves and when it reaches its destiny it will be stoped anyway 
+                return true; 
 
 
             case AI_State.Flee:
@@ -342,7 +393,7 @@ public class AI_Handler : MonoBehaviour
             }
         }
 
-        return Tuple.Create(PlayerClose, Vector2Int.zero); //if it could not be found it returns false with zero for the vector
+        return Tuple.Create(PlayerClose, PlayerLastSeen); //if it could not be found it returns false with the last seen pos
     }
 
     bool InRange(Vector2Int PosA, Vector2Int PosB)

@@ -72,7 +72,7 @@ public class Unit : MonoBehaviour {
     }
     void Start()
     {
-        SetPos(GridPos.x, GridPos.y);
+        MapLocal.InstializeUnit(this, GridPos.x, GridPos.y);
         //LastPos = GridPos;
         //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
         //MoveUnitTo(4, -4);
@@ -184,6 +184,7 @@ public class Unit : MonoBehaviour {
     IEnumerator MoveNextTile(int X, int Y)
     {
         MapLocal.UnocupyTileUnit(GridPos.x, GridPos.y);//This helped prevent a bit of stuff 
+        SetPos(X, Y);
         while (this.transform.position != MapLocal.SetTilePosToWorld(X, Y))
         {
             this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(X, Y), AnimSpeed * Time.deltaTime);
@@ -191,7 +192,7 @@ public class Unit : MonoBehaviour {
         }
 
      //   LastPos = GridPos;
-        SetPos(X, Y);
+        
 
         if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;

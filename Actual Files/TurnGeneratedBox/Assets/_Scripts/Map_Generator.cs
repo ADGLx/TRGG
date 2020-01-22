@@ -153,6 +153,7 @@ public class Map_Generator : MonoBehaviour {
 
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
+
        
     }
 
@@ -780,11 +781,23 @@ public class Map_Generator : MonoBehaviour {
         {
             FindTile(X, Y).OcupiedByUnit = U.Type;
             FindTile(X, Y).OcupingUnitScript = U;
-            U.gameObject.transform.position = SetTilePosToWorld(X,Y);
+         //   U.gameObject.transform.position = SetTilePosToWorld(X,Y);
             //This seems to work tho
            // Debug.Log("Ay");
         }
 
+    }
+
+    //this is just to keep them properly instialized
+    public void InstializeUnit(Unit U, int X, int Y)
+    {
+        if (FindTile(X, Y) != null)
+        {
+            FindTile(X, Y).OcupiedByUnit = U.Type;
+            FindTile(X, Y).OcupingUnitScript = U;
+            U.gameObject.transform.position = SetTilePosToWorld(X,Y);
+
+        }
     }
 
     public void UnocupyTileUnit (int X, int Y)
