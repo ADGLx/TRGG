@@ -1109,7 +1109,7 @@ public class Map_Generator : MonoBehaviour {
         return AllPaths;
     }
 
-
+    /*
     public void SaveMap()
     {
         //Muuuy lento
@@ -1127,6 +1127,7 @@ public class Map_Generator : MonoBehaviour {
           }
 
     }
+    
     //seems to work but it is extremely slow
     public List<MapTile> LoadMap()
     {
@@ -1144,7 +1145,7 @@ public class Map_Generator : MonoBehaviour {
             //LoadedMap.Add(JsonUtility.FromJson<MapTile>(jsonString));
         }
         return LoadedMap;
-    }
+    }*/ //Old ways that make no sense
 
     public void LoadSeadedMap(string[] seed)
     {
@@ -1197,7 +1198,7 @@ public class Map_Generator : MonoBehaviour {
 
         }
 
-
+        //This can be expanded
 
     }
 

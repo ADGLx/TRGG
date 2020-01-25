@@ -18,7 +18,7 @@ public class InputManager : MonoBehaviour {
     public InputKeys Key = new InputKeys();
 
     [HideInInspector]
-    public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown;
+    public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown, Escp;
 
 
     [HideInInspector]
@@ -176,6 +176,10 @@ public class InputManager : MonoBehaviour {
         }
 
         //DragScreen();
+
+        if (Escp)
+            UIM.ShowEscapeMenu();
+
 	}
 
     void DragScreen()
@@ -250,6 +254,8 @@ public class InputManager : MonoBehaviour {
         LMBdown = Input.GetMouseButtonDown(0);
 
         Scroll = Input.mouseScrollDelta.y; //for some reason the value x is ignored
+
+        Escp = Input.GetKeyDown(Key.ESCAPE);
 
     }
 

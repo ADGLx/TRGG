@@ -17,4 +17,15 @@ public class LevelLoader : MonoBehaviour {
 
         StaticMapConf.NewMap = false;
     }
+
+    public void LoadMainMenu ()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+
+    public void QuitApp() //this is the button
+    {
+        Application.Quit();
+    }
 }

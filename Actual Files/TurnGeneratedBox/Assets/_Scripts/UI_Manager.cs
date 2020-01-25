@@ -49,6 +49,15 @@ public class UI_Manager : MonoBehaviour {
 
     public TpRight Top_Right = new TpRight();
 
+    //Miscelanius
+    [System.Serializable]
+    public class Misc
+    {
+        public GameObject EscapeMenuHolder;
+    }
+
+    public Misc misc = new Misc();
+
     Map_Generator MapLocal;
     InputManager InputM;
 
@@ -292,4 +301,17 @@ public class UI_Manager : MonoBehaviour {
             Destroy(TempPathparticle[X]);
         }
     }
+
+    public void ShowEscapeMenu()
+    {
+        if (misc.EscapeMenuHolder.activeSelf)
+        {
+            misc.EscapeMenuHolder.SetActive(false);
+        } else
+        {
+            misc.EscapeMenuHolder.SetActive(true);
+        }
+    }
+
+
 }
