@@ -15,6 +15,7 @@ public class Map_Generator : MonoBehaviour {
 
     public MapTile CurrentTile = null; //This is the current selected tile
 
+    [Tooltip("I dont think this works")]
     public bool MapAsPrefab = false;
 
     public Tilemap Map,FirstLayer, SecondLayer, ThirdLayer;
@@ -108,7 +109,7 @@ public class Map_Generator : MonoBehaviour {
     {
         DataPath = Path.Combine(Application.persistentDataPath, "MapData.txt");
         AllMapTiles.Clear();
-        if (!MapAsPrefab)
+        if (!MapAsPrefab) // creo que esto del map como prefab no funciona
         {
             if (!StaticMapConf.NewMap)
             {
@@ -124,6 +125,7 @@ public class Map_Generator : MonoBehaviour {
                     }
                 } else
                 {
+                    //no se va a romper si el tama;o cambia?
                     MapGenerator(StaticMapConf.Size);
                     CreateGraph(StaticMapConf.Size);
                     LoadSeadedMap(Seed);
@@ -766,7 +768,7 @@ public class Map_Generator : MonoBehaviour {
                         break;
 
                     case MaterialTile.Tree:
-                        Seed[2] += AllMapTiles.IndexOf(Tile) + "|"; ;
+                        Seed[2] += AllMapTiles.IndexOf(Tile) + "|"; 
                         break;
                 }
             }
