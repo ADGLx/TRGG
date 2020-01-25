@@ -15,8 +15,6 @@ public class Map_Generator : MonoBehaviour {
 
     public MapTile CurrentTile = null; //This is the current selected tile
 
-    [Tooltip("I dont think this works")]
-    public bool MapAsPrefab = false;
 
     public Tilemap Map,FirstLayer, SecondLayer, ThirdLayer;
     public TileType DefaultTile;
@@ -107,14 +105,18 @@ public class Map_Generator : MonoBehaviour {
     // This will insitalize a map with a certain type of tile
     private void Awake()
     {
-        DataPath = Path.Combine(Application.persistentDataPath, "MapData.txt");
+      //  DataPath = Path.Combine(Application.persistentDataPath, "MapData.txt");
         AllMapTiles.Clear();
-        if (!MapAsPrefab) // creo que esto del map como prefab no funciona
-        {
+
             if (!StaticMapConf.NewMap)
             {
-                if (!LoadSeed) //old slow way
+                if (!LoadSeed) // this is like if I wanna load it from the editor but normally I wouldnt 
                 {
+                    MapGenerator(StaticMapConf.Size);
+                    CreateGraph(StaticMapConf.Size);
+                    MapRandomizer(StaticMapConf.Size);
+                   
+                    /*
                     AllMapTiles = LoadMap();
                     if (AllMapTiles.Count > 0)
                     {
@@ -123,6 +125,8 @@ public class Map_Generator : MonoBehaviour {
                         CreateGraph(S);
                         // PhysicalMap(AllMapTiles);
                     }
+
+                    */
                 } else
                 {
                     //no se va a romper si el tama;o cambia?
@@ -138,13 +142,8 @@ public class Map_Generator : MonoBehaviour {
                 MapGenerator(StaticMapConf.Size);
                 CreateGraph(StaticMapConf.Size);
                 MapRandomizer(StaticMapConf.Size); //Algunas veces causa el (Array out of range)
+                
             }
-        } else
-        {
-            AllMapTiles = LoadMap();
-            CreateGraph((int)Mathf.Sqrt(AllMapTiles.Count));
-            Debug.Log("Map loaded as Prefab");
-        }
 
     }
     void Start () {
