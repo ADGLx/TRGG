@@ -88,6 +88,15 @@ public class Unit : MonoBehaviour {
 
     }
 
+    public void TeleportUnitTo(int X, int Y)
+    {
+        //StopMoving = true;
+        this.transform.position = (MapLocal.SetTilePosToWorld(X, Y));
+        GridPos = new Vector2Int(X, Y);
+        MapLocal.OcupyTileUnit(this, GridPos.x, GridPos.y);
+    }
+
+
    public IEnumerator MoveUnitTo(int TargetX, int TargetY) //this one will be the one thats called in general and will allow to stop
     {
         if(IsUnitMoving)

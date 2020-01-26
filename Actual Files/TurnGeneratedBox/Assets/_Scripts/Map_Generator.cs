@@ -151,9 +151,10 @@ public class Map_Generator : MonoBehaviour {
         // List<MapTile> MyPath = new List<MapTile>();
 
         //  MyPath = Pathfinding() 
-
+        CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
+       
 
        
     }
@@ -778,10 +779,23 @@ public class Map_Generator : MonoBehaviour {
 
     public void OcupyTileUnit (Unit U, int X, int Y)
     {
-        if (FindTile(X, Y) != null)
+        MapTile t = FindTile(X, Y);
+
+
+        if (t != null)
         {
-            FindTile(X, Y).OcupiedByUnit = U.Type;
-            FindTile(X, Y).OcupingUnitScript = U;
+            //Imma add in here the teleport thing eventhough it might be messy?
+            if (t.IsBound)
+            {
+                StartCoroutine(TeleportToBound(t, U));
+            } else
+            {
+                t.OcupiedByUnit = U.Type;
+                t.OcupingUnitScript = U;
+            }
+
+
+
          //   U.gameObject.transform.position = SetTilePosToWorld(X,Y);
             //This seems to work tho
            // Debug.Log("Ay");
@@ -1199,6 +1213,78 @@ public class Map_Generator : MonoBehaviour {
         }
 
         //This can be expanded
+
+    }
+
+
+    //I wanna create the teleport Tiles at the edge of the map
+    //This is gonna confuse the Pathfinding
+    private void CreateMapBounds()
+    {
+        int StartMin = -(StaticMapConf.Size / 2);
+        int StartMax = StaticMapConf.Size / 2;
+
+
+        for (int Y = StartMin; Y <= StartMax; Y++)
+        {
+            ChangeTile(DefaultTile, StartMin, Y,0,false);
+            OcupyTileMat(MaterialTile.None, StartMin, Y, false);
+            FindTile(StartMin, Y).IsBound = true;
+        }
+
+        for (int X = StartMin; X <= StartMax; X++)
+        {
+            ChangeTile(DefaultTile, X, StartMin, 0, false);
+            OcupyTileMat(MaterialTile.None, X, StartMin, false);
+            FindTile(X, StartMin).IsBound = true;
+        }
+
+        for (int W = StartMin; W <= StartMax; W++)
+        {
+            ChangeTile(DefaultTile, W, StartMax, 0, false);
+            OcupyTileMat(MaterialTile.None, W, StartMax, false);
+            FindTile(W, StartMax).IsBound = true;
+        }
+
+        for (int Z = StartMin; Z <= StartMax; Z++)
+        {
+            ChangeTile(DefaultTile, StartMax, Z, 0, false);
+            OcupyTileMat(MaterialTile.None, StartMax, Z, false);
+            FindTile(StartMax, Z).IsBound = true;
+        }
+
+    }
+
+    private IEnumerator TeleportToBound(MapTile Tile, Unit U)
+    {
+        int TargetX = Tile.X, TargetY = Tile.Y;
+
+        if (Tile.X == StaticMapConf.Size / 2)
+            TargetX = -Tile.X + 1;
+        else if (Tile.X == -(StaticMapConf.Size / 2))
+            TargetX = -Tile.X - 1;
+
+        if (Tile.Y == StaticMapConf.Size / 2)
+            TargetY = -Tile.Y + 1;
+        else if (Tile.Y == -(StaticMapConf.Size / 2))
+            TargetY = -Tile.Y - 1;
+
+        MapTile t = FindTile(TargetX, TargetY);
+        if (t != null)
+        {
+            while (U.transform.position != SetTilePosToWorld(Tile.X, Tile.Y))
+                yield return null;
+
+            //this is a lazy way to fix things but it works
+            yield return new WaitForSeconds(0.01f);
+
+            U.TeleportUnitTo(t.X, t.Y);
+            //I need to the thing to wait for the thing to stop moving to then do this
+        } else
+        {
+            Debug.LogWarning("Could not find tile");
+        }
+
 
     }
 

@@ -17,6 +17,7 @@ public class MapTile : IHeapItem<MapTile>
     public MaterialTile OcupedByMat = MaterialTile.None;
     public UnitIn OcupiedByUnit = UnitIn.None;
     public Unit OcupingUnitScript; //The unit Scropt
+    public bool IsBound = false;
     
     public bool Walkable
     {
