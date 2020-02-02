@@ -2371,11 +2371,12 @@ MonoBehaviour:
   LMBup: 0
   LMBdown: 0
   Escp: 0
+  spc: 0
   MousePos: {x: 0, y: 0, z: 0}
   CameraSpeed: 6.5
   EdgeTolerance: 10
   MinZoom: 1
-  MaxZoom: 8
+  MaxZoom: 16
   DebugText: {fileID: 1111562807046616, guid: 725334a6ec9571946be5dba037de5d51, type: 3}
   DebugHolder: {fileID: 1546616755}
   InMoveMode: 0
@@ -6930,7 +6931,7 @@ MonoBehaviour:
     MaxActionPoints: 2
   GridPos: {x: 0, y: 0}
   Type: 1
-  AnimSpeed: 2
+  AnimSpeed: 6
   IsUnitMoving: 0
   StopMoving: 0
   Actions:

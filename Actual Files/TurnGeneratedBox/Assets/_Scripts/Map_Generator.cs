@@ -114,7 +114,7 @@ public class Map_Generator : MonoBehaviour {
                 {
                     MapGenerator(StaticMapConf.Size);
                     CreateGraph(StaticMapConf.Size);
-                    MapRandomizer(StaticMapConf.Size);
+                 //   MapRandomizer(StaticMapConf.Size);
                    
                     /*
                     AllMapTiles = LoadMap();
@@ -151,10 +151,11 @@ public class Map_Generator : MonoBehaviour {
         // List<MapTile> MyPath = new List<MapTile>();
 
         //  MyPath = Pathfinding() 
-        CreateMapBounds(); //This changes the stuff
+         CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
-       
+
+        Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
 
        
     }
@@ -838,14 +839,14 @@ public class Map_Generator : MonoBehaviour {
         int StartMin = -(Size / 2);
 
 
-        if (Size % 2 != 0) //not sure if it works
-           StartMax++;
+      //  if (Size % 2 != 0) //not sure if it works
+       //    StartMax++;
 
         
        // StartMin++;
-        for (int y = StartMin ; y < StartMax ; y++)
+        for (int y = StartMin ; y <= StartMax ; y++)
             {
-            for (int x = StartMin ; x < StartMax ; x++)
+            for (int x = StartMin ; x <= StartMax ; x++)
                 {
                 //porsia
                 if (FindTile(x,y)!= null)
@@ -858,27 +859,27 @@ public class Map_Generator : MonoBehaviour {
                     {
                         FindTile(x, y).Neighbours[0] = FindTile(x, y + 1); //Top
                     }
-                    else { Debug.Log("Invalid Neighbour on top"); }
+                 //   else { Debug.Log("Invalid Neighbour on top"); }
 
                     if (x != StartMax) //Cheapest way to fix it, but it works
                     {
                         FindTile(x, y).Neighbours[1] = FindTile(x + 1, y); //Right
                     }
-                    else { Debug.Log("Invalid Neighbour on right"); }
+                  //  else { Debug.Log("Invalid Neighbour on right"); }
 
 
                     if (y != StartMin - 1) //Ta mal
                     {
                         FindTile(x, y).Neighbours[2] = FindTile(x, y - 1); //Bottom
                     }
-                    else { Debug.Log("Invalid Neighbour on bot"); }
+                //    else { Debug.Log("Invalid Neighbour on bot"); }
 
 
                     if (x != StartMin - 1)
                     {
                         FindTile(x, y).Neighbours[3] = FindTile(x - 1, y); //Left
                     }
-                    else { Debug.Log("Invalid Neighbour on left"); }
+                //    else { Debug.Log("Invalid Neighbour on left"); }
 
 
 
@@ -889,28 +890,50 @@ public class Map_Generator : MonoBehaviour {
                     {
                         FindTile(x, y).FarNeighbours[0] = FindTile(x - 1, y + 1); //TopLeft
                     }
-                    else { Debug.Log("Invalid FarNeighbour on topleft"); }
+                //    else { Debug.Log("Invalid FarNeighbour on topleft"); }
 
 
                     if (!(y == StartMax || x == StartMax))
                     {
                         FindTile(x, y).FarNeighbours[1] = FindTile(x + 1, y + 1); //topright
                     }
-                    else { Debug.Log("Invalid FarNeighbour on topright"); }
+                //    else { Debug.Log("Invalid FarNeighbour on topright"); }
 
 
                     if (!(y == StartMin - 1 || x == StartMax))
                     {
                         FindTile(x, y).FarNeighbours[2] = FindTile(x + 1, y - 1); //Botright
                     }
-                    else { Debug.Log("Invalid FarNeighbour on botright"); } //Ta Mal
+               //     else { Debug.Log("Invalid FarNeighbour on botright"); } 
 
 
                     if (!(y == StartMin - 1 || x == StartMin - 1))
                     {
                         FindTile(x, y).FarNeighbours[3] = FindTile(x - 1, y - 1); //Botleft
                     }
-                    else { Debug.Log("Invalid FarNeighbour on botleft"); } //Ta mal
+                 //   else { Debug.Log("Invalid FarNeighbour on botleft"); } 
+
+
+                    //This is the new stuff about the circular world (the preivous stuff is super messy)
+                    if(x==StartMax && (y != StartMin || y != StartMax)) 
+                    {
+                        FindTile(x, y).Neighbours[1] = FindTile(StartMin + 1, y); //derecha
+                       // Debug.Log(FindTile(x, y).Neighbours[1].GetPos);
+                    } else if (x == StartMin && (y != StartMin || y != StartMax))
+                    {
+                        FindTile(x, y).Neighbours[3] = FindTile(StartMax - 1, y); //Izquierda
+                      //  Debug.Log(FindTile(x, y).Neighbours[3].GetPos);
+                    } 
+
+                    if(y == StartMax && (x != StartMin || x != StartMax))
+                    {
+                        FindTile(x, y).Neighbours[0] = FindTile(x, StartMin + 1); //Arriba 
+                    }
+                    else if (y == StartMin && (x != StartMin || x != StartMax))
+                    {
+                        FindTile(x, y).Neighbours[2] = FindTile(x, StartMax - 1); //Abajo
+                    }
+
 
                 }
 
@@ -1053,9 +1076,60 @@ public class Map_Generator : MonoBehaviour {
 
     public int GetDistance(Vector2Int A, Vector2Int B) //This seems to work
     {
-        int dx = Math.Abs(A.x - B.x);
-        int dy = Math.Abs(A.y - B.y);
+        //Implementing the looping thing (it seems to work now)
+        int dx, dy;
 
+            dx = Math.Abs(A.x - B.x);
+            dy = Math.Abs(A.y - B.y);
+
+        if (dx > StaticMapConf.Size / 2)
+        {
+            int DistanceToXPos, DistanceToXNeg;
+
+            //I can just get the distance from both points to the end X and add them
+            if (A.x > B.x)
+            {
+                DistanceToXNeg = Math.Abs(B.x - (-StaticMapConf.Size / 2));
+                DistanceToXPos = Mathf.Abs(A.x - (StaticMapConf.Size / 2));
+            } else
+            {
+                DistanceToXNeg = Math.Abs(A.x - (-StaticMapConf.Size / 2));
+                DistanceToXPos = Mathf.Abs(B.x - (StaticMapConf.Size / 2));
+            }
+
+            dx = DistanceToXPos + DistanceToXNeg + 1; //idk why the one
+            
+        }
+
+        if (dy > StaticMapConf.Size / 2)
+        {
+            int DistanceToYPos, DistanceToYNeg;
+
+            //I can just get the distance from both points to the end X and add them
+            if (A.y > B.y)
+            {
+                DistanceToYNeg = Math.Abs(B.y - (-StaticMapConf.Size / 2));
+                DistanceToYPos = Mathf.Abs(A.y - (StaticMapConf.Size / 2));
+            }
+            else
+            {
+                DistanceToYNeg = Math.Abs(A.y - (-StaticMapConf.Size / 2));
+                DistanceToYPos = Mathf.Abs(B.y - (StaticMapConf.Size / 2));
+            }
+
+            dy = DistanceToYPos + DistanceToYNeg + 1; //idk why the one
+
+        }
+
+
+        /*
+        if (dy > StaticMapConf.Size / 2)
+            dy = Mathf.Max(A.y, B.y) + Mathf.Min(A.y, B.y) + 1;
+        */
+
+        //return dx + dy;
+
+        //this helps the program move kinda like diagonally 
         int min = Math.Min(dx, dy);
         int max = Math.Max(dx, dy);
 
@@ -1063,6 +1137,8 @@ public class Map_Generator : MonoBehaviour {
         int straightSteps = max - min;
 
         return (int)(Math.Sqrt(2) * diagonalSteps + straightSteps);
+
+        //try to tell the pathfinding that if its on the limit, the distance is one 
     }
 
      List<MapTile> GetWalkableAreaAround(Vector2Int Origin, int size)
@@ -1230,6 +1306,9 @@ public class Map_Generator : MonoBehaviour {
             ChangeTile(DefaultTile, StartMin, Y,0,false);
             OcupyTileMat(MaterialTile.None, StartMin, Y, false);
             FindTile(StartMin, Y).IsBound = true;
+
+           // if (Y == StartMin || Y == StartMax)
+             //   FindTile(StartMin, Y) = false; Fix later
         }
 
         for (int X = StartMin; X <= StartMax; X++)

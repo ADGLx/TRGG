@@ -12,13 +12,14 @@ public class InputManager : MonoBehaviour {
     {
         public float Sensivility = 0.5f;
         public float ScrollSensivility = 2f;
+        public string SPACE = "space";
         public string ENTER = "return";
         public string ESCAPE = "escape";
     }
     public InputKeys Key = new InputKeys();
 
     [HideInInspector]
-    public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown, Escp;
+    public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown, Escp, spc;
 
 
     [HideInInspector]
@@ -230,6 +231,9 @@ public class InputManager : MonoBehaviour {
         //I might wanna smooth the movement later
         this.transform.position = Vector3.MoveTowards(this.transform.position, this.transform.position + new Vector3(CamX, CamY, 0), CameraSpeed * Time.deltaTime);
 
+        if (spc && CurUnit != null)
+            this.transform.position = new Vector3(CurUnit.transform.position.x, CurUnit.transform.position.y, this.transform.position.z);
+
     }
 
     private void CameraZoom()
@@ -256,6 +260,7 @@ public class InputManager : MonoBehaviour {
         Scroll = Input.mouseScrollDelta.y; //for some reason the value x is ignored
 
         Escp = Input.GetKeyDown(Key.ESCAPE);
+        spc = Input.GetKeyDown(Key.SPACE);
 
     }
 
