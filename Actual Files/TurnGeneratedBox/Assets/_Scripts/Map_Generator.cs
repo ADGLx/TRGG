@@ -114,7 +114,7 @@ public class Map_Generator : MonoBehaviour {
                 {
                     MapGenerator(StaticMapConf.Size);
                     CreateGraph(StaticMapConf.Size);
-                   // MapRandomizer(StaticMapConf.Size);
+                    MapRandomizer(StaticMapConf.Size);
                    
                     /*
                     AllMapTiles = LoadMap();
@@ -154,8 +154,8 @@ public class Map_Generator : MonoBehaviour {
          CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
-
-        Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
+        StartCoroutine(CreateMirrorTiles(1));
+       // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
 
        
     }
@@ -597,7 +597,7 @@ public class Map_Generator : MonoBehaviour {
                 MapData.RemoveAt(x);
             }
 
-            //create the Grid show thing
+            //create the Grid show thing (I think we dont need this 
             FirstLayer.SetTile(new Vector3Int(MapData[x].X, MapData[x].Y,0), GridTileShowThing);
 
 
@@ -1382,8 +1382,89 @@ public class Map_Generator : MonoBehaviour {
 
     private IEnumerator CreateMirrorTiles(int Size)
     {
+        //This creates the line only
+
+        int StartMin = -(StaticMapConf.Size / 2);
+        int StartMax = StaticMapConf.Size / 2;
+
+
+        for (int Y = StartMin; Y <= StartMax; Y++)
+        {
+            // ChangeTile(DefaultTile, StartMin, Y, 0, false);
+            //  OcupyTileMat(MaterialTile.None, StartMin, Y, false);
+            //   FindTile(StartMin, Y).IsBound = true;
+
+            Vector3Int OriginPos = new Vector3Int(StartMin, Y, 0);
+            Vector3Int TargetPos = new Vector3Int(StartMax - 1, Y, 0);
+            TileBase ActualTile = Map.GetTile(TargetPos);
+            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
+           
+            Map.SetTile(OriginPos, ActualTile);
+            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+            SecondLayer.SetTile(OriginPos,OcupiedBy);
+            //only visual stuff
+        }
+
+        
+        for (int X = StartMin; X <= StartMax; X++)
+        {
+            // ChangeTile(DefaultTile, X, StartMin, 0, false);
+            //OcupyTileMat(MaterialTile.None, X, StartMin, false);
+            //FindTile(X, StartMin).IsBound = true;
+
+            Vector3Int OriginPos = new Vector3Int(X, StartMin, 0);
+            Vector3Int TargetPos = new Vector3Int(X, StartMax - 1, 0);
+            TileBase ActualTile = Map.GetTile(TargetPos);
+            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
+
+            Map.SetTile(OriginPos, ActualTile);
+            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+            SecondLayer.SetTile(OriginPos, OcupiedBy);
+            //only visual stuff
+        }
+
+        for (int W = StartMin; W <= StartMax; W++)
+        {
+            //ChangeTile(DefaultTile, W, StartMax, 0, false);
+            //OcupyTileMat(MaterialTile.None, W, StartMax, false);
+            //FindTile(W, StartMax).IsBound = true;
+
+            Vector3Int OriginPos = new Vector3Int(W, StartMax, 0);
+            Vector3Int TargetPos = new Vector3Int(W, StartMin + 1, 0);
+            TileBase ActualTile = Map.GetTile(TargetPos);
+            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
+
+            Map.SetTile(OriginPos, ActualTile);
+            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+            SecondLayer.SetTile(OriginPos, OcupiedBy);
+            //only visual stuff
+        }
+
+        for (int Z = StartMin; Z <= StartMax; Z++)
+        {
+            //ChangeTile(DefaultTile, StartMax, Z, 0, false);
+            //OcupyTileMat(MaterialTile.None, StartMax, Z, false);
+            //FindTile(StartMax, Z).IsBound = true;
+
+            Vector3Int OriginPos = new Vector3Int(StartMax, Z, 0);
+            Vector3Int TargetPos = new Vector3Int(StartMin + 1, Z, 0);
+            TileBase ActualTile = Map.GetTile(TargetPos);
+            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
+
+            Map.SetTile(OriginPos, ActualTile);
+            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+            SecondLayer.SetTile(OriginPos, OcupiedBy);
+            //only visual stuff
+        }
+
+
+
+
         //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
-        return new WaitForSecondsRealtime(1);
+        yield return new WaitForSecondsRealtime(1);
+
+        //So first its basically gonna generate the stuff that is at the begining starting by the changing the teleport tiles
+
     }
 
 
