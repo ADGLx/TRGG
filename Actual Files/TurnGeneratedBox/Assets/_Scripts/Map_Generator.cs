@@ -114,7 +114,7 @@ public class Map_Generator : MonoBehaviour {
                 {
                     MapGenerator(StaticMapConf.Size);
                     CreateGraph(StaticMapConf.Size);
-                 //   MapRandomizer(StaticMapConf.Size);
+                   // MapRandomizer(StaticMapConf.Size);
                    
                     /*
                     AllMapTiles = LoadMap();
@@ -918,20 +918,32 @@ public class Map_Generator : MonoBehaviour {
                     if(x==StartMax && (y != StartMin || y != StartMax)) 
                     {
                         FindTile(x, y).Neighbours[1] = FindTile(StartMin + 1, y); //derecha
-                       // Debug.Log(FindTile(x, y).Neighbours[1].GetPos);
+
+                        FindTile(x, y).Neighbours[0] = null;
+                        FindTile(x, y).Neighbours[2] = null;
+                        //Making sure it is not neighbour with the other teleport tiles
+                        // Debug.Log(FindTile(x, y).Neighbours[1].GetPos);
                     } else if (x == StartMin && (y != StartMin || y != StartMax))
                     {
                         FindTile(x, y).Neighbours[3] = FindTile(StartMax - 1, y); //Izquierda
-                      //  Debug.Log(FindTile(x, y).Neighbours[3].GetPos);
+
+                        FindTile(x, y).Neighbours[0] = null;
+                        FindTile(x, y).Neighbours[2] = null;
+                        //  Debug.Log(FindTile(x, y).Neighbours[3].GetPos);
                     } 
 
                     if(y == StartMax && (x != StartMin || x != StartMax))
                     {
                         FindTile(x, y).Neighbours[0] = FindTile(x, StartMin + 1); //Arriba 
+
+                        FindTile(x, y).Neighbours[1] = null;
+                        FindTile(x, y).Neighbours[3] = null;
                     }
                     else if (y == StartMin && (x != StartMin || x != StartMax))
                     {
                         FindTile(x, y).Neighbours[2] = FindTile(x, StartMax - 1); //Abajo
+                        FindTile(x, y).Neighbours[1] = null;
+                        FindTile(x, y).Neighbours[3] = null;
                     }
 
 
@@ -1365,6 +1377,13 @@ public class Map_Generator : MonoBehaviour {
         }
 
 
+    }
+
+
+    private IEnumerator CreateMirrorTiles(int Size)
+    {
+        //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
+        return new WaitForSecondsRealtime(1);
     }
 
 
