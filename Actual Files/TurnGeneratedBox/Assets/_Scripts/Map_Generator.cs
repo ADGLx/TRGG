@@ -154,7 +154,7 @@ public class Map_Generator : MonoBehaviour {
          CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
-        StartCoroutine(CreateMirrorTiles(1));
+        StartCoroutine(CreateMirrorTiles(8));
        // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
 
        
@@ -1382,17 +1382,103 @@ public class Map_Generator : MonoBehaviour {
 
     private IEnumerator CreateMirrorTiles(int Size)
     {
-        //This creates the line only
+        
 
         int StartMin = -(StaticMapConf.Size / 2);
         int StartMax = StaticMapConf.Size / 2;
 
+        Vector3Int OriginPos;
+        Vector3Int TargetPos = new Vector3Int (0,0,0);
+        TileBase ActualTile;
+        TileBase OcupiedBy;
 
+        //start drawing from the bottonleft and keep going
+        for (int Y = StartMin - Size; Y <= StartMax + Size; Y++)
+        {
+            for (int X = StartMin - Size; X <= StartMax + Size; X++)
+            {
+                if ((X <= StartMin || X >= StartMax || Y <= StartMin || Y >= StartMax))
+                {
+                    //now we need to decide which side is the thing on and what should it imitate
+                    //Map.SetTile(new Vector3Int(X, Y, 0), water_Tiles.Basic[0]);
+                    OriginPos = new Vector3Int(X, Y, 0);
+                    //Si es el limite abajo
+
+                    bool Bot = false, Right = false, Top = false, Left = false;
+
+                    if(X>= StartMax)
+                    {
+                        Right = true;
+                    } else if(X <= StartMin)
+                    {
+                        Left = true;
+                    }
+
+                    if(Y >= StartMax)
+                    {
+                        Top = true;
+                    } else if (Y <= StartMin)
+                    {
+                        Bot = true;
+                    }
+
+
+
+                    if (Bot && !Right && !Left)
+                    {
+                        TargetPos = new Vector3Int(X,StartMax - (StartMin - Y + 1), 0); //find a way to tell where the size thing is 
+                       
+                    } 
+                    else if (Right && !Bot && !Top)//derecha
+                    {
+                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), Y, 0); //find a way to tell where the size thing is 
+                    } 
+                    else if(Top && !Right && !Left)//Arriba
+                    {
+                        TargetPos = new Vector3Int(X, StartMin + (Y - StartMax + 1), 0);
+                    }
+                    else if(Left && !Bot && !Top)//Izquierda
+                    {
+                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), Y, 0);
+                    }
+                    else if (Bot && Left)//uttom left corner
+                    {
+                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMax - (StartMin - Y + 1), 0);
+                    } 
+                    else if (Bot && Right)
+                    {
+                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMax - (StartMin - Y + 1), 0);
+                    } 
+                    else if (Top && Right)
+                    {
+                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMin + (Y - StartMax + 1), 0);
+                    }
+                    else if (Top && Left)
+                    {
+                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMin + (Y - StartMax + 1), 0);
+                    }
+                    else
+                    {
+                        TargetPos = new Vector3Int (100,0,0);
+                    }
+
+                    ActualTile = Map.GetTile(TargetPos);
+                    OcupiedBy = SecondLayer.GetTile(TargetPos);
+                    Map.SetTile(OriginPos, ActualTile);
+                    Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+                    SecondLayer.SetTile(OriginPos, OcupiedBy);
+                }
+            }
+        }
+
+
+
+
+
+        /*
+        //Initial line
         for (int Y = StartMin; Y <= StartMax; Y++)
         {
-            // ChangeTile(DefaultTile, StartMin, Y, 0, false);
-            //  OcupyTileMat(MaterialTile.None, StartMin, Y, false);
-            //   FindTile(StartMin, Y).IsBound = true;
 
             Vector3Int OriginPos = new Vector3Int(StartMin, Y, 0);
             Vector3Int TargetPos = new Vector3Int(StartMax - 1, Y, 0);
@@ -1402,15 +1488,11 @@ public class Map_Generator : MonoBehaviour {
             Map.SetTile(OriginPos, ActualTile);
             Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
             SecondLayer.SetTile(OriginPos,OcupiedBy);
-            //only visual stuff
-        }
 
-        
+        } 
+
         for (int X = StartMin; X <= StartMax; X++)
         {
-            // ChangeTile(DefaultTile, X, StartMin, 0, false);
-            //OcupyTileMat(MaterialTile.None, X, StartMin, false);
-            //FindTile(X, StartMin).IsBound = true;
 
             Vector3Int OriginPos = new Vector3Int(X, StartMin, 0);
             Vector3Int TargetPos = new Vector3Int(X, StartMax - 1, 0);
@@ -1425,9 +1507,6 @@ public class Map_Generator : MonoBehaviour {
 
         for (int W = StartMin; W <= StartMax; W++)
         {
-            //ChangeTile(DefaultTile, W, StartMax, 0, false);
-            //OcupyTileMat(MaterialTile.None, W, StartMax, false);
-            //FindTile(W, StartMax).IsBound = true;
 
             Vector3Int OriginPos = new Vector3Int(W, StartMax, 0);
             Vector3Int TargetPos = new Vector3Int(W, StartMin + 1, 0);
@@ -1442,9 +1521,6 @@ public class Map_Generator : MonoBehaviour {
 
         for (int Z = StartMin; Z <= StartMax; Z++)
         {
-            //ChangeTile(DefaultTile, StartMax, Z, 0, false);
-            //OcupyTileMat(MaterialTile.None, StartMax, Z, false);
-            //FindTile(StartMax, Z).IsBound = true;
 
             Vector3Int OriginPos = new Vector3Int(StartMax, Z, 0);
             Vector3Int TargetPos = new Vector3Int(StartMin + 1, Z, 0);
@@ -1458,7 +1534,7 @@ public class Map_Generator : MonoBehaviour {
         }
 
 
-
+        */
 
         //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
         yield return new WaitForSecondsRealtime(1);
