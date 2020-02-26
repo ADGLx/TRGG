@@ -422,4 +422,8 @@ public class AI_Handler : MonoBehaviour
 
 
     //} //I went with a class that can hold several variables so we can know when to update and stuff
+
+
+
+
 }

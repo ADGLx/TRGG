@@ -90,9 +90,9 @@ public class Map_Generator : MonoBehaviour {
     //public int Size = 10;
     [Header("Seed Parameters")]
     public bool LoadSeed = false; //Prob not the best but whatever 
-    public bool SaveSeed = true;
-    [Tooltip("Element 0 = Water | Element 1 = Trees | Element 2 = Mountains")]
-    public string[] Seed;
+  //  public bool SaveSeed = true;
+   // [Tooltip("Element 0 = Water | Element 1 = Trees | Element 2 = Mountains")]
+    private string Seed;
     [Header("Map Randomizer Parameters")]
     public int minW = 50;
     public int maxW = 100;
@@ -132,7 +132,7 @@ public class Map_Generator : MonoBehaviour {
                     //no se va a romper si el tama;o cambia?
                     MapGenerator(StaticMapConf.Size);
                     CreateGraph(StaticMapConf.Size);
-                    LoadSeadedMap(Seed);
+                    LoadSeadedMap();
                 }
 
             }
@@ -155,9 +155,11 @@ public class Map_Generator : MonoBehaviour {
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
         StartCoroutine(CreateMirrorTiles(8));
-       // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
 
-       
+      //  SaveTheMap(true);
+        // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
+
+
     }
 
     void MapGenerator(int size)
@@ -191,7 +193,7 @@ public class Map_Generator : MonoBehaviour {
 
         //Water Part 
         int LakeAmount = UnityEngine.Random.Range(1, Size / 5);
-       // Seed += LakeAmount + ".";
+ 
         List<MapTile> PossibleTiles = new List<MapTile>();
         for (int R = 0; R < LakeAmount; R++)
         {
@@ -204,7 +206,7 @@ public class Map_Generator : MonoBehaviour {
             */
             int RIndex = UnityEngine.Random.Range(0, AllMapTiles.Count - 1);
             MapTile RTile = AllMapTiles[RIndex];
-            ChangeTile(TileType.Water, RTile.X, RTile.Y, 1, SaveSeed);
+            ChangeTile(TileType.Water, RTile.X, RTile.Y, 1);
            // Seed[0] += RIndex+ "|";
 
             //crear estrellas una cerca de la otra
@@ -219,7 +221,7 @@ public class Map_Generator : MonoBehaviour {
                 {
                     if (N != null && N.Type != TileType.Water)
                     {
-                        ChangeTile(TileType.Water, N.X, N.Y, 1, true);
+                        ChangeTile(TileType.Water, N.X, N.Y, 1);
                        // Seed[0] += AllMapTiles.IndexOf(N) + "|"; 
                         PossibleTiles.Add(N);
                     }
@@ -245,9 +247,7 @@ public class Map_Generator : MonoBehaviour {
             }
 
         }
-    // Cheap way to fix
-        Seed[0] = Seed[0].Remove(Seed[0].Length - 1);
-        //Debug.Log(Seed[0]);
+
 
 
         //Mountains Part
@@ -264,7 +264,7 @@ public class Map_Generator : MonoBehaviour {
 
             if (RTile != null && RTile.Type != TileType.Water && RTile.OcupedByMat  == MaterialTile.None)
             {
-                OcupyTileMat(MaterialTile.Wall, RTile.X, RTile.Y, SaveSeed);
+                OcupyTileMat(MaterialTile.Wall, RTile.X, RTile.Y);
 
                 int RLengh = UnityEngine.Random.Range(minM, maxM);
                 int RDir = UnityEngine.Random.Range(0, 3);
@@ -289,7 +289,7 @@ public class Map_Generator : MonoBehaviour {
 
                     if (T != null && T.Type != TileType.Water && T.OcupedByMat == MaterialTile.None)
                     {
-                        OcupyTileMat(MaterialTile.Wall, T.X, T.Y, SaveSeed);
+                        OcupyTileMat(MaterialTile.Wall, T.X, T.Y);
                     }  else if (T != null && T.Type == TileType.Water) 
                     {
                         if (TilesInM[TilesInM.Count - 2] != null)
@@ -305,7 +305,7 @@ public class Map_Generator : MonoBehaviour {
                                     // RX = N.X;
                                     // RY = N.Y;
                                     RTile = N;
-                                    OcupyTileMat(MaterialTile.Wall, N.Neighbours[E].X, N.Neighbours[E].Y, SaveSeed);
+                                    OcupyTileMat(MaterialTile.Wall, N.Neighbours[E].X, N.Neighbours[E].Y);
                                  //   Debug.Log(E);
                                     break;
                                 }
@@ -348,7 +348,6 @@ public class Map_Generator : MonoBehaviour {
             }
         }
 
-        Seed[1] = Seed[1].Remove(Seed[1].Length - 1);
         //Trees Part
         PossibleTiles.Clear();
         int ForestAmount = UnityEngine.Random.Range( Size/4, Size / 2);
@@ -363,7 +362,7 @@ public class Map_Generator : MonoBehaviour {
 
             if (RTile != null && RTile.OcupedByMat == MaterialTile.None && RTile.Type != TileType.Water)
             {
-                OcupyTileMat(MaterialTile.Tree, RTile.X, RTile.Y, SaveSeed);
+                OcupyTileMat(MaterialTile.Tree, RTile.X, RTile.Y);
 
                 int StartCounter = UnityEngine.Random.Range(minT, maxT);
 
@@ -376,7 +375,7 @@ public class Map_Generator : MonoBehaviour {
                     {
                         if (N != null && N.Type != TileType.Water && N.OcupedByMat == MaterialTile.None)
                         {
-                            OcupyTileMat(MaterialTile.Tree, N.X, N.Y, SaveSeed);
+                            OcupyTileMat(MaterialTile.Tree, N.X, N.Y);
                             PossibleTiles.Add(N);
                         }
 
@@ -408,7 +407,6 @@ public class Map_Generator : MonoBehaviour {
             //crear estrellas una cerca de la otra
           
         }
-        Seed[2] = Seed[2].Remove(Seed[2].Length - 1);
 
 
 
@@ -731,7 +729,7 @@ public class Map_Generator : MonoBehaviour {
 
     }
 
-    void ChangeTile(TileType T, int X, int Y, int Roughness, bool Saving)
+    void ChangeTile(TileType T, int X, int Y, int Roughness)
     {
         MapTile Tile = FindTile(X, Y);
 
@@ -739,40 +737,16 @@ public class Map_Generator : MonoBehaviour {
         {
             Tile.Type = T;
 
-            if (Saving)
-            {
-                switch (T)
-                {
-                    case TileType.Water:
-                        Seed[0] += AllMapTiles.IndexOf(Tile) + "|";
-                        break;
-                }
-            }
-
         }
  
     }
 
-    void OcupyTileMat (MaterialTile M, int X, int Y, bool Saving)
+    void OcupyTileMat (MaterialTile M, int X, int Y)
     {
         MapTile Tile = FindTile(X, Y);
         if (Tile != null)
         {
             Tile.OcupedByMat = M;
-
-            if(Saving)
-            {
-                switch (M)
-                {
-                    case MaterialTile.Wall:
-                        Seed[1] += AllMapTiles.IndexOf(Tile) + "|";
-                        break;
-
-                    case MaterialTile.Tree:
-                        Seed[2] += AllMapTiles.IndexOf(Tile) + "|"; 
-                        break;
-                }
-            }
 
         }
             
@@ -1249,56 +1223,60 @@ public class Map_Generator : MonoBehaviour {
         return LoadedMap;
     }*/ //Old ways that make no sense
 
-    public void LoadSeadedMap(string[] seed)
+    public void SaveTheMap(bool CreateSeed)
     {
-        //Lakes
-        string[] ListIndexWater = System.Text.RegularExpressions.Regex.Split(seed[0], @"\D+");
-        for (int i = 0; i < ListIndexWater.Length; i++)
+
+        if (CreateSeed)
         {
-            int Index;
-            
-            if (Int32.TryParse(ListIndexWater[i], out Index))
+            for (int x = 0; x < AllMapTiles.Count; x++) //This might be a bit heavy but it doesnt matter
             {
-                ChangeTile(TileType.Water, AllMapTiles[Index].X, AllMapTiles[Index].Y, 1, false);
+                MapTile Temp = AllMapTiles[x];
+
+                string TileString = (int)Temp.Type + "" + (int)Temp.OcupedByMat + "|"; //First what it is then what is has on it
+
+                Seed += TileString;
+            }
+        }
+
+
+
+        string path = Application.dataPath + "/MapLog.txt";
+        File.WriteAllText(path, Seed);
+
+
+
+    }
+    public void LoadSeadedMap()
+    {
+     
+        Seed = File.ReadAllText(Application.dataPath + "/MapLog.txt");
+        //This is gonna be easier now its gonna start from the first spot 
+        for (int x = 0; x < (AllMapTiles.Count * 3); x++)
+        {
+            MapTile Temp = AllMapTiles[x/3];
+            int TT = (int)char.GetNumericValue(Seed[x]);
+            TileType TempType = (TileType)TT;
+            x++; //This stuff is so we can keep track of where our thing is reading the seed
+
+            int TM = (int)char.GetNumericValue(Seed[x]);
+            MaterialTile TempMat = (MaterialTile)TM;
+            x++;
+
+            // ChangeTile(TempType, Temp.X, Temp.Y, Temp.Roughness);
+            //Changing the Type directly
+            if(AllMapTiles[x / 3] != null)
+            {
+                AllMapTiles[x / 3].Type = TempType;
+                AllMapTiles[x / 3].OcupedByMat = TempMat;
             } else
             {
-                Debug.Log("Could not indentify the Index: "+Index);
+                Debug.LogWarning("Tile not found");
             }
+
+        
+        //   Debug.Log("(" + Temp.X + ";" + Temp.Y + ")" + TempType + "," + TempMat);
         }
 
-        //Mountain
-        string[] ListIndexMountain = System.Text.RegularExpressions.Regex.Split(seed[1], @"\D+");
-        for (int i = 0; i < ListIndexMountain.Length; i++)
-        {
-            int Index;
-
-            if (Int32.TryParse(ListIndexMountain[i], out Index))
-            {
-                OcupyTileMat(MaterialTile.Wall, AllMapTiles[Index].X, AllMapTiles[Index].Y, false);
-            }
-            else
-            {
-                Debug.Log("Could not indentify the Index: " + Index);
-            }
-
-        }
-       
-        //Tree
-        string[] ListIndexTree = System.Text.RegularExpressions.Regex.Split(seed[2], @"\D+");
-        for (int i = 0; i < ListIndexTree.Length; i++)
-        {
-            int Index;
-
-            if (Int32.TryParse(ListIndexTree[i], out Index))
-            {
-                OcupyTileMat(MaterialTile.Tree, AllMapTiles[Index].X, AllMapTiles[Index].Y, false);
-            }
-            else
-            {
-                Debug.Log("Could not indentify the Index: " + Index);
-            }
-
-        }
 
         //This can be expanded
 
@@ -1315,8 +1293,8 @@ public class Map_Generator : MonoBehaviour {
 
         for (int Y = StartMin; Y <= StartMax; Y++)
         {
-            ChangeTile(DefaultTile, StartMin, Y,0,false);
-            OcupyTileMat(MaterialTile.None, StartMin, Y, false);
+            ChangeTile(DefaultTile, StartMin, Y,0);
+            OcupyTileMat(MaterialTile.None, StartMin, Y);
             FindTile(StartMin, Y).IsBound = true;
 
            // if (Y == StartMin || Y == StartMax)
@@ -1325,26 +1303,28 @@ public class Map_Generator : MonoBehaviour {
 
         for (int X = StartMin; X <= StartMax; X++)
         {
-            ChangeTile(DefaultTile, X, StartMin, 0, false);
-            OcupyTileMat(MaterialTile.None, X, StartMin, false);
+            ChangeTile(DefaultTile, X, StartMin, 0);
+            OcupyTileMat(MaterialTile.None, X, StartMin);
             FindTile(X, StartMin).IsBound = true;
         }
 
         for (int W = StartMin; W <= StartMax; W++)
         {
-            ChangeTile(DefaultTile, W, StartMax, 0, false);
-            OcupyTileMat(MaterialTile.None, W, StartMax, false);
+            ChangeTile(DefaultTile, W, StartMax, 0);
+            OcupyTileMat(MaterialTile.None, W, StartMax);
             FindTile(W, StartMax).IsBound = true;
         }
 
         for (int Z = StartMin; Z <= StartMax; Z++)
         {
-            ChangeTile(DefaultTile, StartMax, Z, 0, false);
-            OcupyTileMat(MaterialTile.None, StartMax, Z, false);
+            ChangeTile(DefaultTile, StartMax, Z, 0);
+            OcupyTileMat(MaterialTile.None, StartMax, Z);
             FindTile(StartMax, Z).IsBound = true;
         }
 
     }
+
+
 
     private IEnumerator TeleportToBound(MapTile Tile, Unit U)
     {
@@ -1547,45 +1527,46 @@ public class Map_Generator : MonoBehaviour {
 
     //This way does not work because the data saved is too complex
 
-        /*
-    public void SaveMapSerialized()
+    /*
+public void SaveMapSerialized()
+{
+    SaveSerialized save = new SaveSerialized()
     {
-        SaveSerialized save = new SaveSerialized()
-        {
-            SavedSerializedMap = AllMapTiles
-        };
+        SavedSerializedMap = AllMapTiles
+    };
+
+    var binaryformatter = new BinaryFormatter();
+
+    using (var fileStream = File.Create(SerializedDataPath))
+    {
+        binaryformatter.Serialize(fileStream, save);
+    }
+
+    Debug.Log("Data Serialized Saved");
+}
+
+public void LoadMapSerialized()
+{
+    if (File.Exists(SerializedDataPath))
+    {
+        SaveSerialized save;
 
         var binaryformatter = new BinaryFormatter();
 
-        using (var fileStream = File.Create(SerializedDataPath))
+        using (var fileStream = File.Open(SerializedDataPath, FileMode.Open))
         {
-            binaryformatter.Serialize(fileStream, save);
+            save = (SaveSerialized)binaryformatter.Deserialize(fileStream);
         }
 
-        Debug.Log("Data Serialized Saved");
-    }
-
-    public void LoadMapSerialized()
+        Debug.Log("Map Serialized Saved");
+        NewShit = save.SavedSerializedMap;
+    } else
     {
-        if (File.Exists(SerializedDataPath))
-        {
-            SaveSerialized save;
+        Debug.Log("Serialized Saved Map not foud");
 
-            var binaryformatter = new BinaryFormatter();
-
-            using (var fileStream = File.Open(SerializedDataPath, FileMode.Open))
-            {
-                save = (SaveSerialized)binaryformatter.Deserialize(fileStream);
-            }
-
-            Debug.Log("Map Serialized Saved");
-            NewShit = save.SavedSerializedMap;
-        } else
-        {
-            Debug.Log("Serialized Saved Map not foud");
-       
-        }
     }
-    */
+}
+*/
+
 
 }

@@ -95,7 +95,7 @@ public class MapTile : IHeapItem<MapTile>
 
 }
 
-public enum TileType { Ground, Water };
-public enum MaterialTile { None, Tree, Wall};
-public enum UnitIn { None, Player, AI};
+public enum TileType { Ground = 0, Water = 1 };
+public enum MaterialTile { None = 0, Tree = 1, Wall = 2};
+public enum UnitIn { None = 0, Player = 1, AI = 2};
 

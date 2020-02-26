@@ -183,6 +183,11 @@ public class InputManager : MonoBehaviour {
 
 	}
 
+    private void FixedUpdate()
+    {
+        LoopCamera();   
+    }
+
     void DragScreen()
     {
         if (RMBdown)
@@ -290,6 +295,14 @@ public class InputManager : MonoBehaviour {
         Temp2.transform.GetChild(2).GetComponent<TextMesh>().text = "G: " + tile.GCost;
         Temp2.transform.GetChild(3).GetComponent<TextMesh>().text = "H: " + tile.HCost;
         Temp2.transform.GetChild(4).GetComponent<TextMesh>().text = "W: " + tile.Walkable.ToString();
+    }
+
+    private void LoopCamera()
+    {
+        if (Cam.transform.position.x > 18)
+            Cam.transform.position = new Vector3(-18, Cam.transform.position.y, Cam.transform.position.z);
+        else if (Cam.transform.position.x < -18)
+            Cam.transform.position = new Vector3(18, Cam.transform.position.y, Cam.transform.position.z);
     }
 
 }
