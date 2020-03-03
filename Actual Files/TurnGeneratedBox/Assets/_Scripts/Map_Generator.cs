@@ -151,10 +151,10 @@ public class Map_Generator : MonoBehaviour {
         // List<MapTile> MyPath = new List<MapTile>();
 
         //  MyPath = Pathfinding() 
-         CreateMapBounds(); //This changes the stuff
+        CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
-        StartCoroutine(CreateMirrorTiles(8));
+        StartCoroutine(CreateMirrorTiles(18));
 
       //  SaveTheMap(true);
         // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
@@ -1223,11 +1223,9 @@ public class Map_Generator : MonoBehaviour {
         return LoadedMap;
     }*/ //Old ways that make no sense
 
-    public void SaveTheMap(bool CreateSeed)
+    public void SaveTheMap()
     {
 
-        if (CreateSeed)
-        {
             for (int x = 0; x < AllMapTiles.Count; x++) //This might be a bit heavy but it doesnt matter
             {
                 MapTile Temp = AllMapTiles[x];
@@ -1236,7 +1234,7 @@ public class Map_Generator : MonoBehaviour {
 
                 Seed += TileString;
             }
-        }
+
 
 
 

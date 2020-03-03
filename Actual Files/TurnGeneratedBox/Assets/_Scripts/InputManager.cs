@@ -35,10 +35,12 @@ public class InputManager : MonoBehaviour {
     private int CamX, CamY;
 
 
+
     [Header("Debug UI")]
     [Tooltip("Made to check the nodes")]
     public GameObject DebugText;
     public GameObject DebugHolder;
+    public float MapEdgeDebug;
 
     Vector3 Orig;
 
@@ -62,6 +64,8 @@ public class InputManager : MonoBehaviour {
         MapGRef = grid.gameObject.GetComponent<Map_Generator>();
         UIM = this.GetComponent<UI_Manager>();
         Scroll = LastScroll;
+
+        MapEdgeDebug = ((StaticMapConf.Size)/ 2);
     }
 
     //GameObject Temp;
@@ -299,10 +303,18 @@ public class InputManager : MonoBehaviour {
 
     private void LoopCamera()
     {
-        if (Cam.transform.position.x > 18)
-            Cam.transform.position = new Vector3(-18, Cam.transform.position.y, Cam.transform.position.z);
-        else if (Cam.transform.position.x < -18)
-            Cam.transform.position = new Vector3(18, Cam.transform.position.y, Cam.transform.position.z);
+
+
+        if (Cam.transform.position.x > MapEdgeDebug - 1)
+            Cam.transform.position = new Vector3(-MapEdgeDebug, Cam.transform.position.y, Cam.transform.position.z);
+        else if (Cam.transform.position.x < -MapEdgeDebug)
+           Cam.transform.position = new Vector3(MapEdgeDebug - 1.00f, Cam.transform.position.y, Cam.transform.position.z);
+       
+        else if (Cam.transform.position.y > MapEdgeDebug - 1)
+            Cam.transform.position = new Vector3(Cam.transform.position.x, -MapEdgeDebug, Cam.transform.position.z);
+        else if (Cam.transform.position.y < -MapEdgeDebug)
+            Cam.transform.position = new Vector3(Cam.transform.position.x, MapEdgeDebug - 1.00f, Cam.transform.position.z);
+           
     }
 
 }
