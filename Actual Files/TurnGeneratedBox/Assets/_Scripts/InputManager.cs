@@ -7,7 +7,7 @@ public class InputManager : MonoBehaviour {
     public Camera Cam;
 
     //public GameObject SelectParticle, ParticlesHolder; the particles should not be handled by the input manager script 
-	
+
     public class InputKeys
     {
         public float Sensivility = 0.5f;
@@ -15,11 +15,16 @@ public class InputManager : MonoBehaviour {
         public string SPACE = "space";
         public string ENTER = "return";
         public string ESCAPE = "escape";
+        public string HORIZONTAL = "Horizontal";
+        public string VERTICAL = "Vertical";
     }
     public InputKeys Key = new InputKeys();
 
     [HideInInspector]
     public bool RMBup, RMBdown, RMB, LMB, LMBup, LMBdown, Escp, spc;
+
+    [HideInInspector]
+    public float horizontal, vertical;
 
 
     [HideInInspector]
@@ -48,9 +53,9 @@ public class InputManager : MonoBehaviour {
     public bool InMoveMode = false;
     [HideInInspector]
     public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
-   // [HideInInspector]
+    // [HideInInspector]
     public Unit CurUnit;
-   // 
+    // 
 
     private MapTile CurHoveredTile = null;
     private List<MapTile> OldCurPath = null;
@@ -65,12 +70,12 @@ public class InputManager : MonoBehaviour {
         UIM = this.GetComponent<UI_Manager>();
         Scroll = LastScroll;
 
-        MapEdgeDebug = ((StaticMapConf.Size)/ 2);
+        MapEdgeDebug = ((StaticMapConf.Size) / 2);
     }
 
     //GameObject Temp;
     // I should clean this fixed update later
-    void Update () { //it has to be update in order to register
+    void Update() { //it has to be update in order to register
         GetInput();
         CameraMovement();
         CameraZoom();
@@ -78,33 +83,33 @@ public class InputManager : MonoBehaviour {
         //Cuando clickee
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
-                //Gotta add something to prevent from finding it when ontop of UI
-                Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                pz.z = 0;
-                Vector3Int cellPos = grid.WorldToCell(pz);
-         /*       Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
+            //Gotta add something to prevent from finding it when ontop of UI
+            Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pz.z = 0;
+            Vector3Int cellPos = grid.WorldToCell(pz);
+            /*       Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
 
-                if (Temp != null)
-                {
-                    Destroy(Temp);
-                } */
+                   if (Temp != null)
+                   {
+                       Destroy(Temp);
+                   } */
 
-               // Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
-                MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
-                UIM.ChangeOfSelection();
+            // Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
+            MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
+            UIM.ChangeOfSelection();
 
 
 
-                if (InMoveMode)// this is for the ON turn thing only
-                {
-                    if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
+            if (InMoveMode)// this is for the ON turn thing only
+            {
+                if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
                     StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
-            
-               InMoveMode = false;
-              }
+
+                InMoveMode = false;
+            }
 
 
-         //   ShowAllDebugUI();
+            //   ShowAllDebugUI();
         }
 
         if (!(MapGRef.TurnModeOn || CurUnit == null || !RMBdown || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()))
@@ -114,18 +119,18 @@ public class InputManager : MonoBehaviour {
             Vector3Int cellPos = grid.WorldToCell(pz);
 
 
-            if ( MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
+            if (MapGRef.FindTile(cellPos.x, cellPos.y) != null && MapGRef.FindTile(cellPos.x, cellPos.y).Walkable)
             {
                 StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
-              
+
                 MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
                 UIM.ChangeOfSelection();
-              //  UIM.ClearPath();
+                //  UIM.ClearPath();
             }
         }
-        
+
         //This is just for the area thing (I gotta migrate all this to the UI_Manager)
-        if(InMoveMode)
+        if (InMoveMode)
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
@@ -137,26 +142,26 @@ public class InputManager : MonoBehaviour {
             //So once this happens it is the old one 
             if (NewCurHoveredTile != CurHoveredTile && AllCurrentPaths.ContainsKey(NewCurHoveredTile))
             {
-               // MapGRef.ThirdLayer.ClearAllTiles();
+                // MapGRef.ThirdLayer.ClearAllTiles();
                 //This makes it so it everything is cleared 
                 List<MapTile> CurHovPath = AllCurrentPaths[NewCurHoveredTile];
                 if (CurHovPath != null && CurHovPath != OldCurPath)
                 {
                     //This refreshes the old path to the orginal
                     if (OldCurPath != null)
-                    foreach(MapTile M in OldCurPath)
-                    {
-                        if (M != null)
-                        MapGRef.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapGRef.particles_tiles.Area[5]);
-                    }
+                        foreach (MapTile M in OldCurPath)
+                        {
+                            if (M != null)
+                                MapGRef.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapGRef.particles_tiles.Area[5]);
+                        }
 
                     for (int x = 0; x < CurHovPath.Count; x++)
                     {
                         if (CurHovPath[x] != null)
                         {
-                            if (x != CurHovPath.Count -1)
+                            if (x != CurHovPath.Count - 1)
                             {
-                                
+
                                 MapGRef.ThirdLayer.SetTile(new Vector3Int(CurHovPath[x].X, CurHovPath[x].Y, 0), MapGRef.particles_tiles.Area[6]);
                             } else
                             {
@@ -164,17 +169,17 @@ public class InputManager : MonoBehaviour {
                             }
 
                         }
-          
+
                     }
 
                     OldCurPath = CurHovPath;
 
-                } else 
+                } else
 
 
 
-                //  MapGRef.ThirdLayer.SetTile(new Vector3Int(NewCurHoveredTile.X, NewCurHoveredTile.Y, 0), MapGRef.particles_tiles.Area[6]);
-                CurHoveredTile = NewCurHoveredTile;
+                    //  MapGRef.ThirdLayer.SetTile(new Vector3Int(NewCurHoveredTile.X, NewCurHoveredTile.Y, 0), MapGRef.particles_tiles.Area[6]);
+                    CurHoveredTile = NewCurHoveredTile;
             }
 
 
@@ -185,11 +190,11 @@ public class InputManager : MonoBehaviour {
         if (Escp)
             UIM.ShowEscapeMenu();
 
-	}
+    }
 
     private void FixedUpdate()
     {
-        LoopCamera();   
+        LoopCamera();
     }
 
     void DragScreen()
@@ -203,9 +208,9 @@ public class InputManager : MonoBehaviour {
         if (!RMB)
             return;
 
-            Vector3 pos = Cam.ScreenToViewportPoint(MousePos - Orig);
-            Vector3 move = new Vector3(pos.x * Key.Sensivility, pos.y * Key.Sensivility, 0);
-            transform.Translate(-move, Space.World);
+        Vector3 pos = Cam.ScreenToViewportPoint(MousePos - Orig);
+        Vector3 move = new Vector3(pos.x * Key.Sensivility, pos.y * Key.Sensivility, 0);
+        transform.Translate(-move, Space.World);
 
     }
 
@@ -214,22 +219,22 @@ public class InputManager : MonoBehaviour {
         //Also lets create a tolerance 
         //Check if the mouse is on the edge
         //Debug.Log(MousePos.x + ";" + MousePos.y);
-        
-         if (MousePos.x >= Screen.width - EdgeTolerance)
+
+        if (MousePos.x >= Screen.width - EdgeTolerance || horizontal > 0)
         {
             CamX = 1;
-        } else if(MousePos.x <= EdgeTolerance)
+        } else if (MousePos.x <= EdgeTolerance || horizontal < 0)
         {
             CamX = -1;
         } else
         {
             CamX = 0;
         }
-        
-        if(MousePos.y >= Screen.height - EdgeTolerance)
+
+        if (MousePos.y >= Screen.height - EdgeTolerance || vertical > 0)
         {
             CamY = 1;
-        } else if (MousePos.y <=  EdgeTolerance)
+        } else if (MousePos.y <=  EdgeTolerance || vertical < 0)
         {
             CamY = -1;
         } else
@@ -270,6 +275,9 @@ public class InputManager : MonoBehaviour {
 
         Escp = Input.GetKeyDown(Key.ESCAPE);
         spc = Input.GetKeyDown(Key.SPACE);
+
+        horizontal = Input.GetAxis(Key.HORIZONTAL);
+        vertical = Input.GetAxis(Key.VERTICAL);
 
     }
 
