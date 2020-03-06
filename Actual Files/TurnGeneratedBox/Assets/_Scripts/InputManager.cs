@@ -79,24 +79,36 @@ public class InputManager : MonoBehaviour {
         GetInput();
         CameraMovement();
         CameraZoom();
-        //Depende del tipo de movimiento 
-        //Cuando clickee
+        //select
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
             //Gotta add something to prevent from finding it when ontop of UI
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pz.z = 0;
             Vector3Int cellPos = grid.WorldToCell(pz);
-            /*       Vector3 cellPosFloat = cellPos + new Vector3(0.5f, 0.5f, 0);
+            MapTile Temp = MapGRef.FindTile(cellPos.x, cellPos.y);
+           
+            if(Temp != null)
+            {
+                MapGRef.CurrentTile = Temp;
+                UIM.ChangeOfSelection();
 
-                   if (Temp != null)
-                   {
-                       Destroy(Temp);
-                   } */
+            } else
+            {
+                //Making the selection the opposite one
+                Vector3Int TempV = MapGRef.GetOppositeTileOnBoarder(cellPos.x, cellPos.y);
+                Vector2Int TargetPos = new Vector2Int(TempV.x, TempV.y);
+                MapTile TargetTile = MapGRef.FindTile(TargetPos.x, TargetPos.y);
 
-            // Temp = Instantiate(SelectParticle, cellPosFloat, SelectParticle.transform.rotation, ParticlesHolder.transform);
-            MapGRef.CurrentTile = MapGRef.FindTile(cellPos.x, cellPos.y);
-            UIM.ChangeOfSelection();
+                if (TargetTile != null)
+                {
+                    MapGRef.CurrentTile = TargetTile;
+                    UIM.ChangeOfSelection();
+                }
+
+
+
+            }
 
 
 
@@ -112,6 +124,8 @@ public class InputManager : MonoBehaviour {
             //   ShowAllDebugUI();
         }
 
+    
+        //movement
         if (!(MapGRef.TurnModeOn || CurUnit == null || !RMBdown || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()))
         {
             Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);

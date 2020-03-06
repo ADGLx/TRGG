@@ -253,6 +253,7 @@ public class UI_Manager : MonoBehaviour {
 
            // Bot_Left.Title.text = "X: " + CurT.X + " | Y: " + CurT.Y;
         }
+
     }
 
     //this should change later on, to optimize the selection

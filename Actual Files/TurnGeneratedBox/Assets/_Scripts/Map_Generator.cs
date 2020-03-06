@@ -1382,63 +1382,8 @@ public class Map_Generator : MonoBehaviour {
                     OriginPos = new Vector3Int(X, Y, 0);
                     //Si es el limite abajo
 
-                    bool Bot = false, Right = false, Top = false, Left = false;
+                    TargetPos = GetOppositeTileOnBoarder(X, Y);
 
-                    if(X>= StartMax)
-                    {
-                        Right = true;
-                    } else if(X <= StartMin)
-                    {
-                        Left = true;
-                    }
-
-                    if(Y >= StartMax)
-                    {
-                        Top = true;
-                    } else if (Y <= StartMin)
-                    {
-                        Bot = true;
-                    }
-
-
-
-                    if (Bot && !Right && !Left)
-                    {
-                        TargetPos = new Vector3Int(X,StartMax - (StartMin - Y + 1), 0); //find a way to tell where the size thing is 
-                       
-                    } 
-                    else if (Right && !Bot && !Top)//derecha
-                    {
-                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), Y, 0); //find a way to tell where the size thing is 
-                    } 
-                    else if(Top && !Right && !Left)//Arriba
-                    {
-                        TargetPos = new Vector3Int(X, StartMin + (Y - StartMax + 1), 0);
-                    }
-                    else if(Left && !Bot && !Top)//Izquierda
-                    {
-                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), Y, 0);
-                    }
-                    else if (Bot && Left)//uttom left corner
-                    {
-                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMax - (StartMin - Y + 1), 0);
-                    } 
-                    else if (Bot && Right)
-                    {
-                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMax - (StartMin - Y + 1), 0);
-                    } 
-                    else if (Top && Right)
-                    {
-                        TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMin + (Y - StartMax + 1), 0);
-                    }
-                    else if (Top && Left)
-                    {
-                        TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMin + (Y - StartMax + 1), 0);
-                    }
-                    else
-                    {
-                        TargetPos = new Vector3Int (100,0,0);
-                    }
 
                     ActualTile = Map.GetTile(TargetPos);
                     OcupiedBy = SecondLayer.GetTile(TargetPos);
@@ -1450,75 +1395,79 @@ public class Map_Generator : MonoBehaviour {
         }
 
 
-
-
-
-        /*
-        //Initial line
-        for (int Y = StartMin; Y <= StartMax; Y++)
-        {
-
-            Vector3Int OriginPos = new Vector3Int(StartMin, Y, 0);
-            Vector3Int TargetPos = new Vector3Int(StartMax - 1, Y, 0);
-            TileBase ActualTile = Map.GetTile(TargetPos);
-            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
-           
-            Map.SetTile(OriginPos, ActualTile);
-            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
-            SecondLayer.SetTile(OriginPos,OcupiedBy);
-
-        } 
-
-        for (int X = StartMin; X <= StartMax; X++)
-        {
-
-            Vector3Int OriginPos = new Vector3Int(X, StartMin, 0);
-            Vector3Int TargetPos = new Vector3Int(X, StartMax - 1, 0);
-            TileBase ActualTile = Map.GetTile(TargetPos);
-            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
-
-            Map.SetTile(OriginPos, ActualTile);
-            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
-            SecondLayer.SetTile(OriginPos, OcupiedBy);
-            //only visual stuff
-        }
-
-        for (int W = StartMin; W <= StartMax; W++)
-        {
-
-            Vector3Int OriginPos = new Vector3Int(W, StartMax, 0);
-            Vector3Int TargetPos = new Vector3Int(W, StartMin + 1, 0);
-            TileBase ActualTile = Map.GetTile(TargetPos);
-            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
-
-            Map.SetTile(OriginPos, ActualTile);
-            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
-            SecondLayer.SetTile(OriginPos, OcupiedBy);
-            //only visual stuff
-        }
-
-        for (int Z = StartMin; Z <= StartMax; Z++)
-        {
-
-            Vector3Int OriginPos = new Vector3Int(StartMax, Z, 0);
-            Vector3Int TargetPos = new Vector3Int(StartMin + 1, Z, 0);
-            TileBase ActualTile = Map.GetTile(TargetPos);
-            TileBase OcupiedBy = SecondLayer.GetTile(TargetPos);
-
-            Map.SetTile(OriginPos, ActualTile);
-            Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
-            SecondLayer.SetTile(OriginPos, OcupiedBy);
-            //only visual stuff
-        }
-
-
-        */
-
         //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
         yield return new WaitForSecondsRealtime(1);
 
         //So first its basically gonna generate the stuff that is at the begining starting by the changing the teleport tiles
 
+    }
+
+    public Vector3Int GetOppositeTileOnBoarder (int X, int Y)
+    {
+        int StartMin = -(StaticMapConf.Size / 2);
+        int StartMax = StaticMapConf.Size / 2;
+        bool Bot = false, Right = false, Top = false, Left = false;
+        Vector3Int TargetPos = new Vector3Int();
+
+        if (X >= StartMax)
+        {
+            Right = true;
+        }
+        else if (X <= StartMin)
+        {
+            Left = true;
+        }
+
+        if (Y >= StartMax)
+        {
+            Top = true;
+        }
+        else if (Y <= StartMin)
+        {
+            Bot = true;
+        }
+
+
+
+        if (Bot && !Right && !Left)
+        {
+            TargetPos = new Vector3Int(X, StartMax - (StartMin - Y + 1), 0); //find a way to tell where the size thing is 
+
+        }
+        else if (Right && !Bot && !Top)//derecha
+        {
+            TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), Y, 0); //find a way to tell where the size thing is 
+        }
+        else if (Top && !Right && !Left)//Arriba
+        {
+            TargetPos = new Vector3Int(X, StartMin + (Y - StartMax + 1), 0);
+        }
+        else if (Left && !Bot && !Top)//Izquierda
+        {
+            TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), Y, 0);
+        }
+        else if (Bot && Left)//uttom left corner
+        {
+            TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMax - (StartMin - Y + 1), 0);
+        }
+        else if (Bot && Right)
+        {
+            TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMax - (StartMin - Y + 1), 0);
+        }
+        else if (Top && Right)
+        {
+            TargetPos = new Vector3Int(StartMin + (X - StartMax + 1), StartMin + (Y - StartMax + 1), 0);
+        }
+        else if (Top && Left)
+        {
+            TargetPos = new Vector3Int(StartMax - (StartMin - X + 1), StartMin + (Y - StartMax + 1), 0);
+        }
+        else
+        {
+            TargetPos = new Vector3Int(100, 0, 0);
+        }
+
+        return TargetPos;
     }
 
 
