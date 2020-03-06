@@ -252,7 +252,7 @@ public class UI_Manager : MonoBehaviour {
             }
 
            // Bot_Left.Title.text = "X: " + CurT.X + " | Y: " + CurT.Y;
-        }
+        } 
 
     }
 
