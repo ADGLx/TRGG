@@ -18,6 +18,8 @@ public class MapTile : IHeapItem<MapTile>
     public UnitIn OcupiedByUnit = UnitIn.None;
     public Unit OcupingUnitScript; //The unit Scropt
     public bool IsBound = false;
+    public bool Discovered = false;
+    public bool Visible = false;
     
     public bool Walkable
     {
@@ -80,7 +82,8 @@ public class MapTile : IHeapItem<MapTile>
         OcupedByMat = MaterialTile.None;
         OcupiedByUnit = UnitIn.None;
         OcupingUnitScript = null;
-
+        Visible = false;
+        Discovered = false;
       //  Debug.Log("me llaman");
     }
 
