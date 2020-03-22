@@ -78,9 +78,12 @@ public class Unit : MonoBehaviour {
         //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
         //MoveUnitTo(4, -4);
 
-       // MapLocal.SpawnAreaParticle(GridPos, 2);
+        // MapLocal.SpawnAreaParticle(GridPos, 2);
+
+        StartCoroutine(HideIfNotvisible());
 
     }
+
 
     public void SetPos(int X, int Y)
     {
@@ -230,6 +233,27 @@ public class Unit : MonoBehaviour {
             Debug.Log("Loaded Path is null");
         }
 
+    }
+
+    IEnumerator HideIfNotvisible()
+    {
+        while(true) //this kinda works
+        {
+            yield return new WaitUntil(() => IsUnitMoving == true);
+
+            if (!MapLocal.FindTile(GridPos.x, GridPos.y).Visible)
+            {
+                this.GetComponent<SpriteRenderer>().enabled = false;
+            } else
+            {
+                this.GetComponent<SpriteRenderer>().enabled = true;
+            }
+
+            
+        }
+
+
+       
     }
 
     /*

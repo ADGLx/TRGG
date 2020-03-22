@@ -25,14 +25,15 @@ public class VisionManager : MonoBehaviour
         // HideAllTiles();
 
         StartCoroutine(UpdateAllTiles());
+        StartCoroutine(GivePlayerVision());
 
-        GivePlayerVision();
+       // GivePlayerVision();
     }
 
     // Update is called once per frame
     void Update()
     {
-        WhenThePlayerMoves();
+       // WhenThePlayerMoves();
     }
 
     private void HideAllTiles()
@@ -45,24 +46,30 @@ public class VisionManager : MonoBehaviour
         }
     }
 
-    private void GivePlayerVision()
+    IEnumerator GivePlayerVision()
     {
-
-        //Clear the previous vision first 
-        foreach(MapTile T1 in TilesCloseToPlayer)
+        while (true)
         {
-            T1.Visible = false;
-        }
-        TilesCloseToPlayer.Clear();
 
-        List<MapTile> Tiles = LocalMap.GetAreaAround(Player.GridPos, Player.unitStats.VisionRange);
 
-        foreach(MapTile T in Tiles)
-        {
-            TilesCloseToPlayer.Add(T);
-            T.Visible = true;
-            T.Discovered = true;
-           // tileMap.SetTile(new Vector3Int(T.X, T.Y,0), null);
+            //Clear the previous vision first 
+            foreach (MapTile T1 in TilesCloseToPlayer)
+            {
+                T1.Visible = false;
+            }
+            TilesCloseToPlayer.Clear();
+
+            List<MapTile> Tiles = LocalMap.GetAreaAround(Player.GridPos, Player.unitStats.VisionRange);
+
+            foreach (MapTile T in Tiles)
+            {
+                TilesCloseToPlayer.Add(T);
+                T.Visible = true;
+                T.Discovered = true;
+                // tileMap.SetTile(new Vector3Int(T.X, T.Y,0), null);
+              }
+
+            yield return new WaitUntil(() => Player.IsUnitMoving == true);
         }
     }
 
@@ -96,12 +103,14 @@ public class VisionManager : MonoBehaviour
 
             }
 
+            //UpdateMirrorTIles();
             yield return new WaitForSeconds(UpdateRate);
         }
       
     }
 
-    void WhenThePlayerMoves()
+    /*
+    private void WhenThePlayerMoves()
     {
         if(Player.IsUnitMoving && !IsTrigger)
         {
@@ -116,5 +125,55 @@ public class VisionManager : MonoBehaviour
             GivePlayerVision(); 
         }
 
-    }
+    }*/
+
+    private void UpdateMirrorTIles()
+    {
+        int Size = StaticMapConf.Size;
+
+        int StartMin = -(Size / 2);
+        int StartMax = Size / 2;
+
+
+        Vector3Int OriginPos = new Vector3Int();
+        Vector3Int TargetPos = new Vector3Int();
+
+
+        //start drawing from the bottonleft and keep going
+        for (int Y = StartMin - Size; Y <= StartMax + Size; Y++)
+        {
+            for (int X = StartMin - Size; X <= StartMax + Size; X++)
+            {
+                if ((X <= StartMin || X >= StartMax || Y <= StartMin || Y >= StartMax))
+                {
+                    OriginPos = new Vector3Int(X, Y, 0);
+
+                    TargetPos = LocalMap.GetOppositeTileOnBoarder(X, Y);
+
+                    MapTile TargetTile = LocalMap.FindTile(TargetPos.x, TargetPos.y);
+
+                    if(TargetTile != null)
+                    {
+                        if (TargetTile.Visible)
+                        {
+                            tileMap.SetTile(OriginPos, null);
+                        }
+                        else if (TargetTile.Discovered)
+                        {
+                            tileMap.SetTile(OriginPos, UnvisibleTile);
+                        }
+                        else //Not discovered or visible
+                        {
+                            tileMap.SetTile(OriginPos, UndiscoveredTile);
+                        }
+                    } else
+                    {
+                        Debug.Log("Null Tile");
+                    }
+
+
+                }
+            }
+        }
+    } //Fix mirror tiles
 }

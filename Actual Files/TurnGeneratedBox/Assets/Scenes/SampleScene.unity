@@ -4774,7 +4774,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 1913443078}
   tileMap: {fileID: 1159584174}
-  UpdateRate: 0.25
+  UpdateRate: 0.1
   UndiscoveredTile: {fileID: 11400000, guid: cec830751e85a414eade64f6dd1ba256, type: 2}
   UnvisibleTile: {fileID: 11400000, guid: c69263977e9152c4c8a8c80d08108a4e, type: 2}
 --- !u!1 &1159584173
