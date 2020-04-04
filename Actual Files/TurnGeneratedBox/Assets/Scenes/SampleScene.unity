@@ -6987,7 +6987,7 @@ MonoBehaviour:
     MaxLifePoints: 5
     ActionPoints: 2
     MaxActionPoints: 2
-    VisionRange: 8
+    VisionRange: 7
   GridPos: {x: 0, y: 0}
   Type: 1
   AnimSpeed: 6

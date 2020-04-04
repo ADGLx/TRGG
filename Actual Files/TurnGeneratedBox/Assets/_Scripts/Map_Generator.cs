@@ -101,6 +101,9 @@ public class Map_Generator : MonoBehaviour {
 
     private GameObject PlayerUnitsHolder;
 
+    //This contains all the info on the mirror tiles
+    public Dictionary<Vector2Int, MapTile> AllMirrorTiles = new Dictionary<Vector2Int, MapTile>();
+
 
     // This will insitalize a map with a certain type of tile
     private void Awake()
@@ -1150,12 +1153,22 @@ public class Map_Generator : MonoBehaviour {
     public List<MapTile> GetAreaAround(Vector2Int Origin, int size)
     {
         List<MapTile> Area = new List<MapTile>();
-        for(int x = Origin.x - size; x < Origin.x + size; x++)
+        for(int x = Origin.x - size; x < Origin.x + size + 1; x++)
         {
-            for(int y = Origin.y - size; y < Origin.y + size; y++)
+            for(int y = Origin.y - size; y < Origin.y + size + 1; y++)
             {
                 if (FindTile(x,y) != null)
-                Area.Add(FindTile(x, y));
+                {
+                    Area.Add(FindTile(x, y));
+                } else if (AllMirrorTiles[new Vector2Int(x,y)] != null)
+                {
+                    Area.Add(AllMirrorTiles[new Vector2Int(x, y)]);
+                }
+                else
+                {
+                    Debug.Log(x + ";" + y);
+                }
+
             }
         }
 
@@ -1361,12 +1374,12 @@ public class Map_Generator : MonoBehaviour {
     private IEnumerator CreateMirrorTiles(int Size)
     {
         
-
+        //Only keep the part where it identifies all the stuff and saves it to the dictionary
         int StartMin = -(StaticMapConf.Size / 2);
         int StartMax = StaticMapConf.Size / 2;
 
         Vector3Int OriginPos;
-        Vector3Int TargetPos = new Vector3Int (0,0,0);
+        Vector3Int TargetPos;
         TileBase ActualTile;
         TileBase OcupiedBy;
 
@@ -1379,28 +1392,58 @@ public class Map_Generator : MonoBehaviour {
                 {
                     //now we need to decide which side is the thing on and what should it imitate
                     //Map.SetTile(new Vector3Int(X, Y, 0), water_Tiles.Basic[0]);
-                    OriginPos = new Vector3Int(X, Y, 0);
-                    //Si es el limite abajo
 
+                    OriginPos = new Vector3Int(X, Y, 0);
                     TargetPos = GetOppositeTileOnBoarder(X, Y);
 
-
                     ActualTile = Map.GetTile(TargetPos);
-                    OcupiedBy = SecondLayer.GetTile(TargetPos);
+
+
+                    //The tile info
                     Map.SetTile(OriginPos, ActualTile);
                     Map.SetTransformMatrix(OriginPos, Map.GetTransformMatrix(TargetPos));
+
+                    //What is is occupied with
+                    OcupiedBy = SecondLayer.GetTile(TargetPos);
                     SecondLayer.SetTile(OriginPos, OcupiedBy);
+
+                    if (FindTile(TargetPos.x, TargetPos.y) != null)
+                    AllMirrorTiles.Add(new Vector2Int(X, Y), FindTile(TargetPos.x, TargetPos.y));
                 }
             }
         }
 
 
-        //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
-        yield return new WaitForSecondsRealtime(1);
+        //In here all that updates per sec
+
+        while (true)
+        {
+           
+            foreach (Vector2Int Origin in AllMirrorTiles.Keys)
+            {
+                OriginPos = new Vector3Int(Origin.x, Origin.y, 0);
+                TargetPos = new Vector3Int(AllMirrorTiles[Origin].X, AllMirrorTiles[Origin].Y, 0);
+
+                //Only updates what it is occupied with 
+                OcupiedBy = SecondLayer.GetTile(TargetPos);
+
+                if (SecondLayer.GetTile(TargetPos) != OcupiedBy)
+                SecondLayer.SetTile(OriginPos, OcupiedBy);
+            }
+
+
+
+            //This is gonna permanentelly update I think, after I can make it so it only updates when the camera is close
+            yield return new WaitForSecondsRealtime(1f);
+        }
+
+
 
         //So first its basically gonna generate the stuff that is at the begining starting by the changing the teleport tiles
 
     }
+
+
 
     public Vector3Int GetOppositeTileOnBoarder (int X, int Y)
     {
