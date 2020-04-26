@@ -1304,9 +1304,10 @@ public class Map_Generator : MonoBehaviour {
 
         for (int Y = StartMin; Y <= StartMax; Y++)
         {
+            MapTile Bound = FindTile(StartMin, Y);
             ChangeTile(DefaultTile, StartMin, Y,0);
             OcupyTileMat(MaterialTile.None, StartMin, Y);
-            FindTile(StartMin, Y).IsBound = true;
+            Bound.IsBound = true;
 
            // if (Y == StartMin || Y == StartMax)
              //   FindTile(StartMin, Y) = false; Fix later

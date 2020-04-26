@@ -103,17 +103,24 @@ public class VisionManager : MonoBehaviour
                     tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
                 }
 
-            }
+                if (T.IsBound && T.Discovered && T.Visible)
+                    tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
 
+            }
+         
+
+            
             //Mirror TIles
             foreach (Vector2Int Origin in LocalMap.AllMirrorTiles.Keys)
             {
 
                 MapTile TargetTile = LocalMap.AllMirrorTiles[Origin];
 
+              //  Debug.Log(Origin);
 
                 if (TargetTile != null)
                 {
+
                     if (TargetTile.Visible)
                     {
                         tileMap.SetTile(new Vector3Int(Origin.x, Origin.y, 0), null);
@@ -122,16 +129,20 @@ public class VisionManager : MonoBehaviour
                     {
                         tileMap.SetTile(new Vector3Int(Origin.x, Origin.y, 0), UnvisibleTile);
                     }
-                    else //Not discovered or visible
+                    else
                     {
                         tileMap.SetTile(new Vector3Int(Origin.x, Origin.y, 0), UndiscoveredTile);
                     }
+
+                    
                 }
                 else
                 {
-                    Debug.Log("Null Tile");
+                   // Debug.Log("Null Tile");
                 }
             }
+
+            
 
             yield return new WaitForSeconds(UpdateRate);
         }
