@@ -102,7 +102,10 @@ public class Map_Generator : MonoBehaviour {
     private GameObject PlayerUnitsHolder;
 
     //This contains all the info on the mirror tiles
+    [Header("Map Mirror Tiles Parameters")]
+    public float UpdateTime;
     public Dictionary<Vector2Int, MapTile> AllMirrorTiles = new Dictionary<Vector2Int, MapTile>();
+
 
 
     // This will insitalize a map with a certain type of tile
@@ -157,8 +160,8 @@ public class Map_Generator : MonoBehaviour {
         CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
-        StartCoroutine(CreateMirrorTiles(18));
-
+       // StartCoroutine(CreateMirrorTiles(18));
+        //StartCoroutine(UpdateThingsOverMirrorTiles());
       //  SaveTheMap(true);
         // Debug.Log(GetDistance(new Vector2Int(27, -27), new Vector2Int(27, 27)));
 
@@ -1445,6 +1448,36 @@ public class Map_Generator : MonoBehaviour {
     }
 
 
+    private IEnumerator UpdateThingsOverMirrorTiles()
+    {
+        Unit Player = GameObject.FindWithTag("Main_Pl").GetComponent<Unit>();
+
+        if (Player == null)
+            Debug.LogError("Player wasnt found");
+
+
+        foreach(Vector2Int x in AllMirrorTiles.Keys)
+        {
+            Debug.Log(x);
+        }
+
+
+
+        while (true)
+        {
+            //start by mirroring the player 
+            if (AllMirrorTiles.ContainsKey(Player.GridPos))
+            {
+                Debug.Log("ay");
+            }
+
+
+
+
+           yield return new WaitForSecondsRealtime(UpdateTime);
+        }
+    }
+
 
     public Vector3Int GetOppositeTileOnBoarder (int X, int Y)
     {
@@ -1513,6 +1546,7 @@ public class Map_Generator : MonoBehaviour {
 
         return TargetPos;
     }
+
 
 
 

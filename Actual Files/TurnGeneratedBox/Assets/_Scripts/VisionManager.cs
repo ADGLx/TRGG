@@ -67,14 +67,15 @@ public class VisionManager : MonoBehaviour
                     TilesCloseToPlayer.Add(T);
                     T.Visible = true;
                     T.Discovered = true;
-                        
+                    /*    
                    if(T.IsBound)
                    {
                      Vector3Int TargetPos = LocalMap.GetOppositeTileOnBoarder(T.X, T.Y);
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Visible = true;
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Discovered = true;
-                }
 
+                }
+                   */
 
 
 
@@ -113,6 +114,7 @@ public class VisionManager : MonoBehaviour
                     tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
                 }
 
+
                 if (T.IsBound && T.Discovered && T.Visible)
                 {
                     tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
@@ -122,7 +124,7 @@ public class VisionManager : MonoBehaviour
             }
          
 
-            
+            /*
             //Mirror TIles
             foreach (Vector2Int Origin in LocalMap.AllMirrorTiles.Keys)
             {
@@ -153,7 +155,7 @@ public class VisionManager : MonoBehaviour
                 {
                     Debug.Log("Null Tile");
                 }
-            }
+            }*/
 
             
 
