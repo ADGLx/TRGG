@@ -79,7 +79,7 @@ public class Unit : MonoBehaviour {
         //MoveUnitTo(4, -4);
 
         // MapLocal.SpawnAreaParticle(GridPos, 2);
-
+        if(MapLocal.GetComponent<VisionManager>().enabled)
         StartCoroutine(HideIfNotvisible());
 
     }
