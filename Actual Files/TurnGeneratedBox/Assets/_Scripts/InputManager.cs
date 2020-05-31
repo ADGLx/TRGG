@@ -142,6 +142,7 @@ public class InputManager : MonoBehaviour {
                 //  UIM.ClearPath();
             } else
             {
+               
                 Vector3Int TempV = MapGRef.GetOppositeTileOnBoarder(cellPos.x, cellPos.y);
                 Vector2Int TargetPos = new Vector2Int(TempV.x, TempV.y);
                 MapTile TargetTile = MapGRef.FindTile(TargetPos.x, TargetPos.y);

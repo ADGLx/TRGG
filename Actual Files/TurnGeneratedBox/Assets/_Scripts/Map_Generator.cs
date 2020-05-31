@@ -104,7 +104,7 @@ public class Map_Generator : MonoBehaviour {
     //This contains all the info on the mirror tiles
     [Header("Map Mirror Tiles Parameters")]
     public float UpdateTime;
-    public Dictionary<Vector2Int, MapTile> AllMirrorTiles = new Dictionary<Vector2Int, MapTile>();
+   // public Dictionary<Vector2Int, MapTile> AllMirrorTiles = new Dictionary<Vector2Int, MapTile>();
 
 
 
@@ -1163,9 +1163,12 @@ public class Map_Generator : MonoBehaviour {
                 if (FindTile(x,y) != null)
                 {
                     Area.Add(FindTile(x, y));
-                } else if (AllMirrorTiles[new Vector2Int(x,y)] != null)
+                } else if (x >= (StaticMapConf.Size / 2) || y >= (StaticMapConf.Size / 2))
                 {
-                    Area.Add(AllMirrorTiles[new Vector2Int(x, y)]);
+
+                    Vector3Int Bro = GetOppositeTileOnBoarder(x, y);
+                    Area.Add(FindTile(Bro.x, Bro.y));
+                   // Area.Add(AllMirrorTiles[new Vector2Int(x, y)]);
                 }
                 else
                 {
@@ -1374,7 +1377,7 @@ public class Map_Generator : MonoBehaviour {
 
     }
 
-
+    /*
     private IEnumerator CreateMirrorTiles(int Size)
     {
         
@@ -1477,7 +1480,7 @@ public class Map_Generator : MonoBehaviour {
            yield return new WaitForSecondsRealtime(UpdateTime);
         }
     }
-
+    */
 
     public Vector3Int GetOppositeTileOnBoarder (int X, int Y)
     {

@@ -67,15 +67,19 @@ public class VisionManager : MonoBehaviour
                     TilesCloseToPlayer.Add(T);
                     T.Visible = true;
                     T.Discovered = true;
-                    /*    
+                        
                    if(T.IsBound)
                    {
-                     Vector3Int TargetPos = LocalMap.GetOppositeTileOnBoarder(T.X, T.Y);
+                   // Debug.Log("bruh");
+                    
+                    
+                    Vector3Int TargetPos = LocalMap.GetOppositeTileOnBoarder(T.X, T.Y);
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Visible = true;
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Discovered = true;
+                    
 
                 }
-                   */
+                   
 
 
 
