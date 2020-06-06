@@ -17,41 +17,42 @@ public class MirrorCamera : MonoBehaviour
     {
         float size = StaticMapConf.Size / 2;
         size += 0.5f; //Cheap fix idk 
+        size -= 1f; //Ignore the mirror tiles
         TheCamera.orthographicSize = size;
 
         MirrorWorldCanvas.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size * 2);
         MirrorWorldCanvas.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size * 2);
         
         //Left
-        Left.offsetMin = new Vector2(-(size * 2) + 2,0);
-        Left.offsetMax = new Vector2(-(size*2) + 2,0);
+        Left.offsetMin = new Vector2(-(size * 2),0);
+        Left.offsetMax = new Vector2(-(size*2) ,0);
         //Right
-        Right.offsetMin = new Vector2(size * 2 - 2, 0);
-        Right.offsetMax = new Vector2(size * 2 - 2, 0);
+        Right.offsetMin = new Vector2(size * 2 , 0);
+        Right.offsetMax = new Vector2(size * 2 , 0);
 
         //Top
-        Top.offsetMin = new Vector2(0,size * 2 - 2);
-        Top.offsetMax = new Vector2(0, size * 2 - 2);
+        Top.offsetMin = new Vector2(0,size * 2 );
+        Top.offsetMax = new Vector2(0, size * 2);
 
         //Bot
-        Bot.offsetMin = new Vector2(0, -(size * 2) + 2);
-        Bot.offsetMax = new Vector2(0, -(size * 2) + 2);
+        Bot.offsetMin = new Vector2(0, -(size * 2));
+        Bot.offsetMax = new Vector2(0, -(size * 2));
 
         //BotLeft
-        BotLeft.offsetMin = new Vector2(-(size * 2) + 2, -(size * 2) + 2);
-        BotLeft.offsetMax = new Vector2(-(size * 2) + 2, -(size * 2) + 2);
+        BotLeft.offsetMin = new Vector2(-(size * 2) , -(size * 2));
+        BotLeft.offsetMax = new Vector2(-(size * 2) , -(size * 2));
 
         //BotRight
-        BotRight.offsetMin = new Vector2(size * 2 - 2, -(size * 2) + 2);
-        BotRight.offsetMax = new Vector2(size * 2 - 2, -(size * 2) + 2);
+        BotRight.offsetMin = new Vector2(size * 2 , -(size * 2));
+        BotRight.offsetMax = new Vector2(size * 2 , -(size * 2) );
 
         //TopLeft
-        TopLeft.offsetMin = new Vector2(-(size * 2) + 2, size * 2 - 2);
-        TopLeft.offsetMax = new Vector2(-(size * 2) + 2, size * 2 - 2);
+        TopLeft.offsetMin = new Vector2(-(size * 2) , size * 2 );
+        TopLeft.offsetMax = new Vector2(-(size * 2), size * 2 );
 
         //TopRight
-        TopRight.offsetMin = new Vector2(size * 2 - 2, size * 2 - 2);
-        TopRight.offsetMax = new Vector2(size * 2 - 2, size * 2 - 2);
+        TopRight.offsetMin = new Vector2(size * 2 , size * 2 );
+        TopRight.offsetMax = new Vector2(size * 2 , size * 2 );
 
     }
 
