@@ -27,6 +27,7 @@ public class VisionManager : MonoBehaviour
         StartCoroutine(UpdateAllTiles());
         StartCoroutine(GivePlayerVision());
 
+        
         // GivePlayerVision();
     }
 
@@ -51,7 +52,7 @@ public class VisionManager : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitUntil(() => Player.IsUnitMoving == false);
+            //yield return new WaitUntil(() => Player.IsUnitMoving == false);
 
                 foreach (MapTile T1 in TilesCloseToPlayer)
                 {
@@ -119,7 +120,7 @@ public class VisionManager : MonoBehaviour
                 }
 
 
-                if (T.IsBound && T.Discovered && T.Visible)
+                if (T.IsBound) //super cheap fix
                 {
                     tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
                 }

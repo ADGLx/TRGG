@@ -1163,7 +1163,7 @@ public class Map_Generator : MonoBehaviour {
                 if (FindTile(x,y) != null)
                 {
                     Area.Add(FindTile(x, y));
-                } else if (x >= (StaticMapConf.Size / 2) || y >= (StaticMapConf.Size / 2))
+                } else if (x >= (StaticMapConf.Size / 2) || y >= (StaticMapConf.Size / 2) || x <= (StaticMapConf.Size / 2) || y <= (StaticMapConf.Size / 2))
                 {
 
                     Vector3Int Bro = GetOppositeTileOnBoarder(x, y);
@@ -1545,6 +1545,7 @@ public class Map_Generator : MonoBehaviour {
         else
         {
             TargetPos = new Vector3Int(100, 0, 0);
+            Debug.Log("this should not happen");
         }
 
         return TargetPos;
