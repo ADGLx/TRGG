@@ -27,7 +27,7 @@ public class VisionManager : MonoBehaviour
         StartCoroutine(UpdateAllTiles());
         StartCoroutine(GivePlayerVision());
 
-        
+       
         // GivePlayerVision();
     }
 
@@ -71,13 +71,14 @@ public class VisionManager : MonoBehaviour
                         
                    if(T.IsBound)
                    {
-                   // Debug.Log("bruh");
-                    
-                    
+                    // Debug.Log("bruh");
+
+                   
                     Vector3Int TargetPos = LocalMap.GetOppositeTileOnBoarder(T.X, T.Y);
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Visible = true;
                     LocalMap.FindTile(TargetPos.x, TargetPos.y).Discovered = true;
-                    
+                    TilesCloseToPlayer.Add(LocalMap.FindTile(TargetPos.x, TargetPos.y));
+
 
                 }
                    
@@ -113,19 +114,21 @@ public class VisionManager : MonoBehaviour
                 } else if (!T.Visible)
                 {
                         tileMap.SetTile(Pos, UnvisibleTile);
+
                  
                 } else if(T.Visible)
                 {
                     tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
+
                 }
 
-
-                if (T.IsBound) //super cheap fix
+                /*
+                if (T.IsBound)
                 {
-                    tileMap.SetTile(new Vector3Int(T.X, T.Y, 0), null);
+                    tileMap.SetTile(Pos, null);
                 }
-
-
+                */
+                //tileMap.SetTile(new Vector3Int(0, -26, 0), null);
             }
          
 
