@@ -3732,7 +3732,7 @@ MonoBehaviour:
     MaxLifePoints: 10
     ActionPoints: 3
     MaxActionPoints: 3
-    VisionRange: 0
+    VisionRange: 2
   GridPos: {x: 10, y: 10}
   Type: 2
   AnimSpeed: 2
@@ -5128,6 +5128,7 @@ GameObject:
   - component: {fileID: 1072327694}
   - component: {fileID: 1072327697}
   - component: {fileID: 1072327698}
+  - component: {fileID: 1072327699}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Map
@@ -5277,6 +5278,20 @@ MonoBehaviour:
   UpdateRate: 0.1
   UndiscoveredTile: {fileID: 11400000, guid: cec830751e85a414eade64f6dd1ba256, type: 2}
   UnvisibleTile: {fileID: 11400000, guid: c69263977e9152c4c8a8c80d08108a4e, type: 2}
+--- !u!114 &1072327699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072327693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84e7d052f44c604ca368a6faf86388f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 1913443078}
+  EnemyHolder: {fileID: 302936722}
 --- !u!1 &1159584173
 GameObject:
   m_ObjectHideFlags: 0
