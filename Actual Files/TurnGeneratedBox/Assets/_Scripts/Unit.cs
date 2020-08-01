@@ -27,8 +27,11 @@ public class Unit : MonoBehaviour {
     private GameObject TempParticles;
     [HideInInspector]
     public bool IsUnitMoving = false;
+    [HideInInspector]
     public bool StopMoving = false;
     private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
+    [HideInInspector]
+    public bool IsAttacking = false;
 
   
     [System.Serializable]

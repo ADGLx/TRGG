@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AI_State { Explore, Patrol, Flee, Chase };
+public enum AI_State { Explore, Patrol, Flee, Chase , Still};
 public class AI_Handler : MonoBehaviour
 {
     [HideInInspector]
@@ -83,6 +83,10 @@ public class AI_Handler : MonoBehaviour
             case AI_State.Patrol:
                 this.GetComponent<SpriteRenderer>().color = Color.blue;
                 break;
+            
+            case AI_State.Still:
+                this.GetComponent<SpriteRenderer>().color = Color.white;
+                break;
         }
     }
 
@@ -100,7 +104,11 @@ public class AI_Handler : MonoBehaviour
 
         PlayerInfo = GetPlayerClose(Area);
 
-        if(!PlayerInfo.Item1 && !LowHP)
+        if (LocalUnitScript.MapLocal.TurnModeOn)
+        {
+            return AI_State.Still;
+        }
+        else if (!PlayerInfo.Item1 && !LowHP)
         {
             return AI_State.Explore;
         } else if (!PlayerInfo.Item1 && LowHP)
@@ -111,7 +119,8 @@ public class AI_Handler : MonoBehaviour
             PlayerLastSeen = PlayerInfo.Item2;
         //    Debug.Log
             return AI_State.Chase; //Might wanna pass the player's position right away (done)
-        } else
+        }      
+        else
         {
             PlayerLastSeen = PlayerInfo.Item2;
             return AI_State.Flee; //Might wanna pass the player's position right away (done)
@@ -302,7 +311,12 @@ public class AI_Handler : MonoBehaviour
                     }
 
                     break; //Chase
-               
+
+                case AI_State.Still:
+                    //just stand still basically
+                    LocalUnitScript.StopMoving = true;
+                    break; //Still
+
                default:
                     Debug.LogWarning("UnitState is not recognized");
                     break; //default (just in case I forget to add another state)
@@ -370,6 +384,18 @@ public class AI_Handler : MonoBehaviour
                     return true;
                 else
                     return false;
+          
+            case AI_State.Still:
+                // It should change if the turn mode on is off
+                if (!LocalUnitScript.MapLocal.TurnModeOn)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
+
+
            
             default:
                 Debug.Log("Implement change here for new behaviour");

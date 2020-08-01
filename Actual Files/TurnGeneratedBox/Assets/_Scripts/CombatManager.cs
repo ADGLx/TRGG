@@ -26,9 +26,12 @@ IEnumerator Refresh()
         {
            foreach(Unit U in AllEnemies)
             {
-                if(LocalMap.GetDistance(Player.GridPos, U.GridPos) <= U.unitStats.VisionRange)
+                if((LocalMap.GetDistance(Player.GridPos, U.GridPos) <= U.unitStats.VisionRange) && U.IsAttacking == false)
                 {
                     Debug.Log("Attack");
+                    Player.IsAttacking = true;
+                    U.IsAttacking = true;
+                    LocalMap.TurnModeOn = true;
                 }
             }
             yield return new WaitForSeconds(RefreshRate);
