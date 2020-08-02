@@ -102,8 +102,6 @@ public class Map_Generator : MonoBehaviour {
     private GameObject PlayerUnitsHolder;
 
     //This contains all the info on the mirror tiles
-    [Header("Map Mirror Tiles Parameters")]
-    public float UpdateTime;
    // public Dictionary<Vector2Int, MapTile> AllMirrorTiles = new Dictionary<Vector2Int, MapTile>();
 
 

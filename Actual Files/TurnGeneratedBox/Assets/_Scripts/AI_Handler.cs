@@ -131,9 +131,10 @@ public class AI_Handler : MonoBehaviour
     {
         //  List<MapTile> CurrentPath = new List<MapTile>();
 
-      //  UnitState = DetectState(); //the first detect state
-       // StartCoroutine(MoveGenerator());
+        //  UnitState = DetectState(); //the first detect state
+        // StartCoroutine(MoveGenerator());
         //Have it update everytime the unit moves to a new tile 
+        yield return new WaitForSeconds(0.5f);
         while (true)
         {
 
@@ -164,7 +165,15 @@ public class AI_Handler : MonoBehaviour
            // yield return new WaitForSeconds(RefreshRate); //Might need this just in case
 
             UpdateMovementNow = false; //It is updating so we dont need it to update once this happens
-          //  Debug.Log("Updating movement");
+                                       //  Debug.Log("Updating movement");
+           
+            if (LocalUnitScript.MapLocal.FindTile(LocalUnitScript.GridPos.x, LocalUnitScript.GridPos.y).Walkable != true)
+            {
+                Debug.Log("Spawned in non walkable area, terminating coroutine"); //This should never happen once the enemy spawners is created
+                break;
+            }
+
+
             switch (UnitState)
             {
                 
@@ -331,6 +340,7 @@ public class AI_Handler : MonoBehaviour
 
     IEnumerator DetectPlayer()
     {
+        yield return new WaitForSeconds(0.5f);
         while (true)
         {
             yield return new WaitForSeconds(RefreshRate);
