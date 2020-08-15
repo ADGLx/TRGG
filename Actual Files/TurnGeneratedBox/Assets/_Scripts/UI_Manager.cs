@@ -136,7 +136,7 @@ public class UI_Manager : MonoBehaviour {
         {
             Destroy(UnitActionBarButtons.HoldingBar.transform.GetChild(temp).gameObject);
         }
-        Top_Right.Indicator.text = "Free Mode";
+       // Top_Right.Indicator.text = "Free Mode";
         //Clean the UI particles 
         MapLocal.ThirdLayer.ClearAllTiles();
         //Clear the TempSelectParticle
@@ -193,8 +193,8 @@ public class UI_Manager : MonoBehaviour {
                 Bot_Left.LifeP.text = U.unitStats.LifePoints.ToString();
                 Bot_Left.Holder.gameObject.SetActive(true);
 
-                //mostrar la barra de accion solo si esta en modo de turnos
-                if(MapLocal.TurnModeOn)
+                //mostrar la barra de accion solo si esta en modo de turnos y si es el main pl
+                if(MapLocal.TurnModeOn && U.tag == "Main_Pl")
                 {
                     Top_Right.Indicator.text = "Turn Mode";
                     int TotalButtons = 0;
@@ -284,7 +284,7 @@ public class UI_Manager : MonoBehaviour {
         }
     }
 
-    private void ClearPath()
+    public void ClearPath()
     {
         if (TempPathparticle != null)
         {

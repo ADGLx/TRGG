@@ -84,7 +84,7 @@ public class Map_Generator : MonoBehaviour {
 
 
     [HideInInspector]
-    public bool TurnModeOn = false;
+    public bool TurnModeOn = false, PlayerTurn = false;
 
     //Map settings
     //public int Size = 10;

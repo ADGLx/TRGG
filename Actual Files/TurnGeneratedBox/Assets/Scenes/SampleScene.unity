@@ -3727,7 +3727,7 @@ MonoBehaviour:
     MaxLifePoints: 10
     ActionPoints: 3
     MaxActionPoints: 3
-    VisionRange: 2
+    VisionRange: 4
   GridPos: {x: 10, y: 10}
   Type: 2
   AnimSpeed: 2
@@ -3737,7 +3737,7 @@ MonoBehaviour:
   Actions:
     Move: 1
     AutoDestroy: 1
-    Attack: 0
+    Attack: 1
   MapLocal: {fileID: 0}
 --- !u!212 &798460145
 SpriteRenderer:
@@ -3806,7 +3806,7 @@ MonoBehaviour:
   RefreshRate: 0.5
   UnitState: 0
   LowHPDefine: 2
-  DetectRadius: 4
+  DetectRadius: 6
   ExploreMaxMovementRange: 4
   HexRadius: 4
   AlertTime: 1
@@ -5204,7 +5204,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 169ac507eeb76da498469c5b45daf90e, type: 2}
   GridTileShowThing: {fileID: 0}
   TurnModeOn: 0
-  LoadSeed: 0
+  PlayerTurn: 0
+  LoadSeed: 1
   minW: 50
   maxW: 100
   minT: 30
@@ -5286,6 +5287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 1913443078}
   EnemyHolder: {fileID: 302936722}
+  UIM: {fileID: 519420033}
 --- !u!1 &1159584173
 GameObject:
   m_ObjectHideFlags: 0
@@ -7791,7 +7793,7 @@ MonoBehaviour:
   Actions:
     Move: 1
     AutoDestroy: 1
-    Attack: 0
+    Attack: 1
   MapLocal: {fileID: 0}
 --- !u!1 &2009796843
 GameObject:

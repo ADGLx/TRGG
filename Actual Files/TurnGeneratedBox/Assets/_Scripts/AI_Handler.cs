@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AI_State { Explore, Patrol, Flee, Chase , Still};
+public enum AI_State { Explore, Patrol, Flee, Chase , Still, TurnMode};
 public class AI_Handler : MonoBehaviour
 {
     [HideInInspector]
@@ -91,6 +91,9 @@ public class AI_Handler : MonoBehaviour
             case AI_State.Still:
                 this.GetComponent<SpriteRenderer>().color = Color.white;
                 break;
+            case AI_State.TurnMode:
+                this.GetComponent<SpriteRenderer>().color = Color.black;
+                break;
         }
     }
 
@@ -110,7 +113,7 @@ public class AI_Handler : MonoBehaviour
 
         if (LocalUnitScript.MapLocal.TurnModeOn)
         {
-            return AI_State.Still;
+            return AI_State.TurnMode;
         }
         else if (!PlayerInfo.Item1 && !LowHP)
         {
@@ -319,10 +322,16 @@ public class AI_Handler : MonoBehaviour
 
                     break; //Chase
 
+   
                 case AI_State.Still:
                     //just stand still basically
                     LocalUnitScript.StopMoving = true;
+                   
                     break; //Still
+
+                case AI_State.TurnMode:
+                    // Come up with a way to move to the player or maybe flee? Those should be the only moves? Not sure tho
+                    break;
 
                default:
                     Debug.LogWarning("UnitState is not recognized");
@@ -394,17 +403,20 @@ public class AI_Handler : MonoBehaviour
                     return false;
           
             case AI_State.Still:
-                // It should change if the turn mode on is off
+                // it doesnt change for now
+                return false;
+
+            case AI_State.TurnMode:
                 if (!LocalUnitScript.MapLocal.TurnModeOn)
                 {
                     return true;
-                } else
+                }
+                else
                 {
                     return false;
                 }
 
 
-           
             default:
                 Debug.Log("Implement change here for new behaviour");
                 return false;
