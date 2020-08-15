@@ -5204,14 +5204,13 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 169ac507eeb76da498469c5b45daf90e, type: 2}
   GridTileShowThing: {fileID: 0}
   TurnModeOn: 0
-  LoadSeed: 1
+  LoadSeed: 0
   minW: 50
   maxW: 100
   minT: 30
   maxT: 50
   minM: 15
   maxM: 20
-  UpdateTime: 0.1
 --- !u!156049354 &1072327695
 Grid:
   m_ObjectHideFlags: 0

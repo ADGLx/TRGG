@@ -785,12 +785,16 @@ public class Map_Generator : MonoBehaviour {
     //this is just to keep them properly instialized
     public void InstializeUnit(Unit U, int X, int Y)
     {
-        if (FindTile(X, Y) != null)
+        if (FindTile(X, Y) != null && (FindTile(X, Y).Walkable))
         {
             FindTile(X, Y).OcupiedByUnit = U.Type;
             FindTile(X, Y).OcupingUnitScript = U;
             U.gameObject.transform.position = SetTilePosToWorld(X,Y);
 
+        } else
+        {
+            U.transform.gameObject.SetActive(false);
+            Debug.Log("Could not Intialize: " + U);
         }
     }
 

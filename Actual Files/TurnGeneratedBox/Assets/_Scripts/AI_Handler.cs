@@ -49,9 +49,13 @@ public class AI_Handler : MonoBehaviour
             Debug.Log("Unit Script could not be found");
         }
 
-        StartCoroutine(DetectPlayer());
-        StartCoroutine(AI_Update()); //cant have both of them running it probably breaks something 
-        StartCoroutine(MoveGenerator()); //I dont remember what this is for
+
+
+            StartCoroutine(DetectPlayer());
+            StartCoroutine(AI_Update()); //cant have both of them running it probably breaks something 
+            StartCoroutine(MoveGenerator()); //I dont remember what this is for
+
+
     }
 
     private void FixedUpdate()
@@ -162,16 +166,10 @@ public class AI_Handler : MonoBehaviour
     {
         while (true)
         {
-           // yield return new WaitForSeconds(RefreshRate); //Might need this just in case
+           //Might need this just in case
 
             UpdateMovementNow = false; //It is updating so we dont need it to update once this happens
-                                       //  Debug.Log("Updating movement");
-           
-            if (LocalUnitScript.MapLocal.FindTile(LocalUnitScript.GridPos.x, LocalUnitScript.GridPos.y).Walkable != true)
-            {
-                Debug.Log("Spawned in non walkable area, terminating coroutine"); //This should never happen once the enemy spawners is created
-                break;
-            }
+                                       //  Debug.Log("Updating movement");          
 
 
             switch (UnitState)
