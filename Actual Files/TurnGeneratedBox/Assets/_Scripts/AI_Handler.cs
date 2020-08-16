@@ -37,6 +37,8 @@ public class AI_Handler : MonoBehaviour
     private Vector2Int LasPosLocal = new Vector2Int();
     private bool PlayerClose = false;
 
+    public bool CurOnTurn = false;
+
     void Start()
     {
         if (this.GetComponent<Unit>())
@@ -331,6 +333,41 @@ public class AI_Handler : MonoBehaviour
 
                 case AI_State.TurnMode:
                     // Come up with a way to move to the player or maybe flee? Those should be the only moves? Not sure tho
+                    LocalUnitScript.StopMoving = true; // First stop moving then it has to evaluate weather or not 
+                  //  Debug.Log("UPDATING");
+
+                    if (LocalUnitScript.unitStats.ActionPoints > 0 && CurOnTurn == true)
+                    {
+                        MapTile TargetTileX = LocalUnitScript.MapLocal.FindTile(PlayerLastSeen.x, PlayerLastSeen.y);
+                        if (TargetTileX.Walkable)
+                        {
+                            StartCoroutine(LocalUnitScript.MoveUnitTo(TargetTileX.X, TargetTileX.Y));
+                            CurTargetTile = TargetTileX.GetPos;
+                        }
+                        else
+                        {
+                            //If it is not walkable imma just look for the closest hex for me to get there 
+                            List<MapTile> PathToUnit = LocalUnitScript.MapLocal.Pathfinding(LocalUnitScript.GridPos, PlayerLastSeen);
+                            for (int x = PathToUnit.Count - 1; x >= 0; x--)
+                            {
+                                if (PathToUnit[x].Walkable)
+                                {
+                                    StartCoroutine(LocalUnitScript.MoveUnitTo(PathToUnit[x].X, PathToUnit[x].Y));
+                                    CurTargetTile = TargetTileX.GetPos;
+                                    break;
+                                }
+
+                            }
+
+                        }
+                    } else
+                    {
+                        CurOnTurn = false;
+                    }
+
+
+
+
                     break;
 
                default:
@@ -407,7 +444,7 @@ public class AI_Handler : MonoBehaviour
                 return false;
 
             case AI_State.TurnMode:
-                if (!LocalUnitScript.MapLocal.TurnModeOn)
+                if (!LocalUnitScript.MapLocal.TurnModeOn || CurOnTurn) // in here its where its gonna update
                 {
                     return true;
                 }

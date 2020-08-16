@@ -45,6 +45,8 @@ public class UI_Manager : MonoBehaviour {
     {
         public GameObject Holder;
         public TMP_Text Indicator;
+        public GameObject CurrentTurnIndicatorHolder;
+        public TMP_Text CurrentIndicatorText;
     }
 
     public TpRight Top_Right = new TpRight();
@@ -197,6 +199,13 @@ public class UI_Manager : MonoBehaviour {
                 if(MapLocal.TurnModeOn && U.tag == "Main_Pl")
                 {
                     Top_Right.Indicator.text = "Turn Mode";
+                    Top_Right.CurrentTurnIndicatorHolder.SetActive(true);
+
+                    if (MapLocal.GetComponent<CombatManager>().PlayersTurn == true)
+                        Top_Right.CurrentIndicatorText.text = "Player's Turn";
+                    else
+                        Top_Right.CurrentIndicatorText.text = "Enemy's Turn";
+
                     int TotalButtons = 0;
                     if (U.Actions.Move)
                     {

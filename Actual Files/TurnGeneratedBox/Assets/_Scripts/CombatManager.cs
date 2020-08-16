@@ -10,6 +10,7 @@ public class CombatManager : MonoBehaviour
     private List<Unit> AllEnemies = new List<Unit>();
     Map_Generator LocalMap;
     public UI_Manager UIM;
+    public bool PlayersTurn = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +49,27 @@ IEnumerator Refresh()
                 if(Player.unitStats.ActionPoints == 0)
                     {
                         //Instruct the Enemy to move in a turn (Or generate the movement or sum)
+                        if(U.GetComponent<AI_Handler>())
+                        U.GetComponent<AI_Handler>().CurOnTurn = true;
+
+                        PlayersTurn = false;
+                        //Should not change UIM from here but whatever
+                        UIM.Top_Right.CurrentIndicatorText.text = "Enemy's Turn";
+                        U.unitStats.ActionPoints = U.unitStats.MaxActionPoints;
+
+                        //Then wait until the AI doe sits move 
+                        if (U.IsUnitMoving) // this isnt even stoping the thing gotta find another way
+                        {
+                            Debug.Log("u");
+                            yield return null;
+                        }
+
+
+                        //Then it gives AP to the player
+                        Player.unitStats.ActionPoints = Player.unitStats.MaxActionPoints;
+                        PlayersTurn = true;
+                        UIM.Top_Right.CurrentIndicatorText.text = "Player's Turn";
+
                     }
                 
                 }
