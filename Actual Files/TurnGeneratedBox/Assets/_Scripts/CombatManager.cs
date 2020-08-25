@@ -11,6 +11,8 @@ public class CombatManager : MonoBehaviour
     Map_Generator LocalMap;
     public UI_Manager UIM;
     public bool PlayersTurn = true;
+    public bool PassTurnBool = false;
+    public float TimeForAITurn = 1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +32,6 @@ IEnumerator Refresh()
             {
             if((LocalMap.GetDistance(Player.GridPos, U.GridPos) <= U.unitStats.VisionRange) && U.IsAttacking == false && Player.IsAttacking == false)
                 {
-                    Debug.Log("Attack");
                     Player.IsAttacking = true;
                     U.IsAttacking = true;
                     LocalMap.TurnModeOn = true;
@@ -46,30 +47,29 @@ IEnumerator Refresh()
              if (U.IsAttacking && Player.IsAttacking)  //it waits until the player moves 
                 {
               
-                if(Player.unitStats.ActionPoints == 0)
+                if(PassTurnBool)
                     {
-                        //Instruct the Enemy to move in a turn (Or generate the movement or sum)
-                        if(U.GetComponent<AI_Handler>())
-                        U.GetComponent<AI_Handler>().CurOnTurn = true;
+                        if (U.GetComponent<AI_Handler>())
+                            U.GetComponent<AI_Handler>().CurOnTurn = true;
 
                         PlayersTurn = false;
                         //Should not change UIM from here but whatever
                         UIM.Top_Right.CurrentIndicatorText.text = "Enemy's Turn";
                         U.unitStats.ActionPoints = U.unitStats.MaxActionPoints;
 
-                        //Then wait until the AI doe sits move 
-                        if (U.IsUnitMoving) // this isnt even stoping the thing gotta find another way
+                        yield return new WaitForSeconds(TimeForAITurn);
+                        /* This just doesnt affect anything literally
+                        while(U.IsUnitInMoveAnim)
                         {
-                            Debug.Log("u");
-                            yield return null;
-                        }
-
+                            Debug.Log("Bro");
+                        }*/
 
                         //Then it gives AP to the player
                         Player.unitStats.ActionPoints = Player.unitStats.MaxActionPoints;
                         PlayersTurn = true;
                         UIM.Top_Right.CurrentIndicatorText.text = "Player's Turn";
 
+                        PassTurnBool = false;
                     }
                 
                 }
@@ -80,5 +80,11 @@ IEnumerator Refresh()
 
             yield return new WaitForSeconds(RefreshRate);
         }
+    }
+
+public void PassTurn()
+    {
+        //Instruct the Enemy to move in a turn (Or generate the movement or sum)
+        PassTurnBool = true;
     }
 }

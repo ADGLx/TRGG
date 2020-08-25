@@ -33,6 +33,8 @@ public class Unit : MonoBehaviour {
     [HideInInspector]
     public bool IsAttacking = false;
 
+    public bool IsUnitInMoveAnim = false;
+
   
     [System.Serializable]
     public class PossibleAction
@@ -128,7 +130,6 @@ public class Unit : MonoBehaviour {
             if (Path != null)
             {
                 IsUnitMoving = true;
-                
                 if (IsThisMainP)
                     UI_MLocal.ShowPath(Path); //Show the UI
 
@@ -203,12 +204,13 @@ public class Unit : MonoBehaviour {
         SetPos(X, Y);
         while (this.transform.position != MapLocal.SetTilePosToWorld(X, Y))
         {
+            IsUnitInMoveAnim = true;
             this.transform.position = Vector2.MoveTowards(this.transform.position, MapLocal.SetTilePosToWorld(X, Y), AnimSpeed * Time.deltaTime);
             yield return null;
         }
 
-     //   LastPos = GridPos;
-        
+        //   LastPos = GridPos;
+        IsUnitInMoveAnim = false;
 
         if (MapLocal.TurnModeOn)
             unitStats.ActionPoints--;
