@@ -271,7 +271,7 @@ public class UI_Manager : MonoBehaviour {
 
     public void ShowAreaAroundUnit(Unit U)
     {
-        InputM.AllCurrentPaths = MapLocal.SpawnAreaParticle(U.GridPos, U.unitStats.ActionPoints);
+        InputM.AllCurrentPaths = SpawnWalkableAreaAround(U.GridPos, U.unitStats.ActionPoints);
         InputM.InMoveMode = true;
         InputM.CurUnit = U;
 
@@ -317,6 +317,28 @@ public class UI_Manager : MonoBehaviour {
         {
             misc.EscapeMenuHolder.SetActive(true);
         }
+    }
+
+    private IDictionary<MapTile, List<MapTile>> SpawnWalkableAreaAround (Vector2Int Origin, int size)
+    {
+        IDictionary<MapTile, List<MapTile>> AllPaths = new Dictionary<MapTile, List<MapTile>>();
+        List<MapTile> WalkableTiles = MapLocal.GetWalkableAreaAround(Origin, size);
+        //First clear all the third layer
+        MapLocal.ThirdLayer.ClearAllTiles();
+        foreach (MapTile N in WalkableTiles)
+        {
+            List<MapTile> CurPath = MapLocal.Pathfinding(Origin, new Vector2Int(N.X, N.Y));
+            AllPaths.Add(N, CurPath);
+
+            //This looks super slow
+            if (CurPath != null)
+            {
+                MapLocal.ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), MapLocal.particles_tiles.Area[5]);
+            }
+
+        }
+
+        return AllPaths;
     }
 
 

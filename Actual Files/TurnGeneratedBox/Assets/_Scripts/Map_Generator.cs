@@ -1135,7 +1135,7 @@ public class Map_Generator : MonoBehaviour {
         //try to tell the pathfinding that if its on the limit, the distance is one 
     }
 
-     List<MapTile> GetWalkableAreaAround(Vector2Int Origin, int size)
+     public List<MapTile> GetWalkableAreaAround(Vector2Int Origin, int size)
     {
         List<MapTile> list = new List<MapTile>();
         for(int x = -size; x<= size; x++)
@@ -1144,7 +1144,7 @@ public class Map_Generator : MonoBehaviour {
             {
                 MapTile T = FindTile(Origin.x+x, Origin.y+y);
 
-                if (T != null && T.Walkable == true)
+                if (T != null && T.Walkable == true && Pathfinding(Origin,T.GetPos).Count<= size) //If I am already doing the pathfinding I might just pass it?
                 {
                     list.Add(T);
                 }
@@ -1182,7 +1182,7 @@ public class Map_Generator : MonoBehaviour {
 
         return Area;
     }
-
+    /*
     // I wanna save all the pathfindings so they dont have to be done again
     public IDictionary<MapTile, List<MapTile>> SpawnAreaParticle(Vector2Int Origin, int size)
     {
@@ -1204,7 +1204,7 @@ public class Map_Generator : MonoBehaviour {
         }
 
         return AllPaths;
-    }
+    }*/
 
     /*
     public void SaveMap()
