@@ -208,7 +208,7 @@ public class UI_Manager : MonoBehaviour {
                     {
                         TotalButtons++;
                         GameObject ButtonTemp = Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
-                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); }); // This is how the move unit around is handled
+                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { StartMovementMode(U); }); // This is how the move unit around is handled
 
                     }
                     if (U.Actions.Attack)
@@ -271,12 +271,16 @@ public class UI_Manager : MonoBehaviour {
         ChangeOfSelection();
     }
 
-    public void ShowAreaAroundUnit(Unit U)
+    public void StartMovementMode(Unit U)
     {
         InputM.AllCurrentPaths = SpawnWalkableAreaAround(U.GridPos, U.unitStats.ActionPoints);
-        InputM.InMoveMode = true; //Fix This
-        InputM.CurUnit = U;
+       // InputM.InMoveMode = true; //Fix This
+        InputM.CurUnit = U; //No clue what is this for
 
+        if (!InputM.InMoveMode)
+            StartCoroutine(InMoveMode(U)); // Maybe if it isnt running 
+        else
+            Debug.LogError("Already In Move Mode");
     }
 
     public void ShowPath(List<MapTile> P)
@@ -335,7 +339,9 @@ public class UI_Manager : MonoBehaviour {
             //This looks super slow
             if (CurPath != null)
             {
-                MapLocal.ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), MapLocal.particles_tiles.Area[5]);
+                Tile Temp = MapLocal.particles_tiles.Area[5];
+                Temp.color = Color.white;
+                MapLocal.ThirdLayer.SetTile(new Vector3Int(N.X, N.Y, 0), Temp);
             }
 
         }
@@ -343,7 +349,7 @@ public class UI_Manager : MonoBehaviour {
         return AllPaths;
     }
 
-    private void AttackButton(Unit U)
+    public void AttackButton(Unit U)
     {
         //spawn the attack range
         //   List<MapTile> Tiles = new List<MapTile>();
@@ -361,6 +367,111 @@ public class UI_Manager : MonoBehaviour {
 
 
 
+    }
+
+    private IEnumerator InMoveMode(Unit U)
+    {
+        InputM.InMoveMode = true;
+        MapTile CurTargetTile;
+        MapTile OldTile =  null;
+        List<MapTile> OldPath = null;
+        while(!(InputM.LMBup))
+        {
+            //yield return new WaitForFixedUpdate(); //So it doesnt update like crazy / it doesnt work 
+            CurTargetTile = InputM.GetMapTileOnMousePos();
+
+            if(OldPath!=null && CurTargetTile != OldTile)
+            {
+                foreach (MapTile M in OldPath)
+                {
+                    if (M != null)
+                        MapLocal.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapLocal.particles_tiles.Area[5]);
+                }
+            }
+
+
+
+            if (CurTargetTile != OldTile && InputM.AllCurrentPaths.ContainsKey(CurTargetTile))
+            {
+                List<MapTile> CurPath = InputM.AllCurrentPaths[CurTargetTile];
+
+                foreach (MapTile M in CurPath)
+                {
+                    if(M != null)
+                    {
+                        if(M != CurTargetTile)
+                        MapLocal.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapLocal.particles_tiles.Area[6]);
+                        else
+                        MapLocal.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), MapLocal.particles_tiles.Area[7]);
+                    }
+                }
+
+                OldPath = CurPath;
+            }
+            //Generate the path
+            //  Debug.Log("In move mode");
+            OldTile = CurTargetTile;
+            
+            yield return null;
+        }
+
+        MapTile T = InputM.GetMapTileOnMousePos();
+        if (InputM.AllCurrentPaths.ContainsKey(T))
+        {
+            StartCoroutine(U.MoveUnitTo(T.X, T.Y));
+        } 
+       
+        //This is kinda of a mess 
+        /*
+
+            MapTile NewCurHoveredTile = MapLocal.FindTile(cellPos.x, cellPos.y);
+        
+            //So once this happens it is the old one 
+            if (NewCurHoveredTile != InputM.CurHoveredTile && InputM.AllCurrentPaths.ContainsKey(NewCurHoveredTile))
+            {
+                // MapGRef.ThirdLayer.ClearAllTiles();
+                //This makes it so it everything is cleared 
+                List<MapTile> CurHovPath = InputM.AllCurrentPaths[NewCurHoveredTile];
+                if (CurHovPath != null && CurHovPath != InputM.OldCurPath)
+                {
+                    //This refreshes the old path to the orginal
+                    if (InputM.OldCurPath != null)
+                        foreach (MapTile M in InputM.OldCurPath)
+                        {
+                            if (M != null)
+                                MapLocal.ThirdLayer.SetTile(new Vector3Int(M.X, M.Y, 0), LocalMap.particles_tiles.Area[5]);
+                        }
+
+                    for (int x = 0; x < CurHovPath.Count; x++)
+                    {
+                        if (CurHovPath[x] != null)
+                        {
+                            if (x != CurHovPath.Count - 1)
+                            {
+
+                                MapLocal.ThirdLayer.SetTile(new Vector3Int(CurHovPath[x].X, CurHovPath[x].Y, 0), MapGRef.particles_tiles.Area[6]);
+                            }
+                            else
+                            {
+                                MapLocal.ThirdLayer.SetTile(new Vector3Int(CurHovPath[x].X, CurHovPath[x].Y, 0), MapGRef.particles_tiles.Area[7]);
+                            }
+
+                        }
+
+                    }
+
+                InputM.OldCurPath = CurHovPath;
+
+                }
+                else
+
+
+
+                //  MapGRef.ThirdLayer.SetTile(new Vector3Int(NewCurHoveredTile.X, NewCurHoveredTile.Y, 0), MapGRef.particles_tiles.Area[6]);
+                InputM.CurHoveredTile = NewCurHoveredTile;
+            }
+            */
+        InputM.InMoveMode = false;
     }
 
 

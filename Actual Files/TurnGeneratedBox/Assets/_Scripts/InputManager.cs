@@ -57,8 +57,8 @@ public class InputManager : MonoBehaviour {
     public Unit CurUnit;
     // 
 
-    private MapTile CurHoveredTile = null;
-    private List<MapTile> OldCurPath = null;
+    public MapTile CurHoveredTile = null;
+    public List<MapTile> OldCurPath = null;
 
     GridLayout grid;
     Map_Generator MapGRef;
@@ -82,11 +82,8 @@ public class InputManager : MonoBehaviour {
         //select
         if (LMBdown && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) //this prevents me from actually clicking on a UI element
         {
-            //Gotta add something to prevent from finding it when ontop of UI
-            Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pz.z = 0;
-            Vector3Int cellPos = grid.WorldToCell(pz);
-            MapTile Temp = MapGRef.FindTile(cellPos.x, cellPos.y);
+          
+            MapTile Temp = GetMapTileOnMousePos();
            
             if(Temp != null)
             {
@@ -96,7 +93,7 @@ public class InputManager : MonoBehaviour {
             } else
             {
                 //Making the selection the opposite one
-                Vector3Int TempV = MapGRef.GetOppositeTileOnBoarder(cellPos.x, cellPos.y);
+                Vector3Int TempV = MapGRef.GetOppositeTileOnBoarder(Temp.X, Temp.Y);
                 Vector2Int TargetPos = new Vector2Int(TempV.x, TempV.y);
                 MapTile TargetTile = MapGRef.FindTile(TargetPos.x, TargetPos.y);
 
@@ -111,20 +108,18 @@ public class InputManager : MonoBehaviour {
             }
 
 
-
+            /*
             if (InMoveMode)// this is for the ON turn thing only
             {
                 if (AllCurrentPaths.ContainsKey(MapGRef.CurrentTile))
                     StartCoroutine(CurUnit.MoveUnitTo(cellPos.x, cellPos.y));
 
                 InMoveMode = false;
-            }
+            }*/
 
 
             //   ShowAllDebugUI();
         }
-
-    
         //movement
         if (!(MapGRef.TurnModeOn || CurUnit == null || !RMBdown || UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()))
         {
@@ -156,7 +151,7 @@ public class InputManager : MonoBehaviour {
                 }
             }
         }
-
+/*
         //This is just for the area thing (I gotta migrate all this to the UI_Manager)
         if (InMoveMode)
         {
@@ -211,7 +206,7 @@ public class InputManager : MonoBehaviour {
             }
 
 
-        }
+        }*/
 
         //DragScreen();
 
@@ -351,6 +346,16 @@ public class InputManager : MonoBehaviour {
         else if (Cam.transform.position.y < -MapEdgeDebug)
             Cam.transform.position = new Vector3(Cam.transform.position.x, MapEdgeDebug - 1.00f, Cam.transform.position.z);
            
+    }
+
+    public MapTile GetMapTileOnMousePos()
+    {
+        Vector3 pz = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        pz.z = 0;
+        Vector3Int cellPos = grid.WorldToCell(pz);
+        MapTile Temp = MapGRef.FindTile(cellPos.x, cellPos.y);
+
+        return Temp;
     }
 
 }
