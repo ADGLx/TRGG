@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour {
         public int ActionPoints;
         public int MaxActionPoints;
         public int VisionRange;
+        public int AttackRange;
     }
     public UnitStats unitStats;
 

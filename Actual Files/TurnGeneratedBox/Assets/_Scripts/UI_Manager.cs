@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -207,13 +208,14 @@ public class UI_Manager : MonoBehaviour {
                     {
                         TotalButtons++;
                         GameObject ButtonTemp = Instantiate(UnitActionBarButtons.MoveButton, UnitActionBarButtons.HoldingBar.transform);
-                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); });
+                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { ShowAreaAroundUnit(U); }); // This is how the move unit around is handled
 
                     }
                     if (U.Actions.Attack)
                     {
                         TotalButtons++;
-                        Instantiate(UnitActionBarButtons.AttackButton, UnitActionBarButtons.HoldingBar.transform);
+                        GameObject ButtonTemp = Instantiate(UnitActionBarButtons.AttackButton, UnitActionBarButtons.HoldingBar.transform);
+                        ButtonTemp.GetComponent<Button>().onClick.AddListener(delegate { AttackButton(U); }); // This is how the move unit around is handled
                     }
                     if (U.Actions.AutoDestroy)
                     {
@@ -272,7 +274,7 @@ public class UI_Manager : MonoBehaviour {
     public void ShowAreaAroundUnit(Unit U)
     {
         InputM.AllCurrentPaths = SpawnWalkableAreaAround(U.GridPos, U.unitStats.ActionPoints);
-        InputM.InMoveMode = true;
+        InputM.InMoveMode = true; //Fix This
         InputM.CurUnit = U;
 
     }
@@ -339,6 +341,26 @@ public class UI_Manager : MonoBehaviour {
         }
 
         return AllPaths;
+    }
+
+    private void AttackButton(Unit U)
+    {
+        //spawn the attack range
+        //   List<MapTile> Tiles = new List<MapTile>();
+        Tile ParticleTile = MapLocal.particles_tiles.Area[5];
+        ParticleTile.color = Color.red;
+        for (int x = U.GridPos.x - U.unitStats.AttackRange + 1; x < U.GridPos.x + U.unitStats.AttackRange ; x++)
+        {
+            for (int y = U.GridPos.y - U.unitStats.AttackRange + 1; y < U.GridPos.y + U.unitStats.AttackRange; y++)//idk why the +1, it is not correctly offset for some reason
+            {
+                //  Tiles.Add(MapLocal.FindTile(x, y));
+                MapLocal.ThirdLayer.SetTile(new Vector3Int(x, y, 0), ParticleTile);
+                //REMEMBER, FIX THE  InputM.InMoveMode = true; and implement this state in the same way 
+            }
+        }
+
+
+
     }
 
 
