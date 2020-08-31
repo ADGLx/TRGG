@@ -52,6 +52,8 @@ public class InputManager : MonoBehaviour {
     [HideInInspector]
     public bool InMoveMode = false;
     [HideInInspector]
+    public bool InAttackMode = false;
+    [HideInInspector]
     public IDictionary<MapTile, List<MapTile>> AllCurrentPaths;
     // [HideInInspector]
     public Unit CurUnit;

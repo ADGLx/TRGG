@@ -262,6 +262,17 @@ public class Unit : MonoBehaviour {
        
     }
 
+    public void DealDamageTo(int X, int Y, UnitIn TypeOfUnit)
+    {
+       // Debug.Log("Dealing Damage"); In here I might wanna implement the weapon system or sum
+
+        if (TypeOfUnit == UnitIn.AI)
+        {
+            //Add all the attack stuff in here
+        }
+
+    }
+
     /*
     //Fix this to make it work with all the units (Not only the main one)
     IEnumerator MoveToTileAnim(List<MapTile> thPath)

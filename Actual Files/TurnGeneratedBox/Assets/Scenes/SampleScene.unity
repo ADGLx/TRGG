@@ -2696,6 +2696,7 @@ MonoBehaviour:
   DebugHolder: {fileID: 1546616755}
   MapEdgeDebug: 13
   InMoveMode: 0
+  InAttackMode: 0
   CurUnit: {fileID: 0}
 --- !u!20 &519420031
 Camera:
@@ -5314,6 +5315,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4a4c2335785b6404fb4ff88691469996, type: 2}
     - {fileID: 11400000, guid: f0deb039499a1d84bbb4273009681994, type: 2}
     - {fileID: 11400000, guid: 169ac507eeb76da498469c5b45daf90e, type: 2}
+    - {fileID: 11400000, guid: 375f2aa6dd55e48459a80cae6e689c70, type: 2}
   GridTileShowThing: {fileID: 0}
   TurnModeOn: 0
   PlayerTurn: 0
@@ -7881,7 +7883,7 @@ MonoBehaviour:
     LifePoints: 5
     MaxLifePoints: 5
     ActionPoints: 7
-    MaxActionPoints: 3
+    MaxActionPoints: 7
     VisionRange: 7
     AttackRange: 3
   GridPos: {x: 0, y: 0}

@@ -352,20 +352,36 @@ public class UI_Manager : MonoBehaviour {
     public void AttackButton(Unit U)
     {
         //spawn the attack range
-        //   List<MapTile> Tiles = new List<MapTile>();
-        Tile ParticleTile = MapLocal.particles_tiles.Area[5];
-        ParticleTile.color = Color.red;
-        for (int x = U.GridPos.x - U.unitStats.AttackRange + 1; x < U.GridPos.x + U.unitStats.AttackRange ; x++)
+           List<MapTile> Tiles = new List<MapTile>();
+       if(!InputM.InAttackMode)
         {
-            for (int y = U.GridPos.y - U.unitStats.AttackRange + 1; y < U.GridPos.y + U.unitStats.AttackRange; y++)//idk why the +1, it is not correctly offset for some reason
+            Tile ParticleTile = MapLocal.particles_tiles.Area[5];
+            ParticleTile.color = Color.red;
+            for (int x = U.GridPos.x - U.unitStats.AttackRange + 1; x < U.GridPos.x + U.unitStats.AttackRange; x++)
             {
-                //  Tiles.Add(MapLocal.FindTile(x, y));
-                MapLocal.ThirdLayer.SetTile(new Vector3Int(x, y, 0), ParticleTile);
-                //REMEMBER, FIX THE  InputM.InMoveMode = true; and implement this state in the same way 
+                for (int y = U.GridPos.y - U.unitStats.AttackRange + 1; y < U.GridPos.y + U.unitStats.AttackRange; y++)//idk why the +1, it is not correctly offset for some reason
+                {
+                    //  Tiles.Add(MapLocal.FindTile(x, y));
+                    if(MapLocal.FindTile(x,y).OcupiedByUnit != UnitIn.Player)
+                    {
+                        MapLocal.ThirdLayer.SetTile(new Vector3Int(x, y, 0), ParticleTile);
+                        Tiles.Add(MapLocal.FindTile(x, y));
+                    }
+                   
+                    //REMEMBER, FIX THE  InputM.InMoveMode = true; and implement this state in the same way 
+                }
             }
+
+            StartCoroutine(InAttackMode(U, ParticleTile, Tiles));
+        
+        } else
+        {
+            Debug.LogError("Already In Attack Mode");
         }
+        
+       
 
-
+        
 
     }
 
@@ -472,6 +488,39 @@ public class UI_Manager : MonoBehaviour {
             }
             */
         InputM.InMoveMode = false;
+    }
+
+    private IEnumerator InAttackMode(Unit U, Tile P, List<MapTile> TilesInRange)
+    {
+        InputM.InAttackMode = true;
+        MapTile CurTargetTile;
+        MapTile OldTile = null;
+      //  List<MapTile> OldPath = null;
+        while (!(InputM.LMBup))
+        {
+            //yield return new WaitForFixedUpdate(); //So it doesnt update like crazy / it doesnt work 
+            CurTargetTile = InputM.GetMapTileOnMousePos();
+
+            if (CurTargetTile != OldTile && CurTargetTile.OcupiedByUnit == UnitIn.AI && TilesInRange.Contains(CurTargetTile))
+            {
+
+                  MapLocal.ThirdLayer.SetTile(new Vector3Int(CurTargetTile.X, CurTargetTile.Y, 0), MapLocal.particles_tiles.Area[8]);
+
+            } else if (CurTargetTile != OldTile && OldTile != null && TilesInRange.Contains(OldTile))
+                MapLocal.ThirdLayer.SetTile(new Vector3Int(OldTile.X, OldTile.Y, 0), P);
+            //Generate the path
+            //  Debug.Log("In move mode");
+            OldTile = CurTargetTile;
+
+            yield return null;
+        }
+
+        MapTile T = InputM.GetMapTileOnMousePos();
+        if (T.OcupiedByUnit == UnitIn.AI)
+        {
+           U.DealDamageTo(T.X, T.Y, UnitIn.AI);
+        }
+        InputM.InAttackMode = false;
     }
 
 
