@@ -8,6 +8,7 @@ TagManager:
   - Particles
   - Player_UnitH
   - Main_Pl
+  - Enemy_AI
   layers:
   - Default
   - TransparentFX

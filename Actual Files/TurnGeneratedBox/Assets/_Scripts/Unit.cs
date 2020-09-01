@@ -262,13 +262,38 @@ public class Unit : MonoBehaviour {
        
     }
 
+   public void TakeDamage (int SourceDamage)
+    {
+        unitStats.LifePoints -= SourceDamage;
+    }
+
     public void DealDamageTo(int X, int Y, UnitIn TypeOfUnit)
     {
        // Debug.Log("Dealing Damage"); In here I might wanna implement the weapon system or sum
 
         if (TypeOfUnit == UnitIn.AI)
         {
-            //Add all the attack stuff in here
+            //Find the AI creature
+            GameObject[] AllUnits = GameObject.FindGameObjectsWithTag("Enemy_AI");
+            Unit Enemy = null;
+            foreach (GameObject T in AllUnits)
+            {
+                if(T.GetComponent<Unit>() != null && T.GetComponent<Unit>().GridPos.x == X && T.GetComponent<Unit>().GridPos.y == Y)
+                {
+                    Enemy = T.GetComponent<Unit>();
+                    break;
+                }
+
+            }
+
+            if(Enemy == null)
+            {
+                Debug.LogError("Enemy not found");
+                return;
+            }
+
+            Enemy.TakeDamage(unitStats.AttackPoints);
+            
         }
 
     }

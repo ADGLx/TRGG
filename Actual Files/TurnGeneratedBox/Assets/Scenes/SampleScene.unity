@@ -3724,7 +3724,7 @@ GameObject:
   - component: {fileID: 798460147}
   m_Layer: 0
   m_Name: Bat_V1
-  m_TagString: Untagged
+  m_TagString: Enemy_AI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
