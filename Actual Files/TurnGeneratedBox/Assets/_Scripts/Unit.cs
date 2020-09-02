@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using System.Collections;
+using TMPro;
 
 public class Unit : MonoBehaviour {
 
@@ -33,8 +34,10 @@ public class Unit : MonoBehaviour {
     private bool IsThisMainP = false; //This is a cheap way to fix it, I gotta clean this later
     [HideInInspector]
     public bool IsAttacking = false;
-
+    [HideInInspector]
     public bool IsUnitInMoveAnim = false;
+
+   
 
   
     [System.Serializable]
@@ -50,6 +53,8 @@ public class Unit : MonoBehaviour {
     [HideInInspector]
     public Map_Generator MapLocal;
     private UI_Manager UI_MLocal;
+
+    public TMP_Text Life_Bar;
     private void Awake()
     {
         if (GameObject.FindGameObjectWithTag("Map").GetComponent<Map_Generator>() != null)
@@ -83,6 +88,10 @@ public class Unit : MonoBehaviour {
         //LastPos = GridPos;
         //  MoveUnitTo(-5, -3); this is making it so when the pathfinding happens the thing is set as not occupied
         //MoveUnitTo(4, -4);
+        if (Life_Bar == null)
+            Debug.LogError("Missing Life_Bar");
+        else
+            StartCoroutine(UpdateLifeBar());
 
         // MapLocal.SpawnAreaParticle(GridPos, 2);
         if(MapLocal.GetComponent<VisionManager>().enabled)
@@ -294,6 +303,42 @@ public class Unit : MonoBehaviour {
 
             Enemy.TakeDamage(unitStats.AttackPoints);
             
+        }
+
+    }
+
+    IEnumerator UpdateLifeBar()
+    {
+       while(true)
+        {
+            if (!IsAttacking)
+            {
+                yield return null;
+            } else
+            {
+                if (!Life_Bar.gameObject.activeSelf)
+                    Life_Bar.gameObject.SetActive(true);
+
+                Life_Bar.text = unitStats.LifePoints + "/" + unitStats.MaxLifePoints;
+
+                if(Life_Bar.transform.GetComponentInChildren<SpriteRenderer>())
+                {
+                    if(unitStats.LifePoints > (unitStats.MaxLifePoints / 2))
+                    {
+                        Life_Bar.transform.GetComponentInChildren<SpriteRenderer>().sprite = UI_MLocal.lifeSprites.Full;
+                    } else if (unitStats.LifePoints <= (unitStats.MaxLifePoints / 2) && unitStats.LifePoints>0)
+                    {
+                        Life_Bar.transform.GetComponentInChildren<SpriteRenderer>().sprite = UI_MLocal.lifeSprites.Half;
+                    } else
+                    {
+                        Life_Bar.transform.GetComponentInChildren<SpriteRenderer>().sprite = UI_MLocal.lifeSprites.Empty;
+                    }
+                }
+                    
+                yield return new WaitForEndOfFrame();
+            }
+           
+
         }
 
     }

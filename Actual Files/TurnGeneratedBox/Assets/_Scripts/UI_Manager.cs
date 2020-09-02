@@ -102,6 +102,16 @@ public class UI_Manager : MonoBehaviour {
     [Header("Unit UI Buttons")]
     public AButtons UnitActionBarButtons;
 
+    [System.Serializable]
+    public class LifeSprites
+    {
+        public Sprite Empty;
+        public Sprite Half;
+        public Sprite Full;
+    }
+
+    public LifeSprites lifeSprites;
+
     private void Start()
     {
         //Add the keys (I will have to automate this so it is easier to add stuff)
