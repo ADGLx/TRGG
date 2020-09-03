@@ -99,17 +99,17 @@ public class Map_Generator : MonoBehaviour {
     public int minT = 0, maxT = 0;
     public int minM = 5, maxM = 10;
 
+  
+    [Header("Enemy Spawner Randomizer")]
+    public int MaxEnemyAmountPerZone = 2;
+    public int MinEnemyAmountPerZone = 1;
+    public int AmountOfZones = 4;
     [System.Serializable]
     public class AIEnemies
     {
         public GameObject[] AllEnemies; //Might wanna have a variable for each enemy
     }
-    public AIEnemies aienemies = new AIEnemies();
-    [Header("Enemy Spawner Randomizer")]
-    public int MaxEnemyAmount = 10;
-    public int MinEnemyAmount = 6;
-    public int AmountOfZones = 8;
-
+    public AIEnemies enemies = new AIEnemies();
 
     private GameObject PlayerUnitsHolder;
 
@@ -1579,22 +1579,39 @@ public class Map_Generator : MonoBehaviour {
             }
         }
 
-        int AmountOfEnemies = UnityEngine.Random.Range(MinEnemyAmount, MaxEnemyAmount);
-        Tuple<int, bool>[] SpawnLimitation = new Tuple<int, bool>[AmountOfZones];
 
         for(int w = 0; w <AmountOfZones; w++)
         {
-            if (UnityEngine.Random.value >= 0.5)
+            int AmountOfEnemies = UnityEngine.Random.Range(MinEnemyAmountPerZone, MaxEnemyAmountPerZone);
+
+            for (int r= 0, Max = 0; r< AmountOfEnemies && Max<20; r++)
             {
-                // return true;
-                SpawnLimitation[w] = new Tuple<int, bool>(w, true); 
+                int RandomTile = UnityEngine.Random.Range(0, AllMapTiles.Count / AmountOfZones);
+
+                if(Zones[w,RandomTile].Walkable && !Zones[w, RandomTile].IsBound)
+                {
+                   // SpawnU(enemies.AllEnemies[0], Zones[w, RandomTile].GetPos); Fix this
+                   Debug.Log("Spawn in : " + Zones[w, RandomTile].GetPos);
+                } else
+                {
+                   // Debug.Log("didnt");
+                    Max++;
+                }
             }
-            //return false;
-            SpawnLimitation[w] = new Tuple<int, bool>(w, false);
+
         }
 
 
 
+    }
+
+    private void SpawnU (GameObject U, Vector2Int Pos)
+    {
+        if (FindTile(Pos.x, Pos.y).Walkable)
+            Instantiate(U, SetTilePosToWorld(Pos.x, Pos.y), U.transform.rotation, GameObject.FindGameObjectWithTag("Enemy_AI_H").transform);
+        else
+            Debug.Log("wht");
+      //  InstializeUnit(U.GetComponent<Unit>(), Pos.x, Pos.y); this is done in the unit
     }
 
 

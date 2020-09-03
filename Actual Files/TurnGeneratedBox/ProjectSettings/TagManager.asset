@@ -9,6 +9,7 @@ TagManager:
   - Player_UnitH
   - Main_Pl
   - Enemy_AI
+  - Enemy_AI_H
   layers:
   - Default
   - TransparentFX

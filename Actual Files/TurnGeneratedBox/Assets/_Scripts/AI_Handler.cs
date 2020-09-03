@@ -169,6 +169,8 @@ public class AI_Handler : MonoBehaviour
 
     IEnumerator MoveGenerator () //This will update too but only when the Movement is done
     {
+        yield return new WaitForSeconds(0.5f); //waits a bit to update the AI
+
         while (true)
         {
            //Might need this just in case
