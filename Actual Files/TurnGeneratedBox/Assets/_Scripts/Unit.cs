@@ -301,6 +301,7 @@ public class Unit : MonoBehaviour {
                 return;
             }
 
+            unitStats.ActionPoints -= 1;
             Enemy.TakeDamage(unitStats.AttackPoints);
             
         }

@@ -99,6 +99,18 @@ public class Map_Generator : MonoBehaviour {
     public int minT = 0, maxT = 0;
     public int minM = 5, maxM = 10;
 
+    [System.Serializable]
+    public class AIEnemies
+    {
+        public GameObject[] AllEnemies; //Might wanna have a variable for each enemy
+    }
+    public AIEnemies aienemies = new AIEnemies();
+    [Header("Enemy Spawner Randomizer")]
+    public int MaxEnemyAmount = 10;
+    public int MinEnemyAmount = 6;
+    public int AmountOfZones = 8;
+
+
     private GameObject PlayerUnitsHolder;
 
     //This contains all the info on the mirror tiles
@@ -158,6 +170,7 @@ public class Map_Generator : MonoBehaviour {
         CreateMapBounds(); //This changes the stuff
         PhysicalMap(AllMapTiles);
         PlayerUnitsHolder = GameObject.FindGameObjectWithTag("Player_UnitH");
+        SpawnEnemies();
        // StartCoroutine(CreateMirrorTiles(18));
         //StartCoroutine(UpdateThingsOverMirrorTiles());
       //  SaveTheMap(true);
@@ -1551,6 +1564,37 @@ public class Map_Generator : MonoBehaviour {
         }
 
         return TargetPos;
+    }
+
+    private void SpawnEnemies()
+    {
+        //First divide the map in 8 Zones 
+        MapTile[,] Zones = new MapTile[AmountOfZones, AllMapTiles.Count/AmountOfZones];
+
+        for(int x= 0; x<AmountOfZones; x++)
+        {
+            for(int y = 0; y < AllMapTiles.Count/ AmountOfZones; y++)
+            {
+                Zones[x, y] = AllMapTiles[x + y];
+            }
+        }
+
+        int AmountOfEnemies = UnityEngine.Random.Range(MinEnemyAmount, MaxEnemyAmount);
+        Tuple<int, bool>[] SpawnLimitation = new Tuple<int, bool>[AmountOfZones];
+
+        for(int w = 0; w <AmountOfZones; w++)
+        {
+            if (UnityEngine.Random.value >= 0.5)
+            {
+                // return true;
+                SpawnLimitation[w] = new Tuple<int, bool>(w, true); 
+            }
+            //return false;
+            SpawnLimitation[w] = new Tuple<int, bool>(w, false);
+        }
+
+
+
     }
 
 
